@@ -1,0 +1,31 @@
+{
+  "source": "[9.95388942e-01 5.75645389e-03 9.97358115e-01 ... 6.20376223e-02\n 2.95016423e-01 7.85799373e-05]",
+  "saved_models": [
+    "logistic_regression",
+    "mlp_neural_network",
+    "random_forest"
+  ],
+  "validation_metrics": {
+    "logistic_regression": {
+      "accuracy": 0.9472222222222222,
+      "precision": 0.9081967213114754,
+      "recall": 0.9342327150084317,
+      "f1": 0.9210307564422278,
+      "roc_auc": 0.9895634096215024
+    },
+    "random_forest": {
+      "accuracy": 0.9516666666666667,
+      "precision": 0.9423076923076923,
+      "recall": 0.9089376053962901,
+      "f1": 0.9253218884120171,
+      "roc_auc": 0.9884443053520009
+    },
+    "mlp_neural_network": {
+      "accuracy": 0.9483333333333334,
+      "precision": 0.9401408450704225,
+      "recall": 0.9005059021922428,
+      "f1": 0.9198966408268734,
+      "roc_auc": 0.9889584506343687
+    }
+  }
+}

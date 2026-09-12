@@ -1,0 +1,27 @@
+# Final Project Checklist
+
+- [x] Kaggle downloader
+- [x] Demo fallback for offline execution
+- [x] Automatic schema inference
+- [x] Duplicate removal
+- [x] Missing-value handling
+- [x] Date parsing
+- [x] Leakage-safe target creation
+- [x] Historical features use only previous invoices
+- [x] Cold-start support
+- [x] Time-based train/validation/test split
+- [x] Logistic Regression baseline
+- [x] Random Forest
+- [x] XGBoost
+- [x] MLP Neural Network
+- [x] Threshold tuning on validation only
+- [x] Regression for delay days
+- [x] Risk score and financial exposure
+- [x] FastAPI deployment API
+- [x] Browser dashboard
+- [x] Dockerfile
+- [x] Render config
+- [x] README
+- [ ] Real Kaggle dataset downloaded in this environment (external network unavailable)
+- [ ] Real Kaggle test accuracy verified after download
+- [ ] Optional SHAP visual report generated after training

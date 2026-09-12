@@ -1,0 +1,55 @@
+{
+  "rows": 12000,
+  "columns": 15,
+  "duplicate_rows": 0,
+  "missing_by_column": {
+    "industry": 180,
+    "payment_method": 144,
+    "invoice_amount": 120,
+    "company_size": 120,
+    "customer_id": 0,
+    "invoice_date": 0,
+    "invoice_id": 0,
+    "due_date": 0,
+    "payment_date": 0,
+    "customer_segment": 0,
+    "prior_invoice_count": 0,
+    "prior_late_count": 0,
+    "prior_late_ratio": 0,
+    "prior_avg_delay": 0,
+    "outstanding_amount": 0
+  },
+  "date_parseable": {
+    "invoice_date": 12000,
+    "due_date": 12000,
+    "payment_date": 12000
+  },
+  "inferred_columns": {
+    "invoice_date": "invoice_date",
+    "due_date": "due_date",
+    "payment_date": "payment_date",
+    "amount": "invoice_amount",
+    "customer": "customer_id"
+  },
+  "usable_rows": 12000,
+  "late_rate": 0.317,
+  "features": [
+    "invoice_amount_clean",
+    "amount_log1p",
+    "days_to_due",
+    "invoice_year",
+    "invoice_month",
+    "invoice_quarter",
+    "invoice_dayofweek",
+    "customer_seen_before",
+    "customer_is_new",
+    "prior_late_count",
+    "prior_late_ratio",
+    "prior_avg_delay",
+    "outstanding_amount",
+    "industry",
+    "company_size",
+    "payment_method",
+    "customer_segment"
+  ]
+}

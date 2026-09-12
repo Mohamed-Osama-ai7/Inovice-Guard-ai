@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.venv/
+env/
+.env
+.env.*
+.streamlit/secrets.toml
+.DS_Store
+coverage/
+*.log
+
+# Keep model and report artifacts in the repository for deployment
+# data/raw should stay local unless explicitly allowed
+data/raw/*
+!data/raw/.gitkeep
+
+# Keep demo datasets local unless explicitly allowed
+# Uncomment if you do not want to publish demo data
+# data/demo/*
