@@ -1,5 +1,5 @@
 {
-  "source_file": "C:\\Users\\isco\\Downloads\\InvoiceGuard_AI_ENHANCED_MODELS\\InvoiceGuard_AI\\data\\demo\\demo_invoices.csv",
+  "source_file": "data/demo/demo_invoices.csv",
   "column_map": {
     "invoice_date": "invoice_date",
     "due_date": "due_date",

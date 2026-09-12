@@ -24,11 +24,99 @@ DEFAULT_CATEGORICALS = {
     "customer_segment": ["SME", "Mid-Market", "Enterprise"],
 }
 
+DEFAULT_FEATURES = [
+    "invoice_amount_clean",
+    "amount_log1p",
+    "days_to_due",
+    "invoice_year",
+    "invoice_month",
+    "invoice_quarter",
+    "invoice_dayofweek",
+    "customer_seen_before",
+    "customer_is_new",
+    "prior_late_count",
+    "prior_late_ratio",
+    "prior_avg_delay",
+    "outstanding_amount",
+    "industry",
+    "company_size",
+    "payment_method",
+    "customer_segment",
+]
+
 st.set_page_config(page_title="InvoiceGuard AI", page_icon="💳", layout="wide")
 
 
+def get_artifact_signature() -> str:
+    model_files = {
+        "classifier": MODELS / "classifier.joblib",
+        "delay_regressor": MODELS / "delay_regressor.joblib",
+        "logistic_regression": MODELS / "logistic_regression.joblib",
+        "random_forest": MODELS / "random_forest.joblib",
+        "mlp_neural_network": MODELS / "mlp_neural_network.joblib",
+        "nlp_payment_risk": MODELS / "nlp_payment_risk.joblib",
+    }
+
+    signature: Dict[str, Dict[str, int]] = {}
+    for name, path in model_files.items():
+        if not path.exists():
+            continue
+        stat = path.stat()
+        signature[name] = {"mtime_ns": stat.st_mtime_ns, "size": stat.st_size}
+
+    return json.dumps(signature, sort_keys=True)
+
+
+def build_validation_row(metadata: Dict[str, Any]) -> Dict[str, Any]:
+    feature_order = metadata.get("features") or DEFAULT_FEATURES
+
+    row: Dict[str, Any] = {
+        "invoice_amount_clean": 1000.0,
+        "amount_log1p": float(np.log1p(1000.0)),
+        "days_to_due": 30.0,
+        "invoice_year": 2025,
+        "invoice_month": 1,
+        "invoice_quarter": 1,
+        "invoice_dayofweek": 0,
+        "customer_seen_before": 0,
+        "customer_is_new": 1,
+        "prior_late_count": 0.0,
+        "prior_late_ratio": 0.0,
+        "prior_avg_delay": 0.0,
+        "outstanding_amount": 0.0,
+    }
+
+    for column in ["industry", "company_size", "payment_method", "customer_segment"]:
+        row[column] = DEFAULT_CATEGORICALS.get(column, ["Retail"])[0]
+
+    for column in feature_order:
+        row.setdefault(column, 0.0)
+
+    return {column: row.get(column, 0.0) for column in feature_order}
+
+
+def validate_loaded_model(name: str, model: Any, metadata: Dict[str, Any]) -> None:
+    if name == "nlp_payment_risk":
+        if not hasattr(model, "predict_proba"):
+            raise RuntimeError("NLP model does not expose predict_proba().")
+        model.predict_proba(["Payment has been scheduled and will be completed on the agreed date."])
+        return
+
+    validation_frame = pd.DataFrame([build_validation_row(metadata)])
+
+    if hasattr(model, "predict_proba"):
+        model.predict_proba(validation_frame)
+        return
+
+    if hasattr(model, "predict"):
+        model.predict(validation_frame)
+        return
+
+    raise RuntimeError("Model does not expose a usable prediction interface.")
+
+
 @st.cache_resource
-def load_project_artifacts() -> Dict[str, Any]:
+def load_project_artifacts(artifact_signature: str) -> Dict[str, Any]:
     metadata_path = MODELS / "metadata.json"
     metadata: Dict[str, Any] = {}
     if metadata_path.exists():
@@ -44,9 +132,17 @@ def load_project_artifacts() -> Dict[str, Any]:
     }
 
     loaded_models: Dict[str, Any] = {}
+    load_errors: Dict[str, str] = {}
     for name, path in model_files.items():
-        if path.exists():
-            loaded_models[name] = joblib.load(path)
+        if not path.exists():
+            continue
+
+        try:
+            model = joblib.load(path)
+            validate_loaded_model(name, model, metadata)
+            loaded_models[name] = model
+        except Exception as exc:
+            load_errors[name] = f"{type(exc).__name__}: {exc}"
 
     reports = {}
     for report_name in ["test_metrics.json", "regression_metrics.json", "all_model_artifacts.json", "nlp_metrics.json"]:
@@ -58,6 +154,7 @@ def load_project_artifacts() -> Dict[str, Any]:
         "metadata": metadata,
         "models": loaded_models,
         "reports": reports,
+        "load_errors": load_errors,
     }
 
 
@@ -530,7 +627,7 @@ def render_nlp_section(artifacts: Dict[str, Any]) -> None:
     st.subheader("NLP payment-risk analysis")
     nlp_model = artifacts["models"].get("nlp_payment_risk")
     if nlp_model is None:
-        st.warning("The NLP demo model was not found in /models, so the NLP analysis section is unavailable.")
+        st.warning("NLP model unavailable in this deployment.")
         return
 
     text_examples = load_text_examples()
@@ -545,9 +642,10 @@ def render_nlp_section(artifacts: Dict[str, Any]) -> None:
 
 
 def main() -> None:
-    artifacts = load_project_artifacts()
+    artifacts = load_project_artifacts(get_artifact_signature())
     metadata = artifacts.get("metadata", {})
     models = artifacts.get("models", {})
+    load_errors = artifacts.get("load_errors", {})
 
     st.title("InvoiceGuard AI")
     st.caption("Invoice payment risk prediction and cash-flow protection dashboard")
@@ -556,16 +654,35 @@ def main() -> None:
         st.header("Project status")
         st.success("Artifacts loaded from /models and /reports")
         st.write(f"Best model: {metadata.get('best_model', 'unknown')}")
-        st.write(f"Classifier loaded: {'yes' if 'classifier' in models else 'no'}")
-        st.write(f"Delay regressor loaded: {'yes' if 'delay_regressor' in models else 'no'}")
-        st.write(f"NLP model loaded: {'yes' if 'nlp_payment_risk' in models else 'no'}")
+
+        st.subheader("Artifact Diagnostics")
+        artifact_names = [
+            ("Classifier", "classifier"),
+            ("Delay regressor", "delay_regressor"),
+            ("Logistic Regression", "logistic_regression"),
+            ("Random Forest", "random_forest"),
+            ("MLP Neural Network", "mlp_neural_network"),
+            ("NLP model", "nlp_payment_risk"),
+        ]
+        for label, name in artifact_names:
+            status = "PASS" if name in models else "FAIL"
+            st.write(f"{label}: {status}")
+            if name in load_errors:
+                st.caption(f"  {load_errors[name]}")
+
+        if load_errors:
+            st.warning("Some optional artifacts were skipped because they were not usable in this runtime.")
 
         if metadata.get("test_metrics"):
             st.subheader("Saved test metrics")
             st.json(metadata.get("test_metrics", {}))
 
-    if not models.get("classifier"):
-        st.error("No trained model artifacts were found in /models. Run python -m src.train --source demo first.")
+    required_artifacts = ["classifier", "delay_regressor"]
+    failed_required = [name for name in required_artifacts if name not in models]
+    if failed_required:
+        st.error("Fatal startup error: required artifacts failed to load.")
+        for name in failed_required:
+            st.error(f"Required artifact '{name}' failed to load: {load_errors.get(name, 'missing from /models')}")
         st.stop()
 
     render_single_prediction(artifacts)
