@@ -16,18 +16,19 @@ regressor=joblib.load(MODELS/'delay_regressor.joblib') if (MODELS/'delay_regress
 meta=json.loads((MODELS/'metadata.json').read_text()) if (MODELS/'metadata.json').exists() else {}
 
 class InvoiceInput(BaseModel):
-    invoice_date: str
-    due_date: str
-    invoice_amount: float=Field(gt=0)
-    customer_seen_before: int=0
-    prior_late_count: float=0
-    prior_late_ratio: float=0
-    prior_avg_delay: float=0
-    industry: Optional[str]=None
-    company_size: Optional[str]=None
-    payment_method: Optional[str]=None
-    customer_segment: Optional[str]=None
-    outstanding_amount: float=0
+    invoice_date: str = Field(..., description="Invoice creation date (YYYY-MM-DD)")
+    due_date: str = Field(..., description="Invoice due date (YYYY-MM-DD)")
+    invoice_amount: float = Field(..., gt=0, description="Total invoice amount")
+    customer_seen_before: int = Field(default=0, ge=0, description="Times this customer has been seen")
+    prior_late_count: float = Field(default=0.0, ge=0.0, description="Number of prior late payments")
+    prior_late_ratio: float = Field(default=0.0, ge=0.0, le=1.0, description="Ratio of late payments to total (0.0 to 1.0)")
+    prior_avg_delay: float = Field(default=0.0, ge=0.0, description="Average delay in days")
+    industry: Optional[str] = Field(default=None, description="Customer industry")
+    company_size: Optional[str] = Field(default=None, description="Customer company size")
+    payment_method: Optional[str] = Field(default=None, description="Expected payment method")
+    customer_segment: Optional[str] = Field(default=None, description="Customer segment (e.g. SME, Enterprise)")
+    outstanding_amount: float = Field(default=0.0, ge=0.0, description="Total outstanding balance for this customer")
+
 
 def row(i:InvoiceInput):
     inv=pd.Timestamp(i.invoice_date); due=pd.Timestamp(i.due_date)

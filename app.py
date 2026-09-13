@@ -2393,14 +2393,24 @@ def render_artifact_diagnostics(artifacts: Dict[str, Any]) -> None:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def main() -> None:
+    from src.ui.css import inject_css
+    from src.ui.navigation import render_sidebar
+    from src.ui.views.overview import render_overview
+    from src.ui.views.receivables import render_collections
+    from src.ui.views.customer_search import render_customer_search
+    from src.ui.views.revenue_intelligence import render_revenue_forecast, render_repurchase_risk, render_revenue_at_risk
+    from src.ui.views.ai_insights import render_ai_recommendations, render_risk_signals
+    from src.ui.views.system import render_data_quality
+    
+    # We use inject_css from src.ui.css to get the new enterprise styles, but keep old ones if needed
     inject_css()
 
     artifacts = load_project_artifacts(get_artifact_signature())
     models = artifacts.get("models", {})
     load_errors = artifacts.get("load_errors", {})
 
-    # Sidebar navigation
-    current_page = render_sidebar(artifacts)
+    # Sidebar navigation using the new router
+    current_page = render_sidebar()
 
     # Startup guard
     required = ["classifier", "delay_regressor"]
@@ -2413,24 +2423,24 @@ def main() -> None:
 
     # Page routing
     page_map = {
-        "Overview":                     lambda a: render_exec_dashboard(a),
-        "Invoice Risk":                 lambda a: render_single_prediction(a, cold_start=False),
-        "Customer Risk":                render_risk_center,
-        "Customer 360":                 render_customer_360,
-        "Revenue Intelligence":         render_financial_impact,
-        "Retention":                    lambda a: st.info("Retention modeling (UCI dataset) integration in progress..."),
-        "Customer Segments":            lambda a: st.info("Customer segmentation integration in progress..."),
-        "Product Intelligence":         lambda a: st.info("Product intelligence integration in progress..."),
-        "NLP Intelligence":             render_nlp_section,
-        "Explainable AI":               render_ai_explanation,
-        "Risk Queue":                   render_batch_predictions,
-        "Model Center":                 render_model_center,
-        "Data Quality":                 render_artifact_diagnostics,
-        "API / Integration":            lambda a: st.markdown("## API / Integration\nSee `src/api.py` for the FastAPI implementation."),
-        "Documentation":                lambda a: st.markdown("## Documentation\nRefer to `README.md` and `PROJECT_CHECKLIST.md`."),
+        "Overview":             render_overview,
+        "Invoice Risk":         lambda a: render_single_prediction(a, cold_start=False),
+        "Collections":          render_collections,
+        "Customer 360":         render_customer_360,
+        "Customer Search":      render_customer_search,
+        "Customer Risk":        render_risk_center,
+        "Revenue Forecast":     render_revenue_forecast,
+        "Repurchase Risk":      render_repurchase_risk,
+        "Revenue at Risk":      render_revenue_at_risk,
+        "AI Recommendations":   render_ai_recommendations,
+        "Risk Signals":         render_risk_signals,
+        "Explainable AI":       render_ai_explanation,
+        "Model Performance":    render_model_center,
+        "Data Quality":         render_data_quality,
+        "System Health":        render_artifact_diagnostics,
     }
 
-    render_fn = page_map.get(current_page, render_exec_dashboard)
+    render_fn = page_map.get(current_page, render_overview)
     render_fn(artifacts)
 
 

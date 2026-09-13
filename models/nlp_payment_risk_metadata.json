@@ -1,0 +1,37 @@
+{
+  "model_name": "TF-IDF + Calibrated LogisticRegression",
+  "metrics": {
+    "Train": {
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "PR-AUC": 1.0,
+      "ROC-AUC": 1.0,
+      "Brier_Score": 0.008809759889798749
+    },
+    "Validation": {
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "PR-AUC": 0.9999999999999999,
+      "ROC-AUC": 1.0,
+      "Brier_Score": 0.015581322971906434
+    },
+    "Test": {
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "PR-AUC": 1.0000000000000002,
+      "ROC-AUC": 1.0,
+      "Brier_Score": 0.01913053286464193
+    },
+    "OOT": {
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "PR-AUC": 1.0,
+      "ROC-AUC": 1.0,
+      "Brier_Score": 0.012822212316734801
+    }
+  }
+}

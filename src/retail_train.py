@@ -1,19 +1,24 @@
 import pandas as pd
 import numpy as np
+import json
 from pathlib import Path
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import (
     precision_score, recall_score, f1_score, roc_auc_score,
-    average_precision_score, mean_absolute_error, mean_squared_error, r2_score
+    average_precision_score, mean_absolute_error, mean_squared_error, r2_score, brier_score_loss
 )
+from sklearn.calibration import CalibratedClassifierCV, calibration_curve
 from sklearn.linear_model import LogisticRegression, Ridge
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, HistGradientBoostingClassifier, HistGradientBoostingRegressor
+from sklearn.dummy import DummyClassifier, DummyRegressor
 import xgboost as xgb
 import joblib
 
 ROOT = Path(__file__).resolve().parents[1]
 MODELS_DIR = ROOT / "models"
 MODELS_DIR.mkdir(exist_ok=True)
+DOCS_DIR = ROOT / "docs"
+DOCS_DIR.mkdir(exist_ok=True)
 
 def temporal_split(df: pd.DataFrame, date_col: str = 'snapshot_date'):
     """
@@ -48,42 +53,60 @@ def temporal_split(df: pd.DataFrame, date_col: str = 'snapshot_date'):
 
 def evaluate_classification(y_true, y_pred, y_prob, name="Model"):
     metrics = {
-        'Precision': precision_score(y_true, y_pred, zero_division=0),
-        'Recall': recall_score(y_true, y_pred, zero_division=0),
-        'F1': f1_score(y_true, y_pred, zero_division=0),
-        'PR-AUC': average_precision_score(y_true, y_prob),
-        'ROC-AUC': roc_auc_score(y_true, y_prob)
+        'Precision': float(precision_score(y_true, y_pred, zero_division=0)),
+        'Recall': float(recall_score(y_true, y_pred, zero_division=0)),
+        'F1': float(f1_score(y_true, y_pred, zero_division=0)),
+        'PR-AUC': float(average_precision_score(y_true, y_prob)),
+        'ROC-AUC': float(roc_auc_score(y_true, y_prob)),
+        'Brier_Score': float(brier_score_loss(y_true, y_prob))
     }
     print(f"[{name}] " + ", ".join([f"{k}: {v:.4f}" for k, v in metrics.items()]))
     return metrics
 
 def evaluate_regression(y_true, y_pred, name="Model"):
     metrics = {
-        'MAE': mean_absolute_error(y_true, y_pred),
-        'RMSE': np.sqrt(mean_squared_error(y_true, y_pred)),
-        'R2': r2_score(y_true, y_pred)
+        'MAE': float(mean_absolute_error(y_true, y_pred)),
+        'RMSE': float(np.sqrt(mean_squared_error(y_true, y_pred))),
+        'R2': float(r2_score(y_true, y_pred))
     }
     print(f"[{name}] " + ", ".join([f"{k}: {v:.4f}" for k, v in metrics.items()]))
     return metrics
 
 def train_classification_model(X_train, y_train, X_val, y_val, task_name="repurchase"):
     print(f"--- Training models for {task_name} ---")
+    
+    # Calculate class weights safely
+    counts = np.bincount(y_train)
+    total = len(y_train)
+    weights = {0: total / (2 * counts[0]), 1: total / (2 * counts[1])} if len(counts) > 1 else None
+    
     models = {
-        'LogisticRegression': LogisticRegression(max_iter=1000, random_state=42),
-        'RandomForest': RandomForestClassifier(random_state=42, n_jobs=-1),
+        'DummyBaseline': DummyClassifier(strategy="prior"),
+        'LogisticRegression': LogisticRegression(max_iter=1000, random_state=42, class_weight='balanced'),
+        'RandomForest': RandomForestClassifier(random_state=42, n_jobs=-1, class_weight='balanced'),
         'HistGradientBoosting': HistGradientBoostingClassifier(random_state=42),
-        'XGBoost': xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42, n_jobs=-1)
+        'XGBoost': xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42, n_jobs=-1, scale_pos_weight=weights[1]/weights[0] if weights else 1)
     }
     
     best_model = None
     best_score = -1
     best_name = ""
     
-    for name, model in models.items():
-        model.fit(X_train, y_train)
+    all_results = {}
+    for name, base_model in models.items():
+        # Calibrate non-dummy models using isotonic regression on validation set if enough data
+        if name != 'DummyBaseline' and len(np.unique(y_val)) > 1:
+            model = CalibratedClassifierCV(estimator=base_model, method='isotonic', cv="prefit")
+            base_model.fit(X_train, y_train)
+            model.fit(X_val, y_val) # Prefit uses validation set for calibration
+        else:
+            model = base_model
+            model.fit(X_train, y_train)
+            
         y_prob = model.predict_proba(X_val)[:, 1]
         score = average_precision_score(y_val, y_prob) # Optimize for PR-AUC
         
+        all_results[name] = score
         print(f"{name} PR-AUC on val: {score:.4f}")
         if score > best_score:
             best_score = score
@@ -99,6 +122,7 @@ def train_classification_model(X_train, y_train, X_val, y_val, task_name="repurc
 def train_regression_model(X_train, y_train, X_val, y_val, task_name="future_revenue"):
     print(f"--- Training models for {task_name} ---")
     models = {
+        'DummyBaseline': DummyRegressor(strategy="mean"),
         'Ridge': Ridge(random_state=42),
         'RandomForest': RandomForestRegressor(random_state=42, n_jobs=-1),
         'HistGradientBoosting': HistGradientBoostingRegressor(random_state=42),

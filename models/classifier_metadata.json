@@ -1,0 +1,77 @@
+{
+  "model_name": "logistic_regression",
+  "features": [
+    "invoice_amount_clean",
+    "amount_log1p",
+    "days_to_due",
+    "invoice_year",
+    "invoice_month",
+    "invoice_quarter",
+    "invoice_dayofweek",
+    "customer_seen_before",
+    "customer_is_new",
+    "prior_late_count",
+    "prior_late_ratio",
+    "prior_avg_delay",
+    "outstanding_amount",
+    "industry",
+    "company_size",
+    "payment_method",
+    "customer_segment"
+  ],
+  "num_features": [
+    "invoice_amount_clean",
+    "amount_log1p",
+    "days_to_due",
+    "invoice_year",
+    "invoice_month",
+    "invoice_quarter",
+    "invoice_dayofweek",
+    "customer_seen_before",
+    "customer_is_new",
+    "prior_late_count",
+    "prior_late_ratio",
+    "prior_avg_delay",
+    "outstanding_amount"
+  ],
+  "cat_features": [
+    "industry",
+    "company_size",
+    "payment_method",
+    "customer_segment"
+  ],
+  "metrics": {
+    "Train": {
+      "Precision": 0.955288985823337,
+      "Recall": 0.9035585353274884,
+      "F1": 0.9287039491121124,
+      "PR-AUC": 0.9781991205451465,
+      "ROC-AUC": 0.9897824931019081,
+      "Brier_Score": 0.03397126142477116
+    },
+    "Validation": {
+      "Precision": 0.9490806223479491,
+      "Recall": 0.9030955585464334,
+      "F1": 0.9255172413793104,
+      "PR-AUC": 0.9750181080692568,
+      "ROC-AUC": 0.9892031927846381,
+      "Brier_Score": 0.03441385661624801
+    },
+    "Test": {
+      "Precision": 0.9616087751371115,
+      "Recall": 0.8870151770657673,
+      "F1": 0.9228070175438596,
+      "PR-AUC": 0.9751191346546239,
+      "ROC-AUC": 0.9893217054534329,
+      "Brier_Score": 0.03720418411354923
+    },
+    "OOT": {
+      "Precision": 0.9490835030549898,
+      "Recall": 0.8809073724007561,
+      "F1": 0.9137254901960784,
+      "PR-AUC": 0.9700134218093108,
+      "ROC-AUC": 0.987780337587509,
+      "Brier_Score": 0.03626314114324223
+    }
+  }
+}

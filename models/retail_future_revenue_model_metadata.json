@@ -1,0 +1,35 @@
+{
+  "model_name": "HistGradientBoosting",
+  "features": [
+    "recency_days",
+    "customer_age_days",
+    "frequency",
+    "monetary",
+    "avg_order_value",
+    "cancellation_rate",
+    "revenue_90d",
+    "orders_90d"
+  ],
+  "metrics": {
+    "Train": {
+      "MAE": 279.7116844575445,
+      "RMSE": 764.264643559827,
+      "R2": 0.805362771020254
+    },
+    "Validation": {
+      "MAE": 242.46803327831134,
+      "RMSE": 784.8883422542248,
+      "R2": 0.33039412228939535
+    },
+    "Test": {
+      "MAE": 236.2077486204292,
+      "RMSE": 895.8685364932406,
+      "R2": 0.5617058664101415
+    },
+    "OOT": {
+      "MAE": 288.8363626139879,
+      "RMSE": 1301.6752644136852,
+      "R2": 0.5743580060654561
+    }
+  }
+}

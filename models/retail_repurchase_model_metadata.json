@@ -1,0 +1,47 @@
+{
+  "model_name": "LogisticRegression",
+  "features": [
+    "recency_days",
+    "customer_age_days",
+    "frequency",
+    "monetary",
+    "avg_order_value",
+    "cancellation_rate",
+    "revenue_90d",
+    "orders_90d"
+  ],
+  "metrics": {
+    "Train": {
+      "Precision": 0.7843190450352686,
+      "Recall": 0.2628420765524139,
+      "F1": 0.3937351038474634,
+      "PR-AUC": 0.6528628135857715,
+      "ROC-AUC": 0.74057610985531,
+      "Brier_Score": 0.2026005026329331
+    },
+    "Validation": {
+      "Precision": 0.7138755980861244,
+      "Recall": 0.38894681960375393,
+      "F1": 0.5035437057036787,
+      "PR-AUC": 0.6297984904657521,
+      "ROC-AUC": 0.7906401862447656,
+      "Brier_Score": 0.15008240093944863
+    },
+    "Test": {
+      "Precision": 0.7174831081081081,
+      "Recall": 0.4088065447545717,
+      "F1": 0.5208461066830166,
+      "PR-AUC": 0.6478435609708223,
+      "ROC-AUC": 0.8133081582499648,
+      "Brier_Score": 0.14603002620839098
+    },
+    "OOT": {
+      "Precision": 0.7387451258419,
+      "Recall": 0.3958966565349544,
+      "F1": 0.5155225726654298,
+      "PR-AUC": 0.6668072137247611,
+      "ROC-AUC": 0.7976047435125901,
+      "Brier_Score": 0.1682044511395257
+    }
+  }
+}

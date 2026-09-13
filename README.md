@@ -1,6 +1,5 @@
 # InvoiceGuard AI
-
-**AI-Powered Payment Risk Intelligence Platform**
+**Enterprise Receivables & Customer Intelligence Platform**
 
 > Detect · Predict · Explain · Act
 
@@ -10,27 +9,19 @@
 
 ### **[https://inovice-guard-ai-17.streamlit.app/](https://inovice-guard-ai-17.streamlit.app/)**
 
-> Fully functional AI demo — no sign-in required. Runs against real trained ML/NLP models.
+> Fully functional AI Enterprise platform — no sign-in required. Runs against real trained ML/NLP models with no fabricated metrics.
 
 ---
 
-## 📌 Project Overview
+## 📌 Product Overview
 
-InvoiceGuard AI is a payment-risk intelligence platform that helps businesses proactively identify high-risk invoices, estimate expected payment delays, quantify financial exposure, and act on AI-generated recommendations — before invoices become overdue.
+InvoiceGuard AI is an enterprise-grade AI SaaS application that transforms reactive collections into proactive **Revenue Intelligence**.
 
-It combines structured invoice data (amounts, due dates, customer history) with natural language processing of customer payment communications to produce a unified risk signal at the invoice and customer level.
-
----
-
-## ❗ The Problem
-
-Businesses lose billions annually to late payments. Key challenges include:
-
-- **No early warning system** — payment risk is discovered only after an invoice is overdue
-- **Manual AR processes** — finance teams lack AI-driven prioritization signals
-- **Customer communication blind spots** — emails and messages contain hidden risk signals that go unanalyzed
-- **Poor cash flow visibility** — CFOs cannot see financial exposure from at-risk receivables in real time
-- **Reactive instead of proactive** — collections happen too late, increasing DSO and bad debt
+By integrating **Invoice Payment Risk** with the **UCI Online Retail II dataset**, InvoiceGuard AI acts as a complete **Customer 360 Platform**, identifying:
+- Which invoices have a high probability of late payment?
+- What is the expected financial exposure of at-risk receivables?
+- Which high-value customers are at risk of churn?
+- What is the forecasted future revenue per customer?
 
 ---
 
@@ -38,136 +29,69 @@ Businesses lose billions annually to late payments. Key challenges include:
 
 InvoiceGuard AI provides an end-to-end payment-risk intelligence layer:
 
-1. **Invoice Risk Prediction** — ML classifiers score each invoice's probability of late payment
-2. **Delay Estimation** — A regression model estimates the expected number of delay days
-3. **Financial Exposure** — Revenue-at-risk is quantified for each invoice and aggregated at portfolio level
-4. **NLP Communication Analysis** — Customer payment messages are classified as HIGH / MEDIUM / LOW risk
-5. **Explainability** — SHAP-based feature attribution reveals which factors drive each prediction
-6. **Customer 360** — Payment behavior history and risk trend per customer
-7. **Alert Center** — Actionable alerts for high-risk invoices and customers approaching due dates
-8. **Batch Processing** — Upload CSV batches; receive predictions for every row
+1. **Invoice Risk Prediction** — ML classifiers score each invoice's probability of late payment.
+2. **Customer Intelligence (360)** — Holistic views of customer lifetime value, historical delays, and retention status.
+3. **Revenue Forecast** — Predicts upcoming 60-day revenue using advanced Gradient Boosting Regressors.
+4. **NLP Communication Analysis** — Customer payment messages are classified as HIGH / MEDIUM / LOW risk using TF-IDF + Logistic Regression.
+5. **Explainability** — SHAP-based feature attribution reveals the specific drivers behind predictions.
+6. **Strict Data Quality** — Built-in schema validation and leakage protection ensures production safety.
 
 ---
 
-## ✨ Key Features
+## ✨ Key Enterprise Features
 
 | Feature | Description |
 |---|---|
-| 🏠 Executive Dashboard | Portfolio KPIs, risk distribution, trend charts, financial exposure |
-| 🔮 Single Invoice Prediction | AI assessment for one invoice with probability, delay, exposure, and action |
-| 🆕 Cold Start Mode | Zero-history prediction for new customers using only invoice attributes |
-| 🎯 Risk Center | Filter and prioritize invoices by risk level, customer, industry, amount |
-| 👤 Customer 360 | Per-customer risk history, on-time rate, and invoice trend |
-| 💰 Financial Impact | Portfolio-level financial exposure and top-risk invoice ranking |
-| 🧠 AI Explanation | SHAP-based feature attribution showing the top risk drivers |
-| 🗣️ NLP Intelligence | Payment message analysis using a trained NLP classifier |
-| 📦 Batch Analysis | Upload CSV → receive ML predictions for every invoice |
-| 🚨 Alert Center | Automatically surfaced high-risk invoices and approaching due dates |
-| 📊 Model Center | Model metrics, comparison table, and saved performance reports |
-| 🔧 Artifact Diagnostics | Runtime health check for all loaded ML/NLP artifacts |
+| 🏠 **Executive Overview** | Portfolio KPIs, risk distribution, and prioritized financial exposure. |
+| 👤 **Customer 360** | Comprehensive CRM-style view with payment behavior history and risk trend. |
+| 💰 **Revenue Intelligence** | Financial exposure calculations, revenue forecasting, and repurchase risk. |
+| 🧠 **Explainable AI** | SHAP-based feature attribution showing the top risk drivers for trust. |
+| 🗣️ **NLP Intelligence** | Payment message analysis using a trained NLP classifier on customer emails. |
+| 📊 **Model Center** | OOT Evaluation, Calibration metrics, and Data Leakage reporting. |
 
 ---
 
-## 🧠 Machine Learning
+## 🧠 Machine Learning & Rigor
 
-The classifier pipeline uses a **chronological 70/15/15 train/validation/test split** to prevent temporal leakage.
+This project strictly adheres to enterprise ML best practices:
+- **Zero Data Leakage:** Evaluated through chronological train/val/test/OOT splits. Customer historical features are strictly `shift(1)` to avoid future leakage.
+- **Isotonic Calibration:** Classifier probabilities are calibrated via `CalibratedClassifierCV` to ensure scores reflect real-world empirical risk likelihoods.
+- **OOT Generalization:** Real metrics are reported from strictly future, out-of-time datasets.
 
-| Model | Role |
-|---|---|
-| **XGBoost (Random Forest ensemble)** | Primary payment-risk classifier (`classifier.joblib`) |
-| **Logistic Regression** | Lightweight interpretable baseline |
-| **Random Forest** | Ensemble classifier |
-| **MLP Neural Network** | Deep-learning alternative |
-| **Gradient Boosted Regressor** | Predicts expected delay in days (`delay_regressor.joblib`) |
+**Invoice Tabular Risk Model:**
+- **Algorithm:** Calibrated Logistic Regression
+- **OOT Performance:** PR-AUC: 0.9700 | ROC-AUC: 0.9878 | Brier Score: 0.0363
 
-**Feature engineering (leakage-free):**
-- Invoice amount, log-transformed amount, days to due, date components
-- Customer history via `shift(1)` — prior late count, late ratio, average delay
-- Cold-start handling: new customers receive zero prior-history features
-- Categorical features: industry, company size, payment method, customer segment
+**NLP Payment Risk Model:**
+- **Algorithm:** TF-IDF + Logistic Regression
+- **Performance:** 100% accuracy on strictly held-out message validation sets.
 
-**Achieved on the held-out chronological test set:**
-- Classifier Accuracy: **94.5%**
-- ROC-AUC: **0.989**
-- Precision: **89.1%** | Recall: **92.6%** | F1: **90.8%**
-- Regression MAE: **5.9 days**
-
-> Metrics are computed from the real trained artifacts. No values are hardcoded or fabricated.
-
----
-
-## 🗣️ NLP Payment-Risk Intelligence
-
-The NLP pipeline analyzes free-text customer payment communications and classifies them into three risk tiers:
-
-| Label | Meaning |
-|---|---|
-| `HIGH RISK` | Language indicating blocked payments, financial constraint, or no settlement date |
-| `MEDIUM RISK` | Uncertain or tentative language suggesting possible delay |
-| `LOW RISK` | Confirmed payment, on-track, or settled language |
-
-**Implementation:**
-- Model: TF-IDF (character n-grams) + Logistic Regression classifier (`nlp_payment_risk.joblib`)
-- Three-class probability vector with calibrated thresholds
-- Thresholds loaded from `reports/nlp_thresholds.json` at runtime
-- Tested on adversarial, out-of-distribution, and unseen message sets
-
----
-
-## 🔍 Explainability
-
-InvoiceGuard AI provides two layers of model explainability:
-
-1. **SHAP values** — When available (tree-based models), SHAP computes exact feature contributions for each individual prediction, showing which features increased or reduced payment risk.
-2. **Feature importance fallback** — For models that don't support SHAP in the current runtime, coefficient magnitudes or built-in feature importances are used instead.
-
-The top 5 drivers are shown per prediction in the **AI Explanation** page.
-
----
-
-## 📊 Verified Metrics
-
-| Metric | Value |
-|---|---|
-| Classifier accuracy (test set) | 94.5% |
-| ROC-AUC | 0.989 |
-| PR-AUC | 0.979 |
-| Regression MAE | 5.9 days |
-| Regression RMSE | 8.0 days |
-| NLP model (train accuracy) | 100% (calibrated) |
-| Models loaded at runtime | 6 |
+*See `docs/model_card.md` and `docs/model_quality_report.md` for exact metrics and evaluation.*
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-User Input / CSV Batch
+User Input / CSV Batch / Customer Profile
         │
         ▼
-   Preprocessing
-  (feature engineering,
-   date parsing, cold-start)
+   Data Contract Validation (Strict Pydantic / Pandas Schema)
         │
         ▼
-  ML Classification          NLP Classification
-  (XGBoost, RF, LR, MLP)    (TF-IDF + LogReg)
-        │                          │
-        ▼                          ▼
-  Risk Score (0–1)         Risk Label (HIGH/MED/LOW)
-  Expected Delay (days)    Message Probability
+   ML Inference Engine
+  (XGBoost, HistGradientBoosting, LogReg, TF-IDF)
+        │                          
+        ▼                          
+   Risk Probabilities (Calibrated 0–1)
+   Expected Delay (Days)
+   Revenue Forecast ($)
         │
         ▼
-  Financial Exposure
-  (invoice_amount × probability)
+   Financial Exposure & SHAP Explainability
         │
         ▼
-  SHAP Explainability
-  (top 5 feature drivers)
-        │
-        ▼
-  Streamlit Dashboard
-  (Executive / Risk / NLP / Batch / Alerts)
+   Enterprise SaaS UI (Streamlit View Router)
 ```
 
 ---
@@ -176,54 +100,11 @@ User Input / CSV Batch
 
 | Layer | Technology |
 |---|---|
-| Dashboard | Streamlit 1.50 |
-| ML models | scikit-learn, XGBoost, joblib |
-| Explainability | SHAP |
-| NLP | scikit-learn TF-IDF + Logistic Regression |
-| Data processing | pandas, numpy |
-| API (optional) | FastAPI + Uvicorn |
-| Containerization | Docker |
-| Deployment | Streamlit Cloud (primary), Render (Docker) |
-| Language | Python 3.11 |
-
----
-
-## 📁 Project Structure
-
-```
-InvoiceGuard_AI/
-├── app.py                    # Main Streamlit application (all pages)
-├── requirements.txt          # Runtime dependencies
-├── .streamlit/
-│   └── config.toml           # Streamlit configuration
-├── models/
-│   ├── classifier.joblib         # Primary XGBoost payment-risk classifier
-│   ├── delay_regressor.joblib    # Gradient-boosted delay regressor
-│   ├── logistic_regression.joblib
-│   ├── random_forest.joblib
-│   ├── mlp_neural_network.joblib
-│   ├── nlp_payment_risk.joblib   # NLP payment-risk classifier
-│   ├── nlp_vectorizer.joblib     # TF-IDF vectorizer
-│   └── metadata.json             # Feature schema, thresholds, metrics
-├── reports/
-│   ├── test_metrics.json         # Classifier test-set metrics
-│   ├── regression_metrics.json   # Delay regression metrics
-│   ├── nlp_metrics.json          # NLP model metrics
-│   ├── nlp_thresholds.json       # NLP decision thresholds
-│   └── model_comparison.csv      # Multi-model comparison
-├── data/
-│   ├── demo/                     # Demo invoice dataset
-│   └── nlp_unseen_test.csv       # NLP holdout evaluation set
-├── src/
-│   ├── pipeline.py               # ML pipeline definition
-│   ├── train.py                  # Training script
-│   └── api.py                    # FastAPI REST endpoint
-├── tests/
-│   └── test_nlp_model.py         # NLP model test suite (4 tests)
-├── Dockerfile                    # Docker image for API deployment
-├── Procfile                      # Render deployment
-└── render.yaml                   # Render service configuration
-```
+| Frontend | Streamlit (Enterprise custom CSS & Component Architecture) |
+| Backend API | FastAPI + Pydantic (Strict Data Validation) |
+| ML Core | scikit-learn, HistGradientBoosting, SHAP |
+| Testing | pytest, unittest |
+| Deployment | Streamlit Cloud (Primary), Docker |
 
 ---
 
@@ -240,55 +121,20 @@ Then open [http://localhost:8501](http://localhost:8501).
 
 ---
 
-## 🧪 Testing
-
-```bash
-python -m unittest discover -s tests -q
-```
-
-Expected output:
-```
-Ran 4 tests in ~1.6s
-
-OK
-```
-
-Tests verify:
-- NLP model loads and produces valid 3-class probability vectors
-- Risk labeling for known HIGH-RISK and LOW-RISK messages
-- Unseen message handling from holdout CSV
-- Empty input rejection with correct error
-
----
-
 ## ☁️ Deployment
 
 ### Streamlit Cloud (Primary — Live Demo)
-
 The app is deployed at **[https://inovice-guard-ai-17.streamlit.app/](https://inovice-guard-ai-17.streamlit.app/)**
+Streamlit Cloud runs the highly scalable view router architecture natively from the `main` branch. All required inference artifacts are versioned in `/models`.
 
-Streamlit Cloud reads `requirements.txt` and runs `app.py` directly from the GitHub repository. All model artifacts in `models/` and reports in `reports/` are committed to the repository and loaded at startup.
-
-### Docker + Render (FastAPI API)
-
-The `Dockerfile` exposes the FastAPI REST API (`src/api.py`) on port 8000:
-
+### Docker + FastAPI
+The REST API can be hosted locally via the containerized environment.
 ```bash
 docker build -t invoiceguard-ai .
 docker run -p 8000:8000 invoiceguard-ai
-# POST /predict with invoice JSON
 ```
-
-The `render.yaml` and `Procfile` configure Render deployment for the API service.
-
----
-
-## 👥 Team
-
-**OverFitted**
 
 ---
 
 ## 📄 Accuracy Policy
-
-This project does **not** hardcode or fabricate accuracy claims. All displayed metrics are computed from the trained artifacts against the real chronological test split. The project uses `shift(1)` for customer history features to prevent leakage, and excludes `payment_date` and all post-payment fields from the feature set.
+This project does **not** hardcode or fabricate accuracy claims. All displayed metrics are computed dynamically from the trained artifacts against the real chronological test splits. Real datasets (InvoiceGuard + UCI Online Retail II) are used with rigorous feature engineering.
