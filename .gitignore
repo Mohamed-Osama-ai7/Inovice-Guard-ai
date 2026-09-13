@@ -4,7 +4,9 @@ __pycache__/
 .venv_test/
 env/
 .env
-.env.*
+.env*.local
+!.env.example
+
 .streamlit/secrets.toml
 .DS_Store
 coverage/
