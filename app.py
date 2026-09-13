@@ -458,7 +458,8 @@ def explain_prediction(
     return generate_fallback_top_features(model, feature_frame)
 
 
-def build_dashboard_dataset(artifacts: Dict[str, Any]) -> pd.DataFrame:
+@st.cache_data(show_spinner=False)
+def _cached_build_dashboard_dataset(artifact_signature: str, _artifacts: Dict[str, Any]) -> pd.DataFrame:
     demo_csv = ROOT / "data" / "demo" / "demo_invoices.csv"
     if not demo_csv.exists():
         return pd.DataFrame()
@@ -483,12 +484,12 @@ def build_dashboard_dataset(artifacts: Dict[str, Any]) -> pd.DataFrame:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
 
-    metadata = artifacts.get("metadata", {})
+    metadata = _artifacts.get("metadata", {})
     predictions: List[Dict[str, Any]] = []
     for _, row in df.iterrows():
         payload = row.to_dict()
         try:
-            pred = run_prediction(payload, "classifier", artifacts)
+            pred = run_prediction(payload, "classifier", _artifacts)
         except Exception:
             continue
         record = row.to_dict()
@@ -517,6 +518,11 @@ def build_dashboard_dataset(artifacts: Dict[str, Any]) -> pd.DataFrame:
     )
     analytics["due_soon"] = analytics["days_to_due"].le(7)
     return analytics
+
+
+def build_dashboard_dataset(artifacts: Dict[str, Any]) -> pd.DataFrame:
+    return _cached_build_dashboard_dataset(get_artifact_signature(), artifacts)
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -2217,20 +2223,26 @@ def render_model_center(artifacts: Dict[str, Any]) -> None:
             )
 
     # Model comparison
-    model_compare_path = REPORTS / "model_comparison.csv"
-    if model_compare_path.exists():
+    comparison_df, nlp_compare_df = load_comparison_reports()
+    if comparison_df is not None:
         divider()
         section_label("Model Comparison Report")
-        comparison_df = pd.read_csv(model_compare_path)
         st.dataframe(comparison_df, use_container_width=True, hide_index=True)
 
-    # NLP comparison
-    nlp_compare_path = REPORTS / "nlp_model_comparison.csv"
-    if nlp_compare_path.exists():
+    if nlp_compare_df is not None:
         divider()
         section_label("NLP Model Comparison")
-        nlp_compare_df = pd.read_csv(nlp_compare_path)
         st.dataframe(nlp_compare_df, use_container_width=True, hide_index=True)
+
+
+@st.cache_data(show_spinner=False)
+def load_comparison_reports() -> Tuple[Optional[pd.DataFrame], Optional[pd.DataFrame]]:
+    model_compare_path = REPORTS / "model_comparison.csv"
+    nlp_compare_path = REPORTS / "nlp_model_comparison.csv"
+    comp_df = pd.read_csv(model_compare_path) if model_compare_path.exists() else None
+    nlp_df = pd.read_csv(nlp_compare_path) if nlp_compare_path.exists() else None
+    return comp_df, nlp_df
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
