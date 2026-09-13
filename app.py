@@ -1164,17 +1164,16 @@ def render_feature_bars(explanation: List[Dict[str, Any]]) -> None:
 # ─────────────────────────────────────────────────────────────────────────────
 
 _NAV_GROUPS = [
-    ("OVERVIEW",      ["Executive Dashboard"]),
-    ("RISK",          ["Single Invoice Prediction", "Cold Start Mode", "Risk Center", "Customer 360"]),
-    ("INTELLIGENCE",  ["Financial Impact", "AI Explanation", "NLP Payment-Risk Intelligence"]),
-    ("OPERATIONS",    ["Batch Analysis", "Alert Center"]),
-    ("SYSTEM",        ["Model Center", "Artifact Diagnostics"]),
+    ("PLATFORM",      ["Overview", "Invoice Risk", "Customer 360", "Customer Risk"]),
+    ("INTELLIGENCE",  ["Revenue Intelligence", "Retention", "Customer Segments", "Product Intelligence", "NLP Intelligence", "Explainable AI"]),
+    ("OPERATIONS",    ["Risk Queue"]),
+    ("SYSTEM",        ["Model Center", "Data Quality", "API / Integration", "Documentation"]),
 ]
 
 
 def render_sidebar(artifacts: Dict[str, Any]) -> str:
     if "current_page" not in st.session_state:
-        st.session_state.current_page = "Executive Dashboard"
+        st.session_state.current_page = "Overview"
 
     models = artifacts.get("models", {})
     load_errors = artifacts.get("load_errors", {})
@@ -1622,6 +1621,11 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
     current_risk = customer_df.iloc[-1]["risk_level"] if not customer_df.empty else "LOW"
     avg_prob = float(customer_df["late_probability"].mean())
 
+    # Fetch comprehensive profile
+    from src.customer_360 import get_customer_profile
+    profile = get_customer_profile(customer_option)
+    retail = profile.get("retail_intelligence", {})
+    
     # Customer profile header
     risk_badge_html = badge(current_risk)
     st.markdown(
@@ -1635,17 +1639,35 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
         unsafe_allow_html=True,
     )
 
-    # KPIs
-    kpi_row([
+    # KPIs (InvoiceGuard Risk + Retail Intelligence if available)
+    kpis = [
         {"icon": "📄", "label": "Total Invoices",   "value": f"{total_invoices}"},
-        {"icon": "✅", "label": "On-Time Rate",      "value": f"{on_time_rate:.0%}"},
         {"icon": "⚠️", "label": "Late-Payment Rate", "value": f"{late_rate:.0%}"},
-        {"icon": "⏱️", "label": "Avg Delay",          "value": f"{avg_delay:.1f} days"},
         {"icon": "💰", "label": "Outstanding",        "value": f"${outstanding:,.0f}"},
         {"icon": "🎯", "label": "Avg Risk Prob",      "value": f"{avg_prob:.1%}"},
-    ])
+    ]
+    if retail:
+        kpis.append({"icon": "⭐", "label": "Retention Risk", "value": retail.get("predictions", {}).get("retention_risk", "N/A")})
+        kpis.append({"icon": "💵", "label": "Est Future Rev", "value": f"${retail.get('predictions', {}).get('expected_future_revenue_60d', 0):,.0f}"})
+    
+    kpi_row(kpis)
 
     divider()
+    
+    if retail:
+        st.markdown("### 🛍️ Retail Intelligence (Customer 360)")
+        col_r1, col_r2, col_r3, col_r4 = st.columns(4)
+        rfm = retail.get("rfm", {})
+        col_r1.metric("Recency (Days)", rfm.get("recency_days", 0))
+        col_r2.metric("Frequency (Orders)", rfm.get("frequency", 0))
+        col_r3.metric("Monetary Value", f"${rfm.get('monetary', 0):,.2f}")
+        col_r4.metric("Average Order Value", f"${rfm.get('avg_order_value', 0):,.2f}")
+        
+        recs = retail.get("recommendations", [])
+        if recs:
+            for r in recs:
+                st.info(f"💡 Recommendation: {r}")
+        divider()
 
     col_a, col_b = st.columns([2, 1])
     with col_a:
@@ -2391,18 +2413,21 @@ def main() -> None:
 
     # Page routing
     page_map = {
-        "Executive Dashboard":          lambda a: render_exec_dashboard(a),
-        "Single Invoice Prediction":    lambda a: render_single_prediction(a, cold_start=False),
-        "Cold Start Mode":              lambda a: render_single_prediction(a, cold_start=True),
-        "Risk Center":                  render_risk_center,
+        "Overview":                     lambda a: render_exec_dashboard(a),
+        "Invoice Risk":                 lambda a: render_single_prediction(a, cold_start=False),
+        "Customer Risk":                render_risk_center,
         "Customer 360":                 render_customer_360,
-        "Financial Impact":             render_financial_impact,
-        "AI Explanation":               render_ai_explanation,
-        "NLP Payment-Risk Intelligence":render_nlp_section,
-        "Batch Analysis":               render_batch_predictions,
-        "Alert Center":                 render_alert_center,
+        "Revenue Intelligence":         render_financial_impact,
+        "Retention":                    lambda a: st.info("Retention modeling (UCI dataset) integration in progress..."),
+        "Customer Segments":            lambda a: st.info("Customer segmentation integration in progress..."),
+        "Product Intelligence":         lambda a: st.info("Product intelligence integration in progress..."),
+        "NLP Intelligence":             render_nlp_section,
+        "Explainable AI":               render_ai_explanation,
+        "Risk Queue":                   render_batch_predictions,
         "Model Center":                 render_model_center,
-        "Artifact Diagnostics":         render_artifact_diagnostics,
+        "Data Quality":                 render_artifact_diagnostics,
+        "API / Integration":            lambda a: st.markdown("## API / Integration\nSee `src/api.py` for the FastAPI implementation."),
+        "Documentation":                lambda a: st.markdown("## Documentation\nRefer to `README.md` and `PROJECT_CHECKLIST.md`."),
     }
 
     render_fn = page_map.get(current_page, render_exec_dashboard)

@@ -7,6 +7,7 @@ import joblib, numpy as np, pandas as pd
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
+from src.customer_360 import get_customer_profile
 
 ROOT=Path(__file__).resolve().parents[1]; MODELS=ROOT/'models'; TEMPLATES=ROOT/'templates'
 app=FastAPI(title='InvoiceGuard AI',version='1.0.0')
@@ -60,3 +61,10 @@ def predict(i:InvoiceInput):
     if i.customer_seen_before==0: reasons.append('New customer: prediction relies on profile/invoice features')
     rec='Prioritize collection follow-up before the due date.' if risk in ('HIGH','CRITICAL') else 'Monitor payment and schedule routine follow-up.'
     return {'late_probability':round(p,4),'predicted_late':late,'expected_delay_days':round(delay,1),'risk_level':risk,'estimated_financial_exposure':round(exposure,2),'explanation':reasons[:4],'recommendation':rec}
+
+@app.get('/customer/profile/{customer_id}')
+def customer_profile(customer_id: str):
+    profile = get_customer_profile(customer_id)
+    if not profile.get("data_sources"):
+        return {"error": "Customer not found"}
+    return profile
