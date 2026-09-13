@@ -1,0 +1,61 @@
+{
+  "dataset_sizes": {
+    "train": 1350,
+    "validation": 450,
+    "test": 450,
+    "final_unseen": 1500,
+    "ood": 1500,
+    "adversarial": 1500
+  },
+  "exact_duplicate_count": 0,
+  "near_duplicate_count": 0,
+  "overlap": {
+    "train_test_exact_overlap": 0,
+    "train_final_unseen_exact_overlap": 0,
+    "train_ood_exact_overlap": 0,
+    "train_adversarial_exact_overlap": 0
+  },
+  "group_overlap": {
+    "train_test_group_overlap": 0
+  },
+  "class_distribution": {
+    "train": {
+      "HIGH_RISK": 450,
+      "LOW_RISK": 450,
+      "MEDIUM_RISK": 450
+    },
+    "validation": {
+      "HIGH_RISK": 150,
+      "LOW_RISK": 150,
+      "MEDIUM_RISK": 150
+    },
+    "test": {
+      "HIGH_RISK": 150,
+      "LOW_RISK": 150,
+      "MEDIUM_RISK": 150
+    },
+    "final_unseen": {
+      "HIGH_RISK": 500,
+      "LOW_RISK": 500,
+      "MEDIUM_RISK": 500
+    },
+    "ood": {
+      "HIGH_RISK": 500,
+      "LOW_RISK": 500,
+      "MEDIUM_RISK": 500
+    },
+    "adversarial": {
+      "HIGH_RISK": 500,
+      "LOW_RISK": 500,
+      "MEDIUM_RISK": 500
+    }
+  },
+  "leakage_flags": {
+    "train_test_overlap": false,
+    "train_final_unseen_overlap": false,
+    "train_ood_overlap": false,
+    "train_adversarial_overlap": false,
+    "train_test_group_overlap": false
+  },
+  "manual_new_messages_count": 300
+}

@@ -1,0 +1,26 @@
+text,label,template_group_id
+There is no material obstacle; the payment route is already approved and the transfer is proceeding.,LOW_RISK,CHALLENGE_02_INDIRECT
+"Liquidity remains constrained, so the payment date is currently unavailable.",HIGH_RISK,CHALLENGE_04_LIQUIDITY
+We do not expect any delay; the payment has already been transferred.,LOW_RISK,CHALLENGE_01_NEGATED
+Unable to settle right now.,HIGH_RISK,CHALLENGE_05_SHORT_MSG
+The team is still tightening the final approval step; settlement may move by a few days.,MEDIUM_RISK,CHALLENGE_03_UNCERTAIN
+The customer has confirmed the invoice is compliant and the release is expected within the standard schedule.,LOW_RISK,CHALLENGE_02_INDIRECT
+"We are waiting on a final check, and the payment date remains tentative rather than fixed.",MEDIUM_RISK,CHALLENGE_03_UNCERTAIN
+"The transfer is not delayed, and the invoice is already settled.",LOW_RISK,CHALLENGE_01_NEGATED
+Payment blocked.,HIGH_RISK,CHALLENGE_05_SHORT_MSG
+"Our accounts team advises that the amount will be sent on the agreed date, so there is no need for escalation.",LOW_RISK,CHALLENGE_02_INDIRECT
+The payment was not missed; the funds were released earlier than expected.,LOW_RISK,CHALLENGE_01_NEGATED
+"The transfer has not yet been executed, though the customer says the amount is still intended.",MEDIUM_RISK,CHALLENGE_03_UNCERTAIN
+The business is dealing with a cash squeeze and cannot promise a near-term release.,HIGH_RISK,CHALLENGE_04_LIQUIDITY
+There is no outstanding issue because the transfer was already completed.,LOW_RISK,CHALLENGE_01_NEGATED
+The customer is not holding back payment; the invoice is already paid.,LOW_RISK,CHALLENGE_01_NEGATED
+No confirmed date.,HIGH_RISK,CHALLENGE_05_SHORT_MSG
+The customer is under short-term financial pressure and cannot provide a reliable settlement path.,HIGH_RISK,CHALLENGE_04_LIQUIDITY
+Cash flow issue.,HIGH_RISK,CHALLENGE_05_SHORT_MSG
+The company has limited cash and is not in a position to commit to when the invoice will be paid.,HIGH_RISK,CHALLENGE_04_LIQUIDITY
+No firm payout window.,HIGH_RISK,CHALLENGE_05_SHORT_MSG
+"The business reports a normal processing cycle, with no indication that settlement will slip.",LOW_RISK,CHALLENGE_02_INDIRECT
+"The invoice is still with finance, but it appears likely the payment will be made after a brief review.",MEDIUM_RISK,CHALLENGE_03_UNCERTAIN
+"The invoice is moving through the normal process, but the exact date is still being confirmed.",MEDIUM_RISK,CHALLENGE_03_UNCERTAIN
+The payment may be delayed until the liquidity situation improves materially.,HIGH_RISK,CHALLENGE_04_LIQUIDITY
+"The invoice is in good standing, and the expected transfer is already aligned with the payment window.",LOW_RISK,CHALLENGE_02_INDIRECT

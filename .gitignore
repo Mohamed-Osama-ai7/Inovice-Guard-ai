@@ -9,6 +9,7 @@ env/
 .DS_Store
 coverage/
 *.log
+.pytest_cache/
 
 # Keep model and report artifacts in the repository for deployment
 # data/raw should stay local unless explicitly allowed

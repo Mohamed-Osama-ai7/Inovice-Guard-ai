@@ -1,0 +1,301 @@
+text,label
+Accounts payable reports that the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+A logistics partner shared that the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+"A CRM note says the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK
+Accounts payable reports that the payment is already visible and the original due date has been satisfied.,LOW_RISK
+The customer support chair wrote that the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+A procurement contact notes that the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+"The external vendor stated that the payment is likely, but one more internal review remains.",MEDIUM_RISK
+"Accounts payable reports that the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+Accounts payable reports that there is no longer any payment blocker and the account is current.,LOW_RISK
+A sales account manager reported that the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+The customer support chair wrote that the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+A CRM note says the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+The finance team says the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+The treasury desk confirms that there is no longer any payment blocker and the account is current.,LOW_RISK
+"The operations team observed that the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK
+A procurement contact notes that funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+The operations team observed that the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+The finance team says funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+"The treasury desk confirms that the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+A logistics partner shared that the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+A sales account manager reported that the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+The finance team says the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+The treasury desk confirms that the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+A CRM note says the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+Accounts payable reports that the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+The treasury desk confirms that the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+The operations team observed that funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+The external vendor stated that the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+A CRM note says the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+The customer support chair wrote that the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+The finance team says the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+A logistics partner shared that the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+The customer support chair wrote that the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+A procurement contact notes that the obligation has been met and the case is now closed.,LOW_RISK
+The finance team says the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+"The finance team says the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+Accounts payable reports that the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+The external vendor stated that the invoice was already paid and the remittance is on file.,LOW_RISK
+The treasury desk confirms that the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+A sales account manager reported that the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+The external vendor stated that the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+A sales account manager reported that the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+The operations team observed that the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+A logistics partner shared that the invoice was already paid and the remittance is on file.,LOW_RISK
+A sales account manager reported that the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+A logistics partner shared that the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+The customer support chair wrote that the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+A procurement contact notes that the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+The finance team says the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+The customer support chair wrote that funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+The operations team observed that the payment is still under review and may move a few days later.,MEDIUM_RISK
+The treasury desk confirms that the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+The customer support chair wrote that the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+A sales account manager reported that there is no longer any payment blocker and the account is current.,LOW_RISK
+The external vendor stated that the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+A sales account manager reported that the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+The external vendor stated that the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+The external vendor stated that the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+"The external vendor stated that the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK
+A procurement contact notes that there is no longer any payment blocker and the account is current.,LOW_RISK
+The customer support chair wrote that payment is blocked and the business has no dependable release plan.,HIGH_RISK
+A CRM note says the payment is already visible and the original due date has been satisfied.,LOW_RISK
+Accounts payable reports that the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+The operations team observed that the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+A sales account manager reported that the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+The customer support chair wrote that the invoice was already paid and the remittance is on file.,LOW_RISK
+A procurement contact notes that the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+A CRM note says the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+A CRM note says the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+"The operations team observed that the payment is likely, but one more internal review remains.",MEDIUM_RISK
+"Accounts payable reports that the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+"A procurement contact notes that the payment is likely, but one more internal review remains.",MEDIUM_RISK
+The customer support chair wrote that the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+The external vendor stated that the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+"A procurement contact notes that the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+The operations team observed that payment is blocked and the business has no dependable release plan.,HIGH_RISK
+The operations team observed that the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+The operations team observed that the obligation has been met and the case is now closed.,LOW_RISK
+A logistics partner shared that the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+The operations team observed that the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+A logistics partner shared that the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+A CRM note says the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+The finance team says the payment is already visible and the original due date has been satisfied.,LOW_RISK
+A procurement contact notes that the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+A sales account manager reported that the payment is already visible and the original due date has been satisfied.,LOW_RISK
+The finance team says the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+"The finance team says the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+A sales account manager reported that the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+The finance team says there is no longer any payment blocker and the account is current.,LOW_RISK
+The finance team says the invoice was already paid and the remittance is on file.,LOW_RISK
+The external vendor stated that the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+Accounts payable reports that the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+A logistics partner shared that the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+A procurement contact notes that the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+The customer support chair wrote that the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+The finance team says the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+"A sales account manager reported that the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+The treasury desk confirms that the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+A sales account manager reported that the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+A logistics partner shared that the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+A procurement contact notes that the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+A logistics partner shared that the payment is already visible and the original due date has been satisfied.,LOW_RISK
+The customer support chair wrote that the funds were released this morning and the account is clear.,LOW_RISK
+The operations team observed that the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+A logistics partner shared that the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+A procurement contact notes that the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+The treasury desk confirms that the payment is still under review and may move a few days later.,MEDIUM_RISK
+The finance team says the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+The operations team observed that the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+The external vendor stated that the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+"The customer support chair wrote that the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK
+A logistics partner shared that payment is blocked and the business has no dependable release plan.,HIGH_RISK
+The operations team observed that the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+The treasury desk confirms that the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+The treasury desk confirms that the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+"The finance team says the payment is likely, but one more internal review remains.",MEDIUM_RISK
+"The treasury desk confirms that the payment is likely, but one more internal review remains.",MEDIUM_RISK
+The external vendor stated that payment is blocked and the business has no dependable release plan.,HIGH_RISK
+The external vendor stated that the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+Accounts payable reports that the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+A CRM note says there is no longer any payment blocker and the account is current.,LOW_RISK
+"A sales account manager reported that the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK
+The operations team observed that the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+A logistics partner shared that the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+"The customer support chair wrote that the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+A CRM note says the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+The customer support chair wrote that the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+A procurement contact notes that the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+The external vendor stated that the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+The operations team observed that the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+The customer support chair wrote that the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+"The finance team says the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK
+"A logistics partner shared that the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+The finance team says the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+A sales account manager reported that the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+A sales account manager reported that funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+A CRM note says the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+"A sales account manager reported that the payment is likely, but one more internal review remains.",MEDIUM_RISK
+"A sales account manager reported that the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+Accounts payable reports that the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+The finance team says the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+The treasury desk confirms that the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+A sales account manager reported that the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+A procurement contact notes that the payment is still under review and may move a few days later.,MEDIUM_RISK
+The finance team says the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+A logistics partner shared that the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+A procurement contact notes that the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+A sales account manager reported that the obligation has been met and the case is now closed.,LOW_RISK
+A procurement contact notes that the payment is already visible and the original due date has been satisfied.,LOW_RISK
+The operations team observed that the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+A logistics partner shared that the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+Accounts payable reports that the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+A procurement contact notes that the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+"A CRM note says the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+The operations team observed that the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+The treasury desk confirms that the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+A procurement contact notes that payment is blocked and the business has no dependable release plan.,HIGH_RISK
+A logistics partner shared that there is no longer any payment blocker and the account is current.,LOW_RISK
+"The external vendor stated that the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+The operations team observed that there is no longer any payment blocker and the account is current.,LOW_RISK
+The finance team says the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+"A CRM note says the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+The finance team says the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+The customer support chair wrote that there is no longer any payment blocker and the account is current.,LOW_RISK
+A procurement contact notes that the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+"The treasury desk confirms that the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK
+The operations team observed that the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+A CRM note says the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+A sales account manager reported that the payment is still under review and may move a few days later.,MEDIUM_RISK
+A CRM note says the funds were released this morning and the account is clear.,LOW_RISK
+The external vendor stated that there is no longer any payment blocker and the account is current.,LOW_RISK
+Accounts payable reports that the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+The treasury desk confirms that the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+The treasury desk confirms that the funds were released this morning and the account is clear.,LOW_RISK
+The operations team observed that the payment is already visible and the original due date has been satisfied.,LOW_RISK
+The treasury desk confirms that the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+"The customer support chair wrote that the payment is likely, but one more internal review remains.",MEDIUM_RISK
+A procurement contact notes that the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+The external vendor stated that the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+The treasury desk confirms that the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+Accounts payable reports that the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+Accounts payable reports that the invoice was already paid and the remittance is on file.,LOW_RISK
+A logistics partner shared that the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+A sales account manager reported that payment is blocked and the business has no dependable release plan.,HIGH_RISK
+Accounts payable reports that the payment is still under review and may move a few days later.,MEDIUM_RISK
+A CRM note says the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+A CRM note says the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+A sales account manager reported that the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+The external vendor stated that the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+The customer support chair wrote that the customer has already fulfilled the invoice and the transaction is complete.,LOW_RISK
+A logistics partner shared that the funds were released this morning and the account is clear.,LOW_RISK
+A CRM note says the payment is still under review and may move a few days later.,MEDIUM_RISK
+The customer support chair wrote that the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+Accounts payable reports that payment is blocked and the business has no dependable release plan.,HIGH_RISK
+The treasury desk confirms that payment is blocked and the business has no dependable release plan.,HIGH_RISK
+The finance team says the funds were released this morning and the account is clear.,LOW_RISK
+The external vendor stated that the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+A logistics partner shared that the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+A procurement contact notes that the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+The finance team says the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+Accounts payable reports that the obligation has been met and the case is now closed.,LOW_RISK
+"A procurement contact notes that the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK
+The customer support chair wrote that the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+Accounts payable reports that the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+"A logistics partner shared that the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK
+Accounts payable reports that the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+The operations team observed that the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+"The customer support chair wrote that the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+A logistics partner shared that the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+The customer support chair wrote that the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+"A procurement contact notes that the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+The external vendor stated that the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+Accounts payable reports that the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+A sales account manager reported that the invoice was already paid and the remittance is on file.,LOW_RISK
+A logistics partner shared that the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+A logistics partner shared that the obligation has been met and the case is now closed.,LOW_RISK
+The treasury desk confirms that the obligation has been met and the case is now closed.,LOW_RISK
+A sales account manager reported that the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+"A CRM note says the payment is likely, but one more internal review remains.",MEDIUM_RISK
+The treasury desk confirms that the invoice was already paid and the remittance is on file.,LOW_RISK
+A procurement contact notes that the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+A sales account manager reported that the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+The finance team says the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+A CRM note says the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+A procurement contact notes that the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+A logistics partner shared that funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+The finance team says the payment is still under review and may move a few days later.,MEDIUM_RISK
+The operations team observed that the funds were released this morning and the account is clear.,LOW_RISK
+Accounts payable reports that the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+The finance team says payment is blocked and the business has no dependable release plan.,HIGH_RISK
+The customer support chair wrote that the payment is already visible and the original due date has been satisfied.,LOW_RISK
+The treasury desk confirms that the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+The external vendor stated that funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+A CRM note says the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+"The external vendor stated that the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+The finance team says the obligation has been met and the case is now closed.,LOW_RISK
+The treasury desk confirms that the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+The external vendor stated that the obligation has been met and the case is now closed.,LOW_RISK
+A logistics partner shared that the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+A procurement contact notes that the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+A sales account manager reported that the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+Accounts payable reports that funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+A logistics partner shared that the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+The treasury desk confirms that the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+The finance team says the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+The treasury desk confirms that the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+The external vendor stated that the payment is still under review and may move a few days later.,MEDIUM_RISK
+A procurement contact notes that the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+A CRM note says funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+Accounts payable reports that the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+Accounts payable reports that the buyer is working through a small administrative delay before settlement.,MEDIUM_RISK
+A CRM note says the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+The customer support chair wrote that the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+Accounts payable reports that the funds were released this morning and the account is clear.,LOW_RISK
+The customer support chair wrote that the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+Accounts payable reports that the transfer is delayed while a final approval step is completed.,MEDIUM_RISK
+The treasury desk confirms that the payment is already visible and the original due date has been satisfied.,LOW_RISK
+The operations team observed that the invoice was already paid and the remittance is on file.,LOW_RISK
+Accounts payable reports that the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+The customer support chair wrote that the obligation has been met and the case is now closed.,LOW_RISK
+The external vendor stated that the funds were released this morning and the account is clear.,LOW_RISK
+A CRM note says the transfer was processed successfully and no balance remains outstanding.,LOW_RISK
+The treasury desk confirms that funds are currently unavailable and the invoice may be delayed materially.,HIGH_RISK
+The finance team says the payment was completed on schedule and no follow-up is needed.,LOW_RISK
+The operations team observed that the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+"A logistics partner shared that the payment is likely, but one more internal review remains.",MEDIUM_RISK
+The external vendor stated that the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+The customer support chair wrote that the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+The operations team observed that the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+The treasury desk confirms that the buyer is unable to commit to settlement and the amount remains uncertain.,HIGH_RISK
+A CRM note says the obligation has been met and the case is now closed.,LOW_RISK
+A CRM note says the invoice was already paid and the remittance is on file.,LOW_RISK
+A sales account manager reported that the account is still active and the payment should land after a brief pause.,MEDIUM_RISK
+"The operations team observed that the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+The external vendor stated that the transfer is stalled and the payment outcome remains highly uncertain.,HIGH_RISK
+The operations team observed that the amount remains due and the customer is still working through the release process.,MEDIUM_RISK
+"A logistics partner shared that the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+A CRM note says the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+The treasury desk confirms that the account reflects a fully paid invoice with no outstanding balance.,LOW_RISK
+The customer support chair wrote that the payment has been suspended because of a serious liquidity constraint.,HIGH_RISK
+A CRM note says payment is blocked and the business has no dependable release plan.,HIGH_RISK
+A procurement contact notes that the funds were released this morning and the account is clear.,LOW_RISK
+A logistics partner shared that the payment is still under review and may move a few days later.,MEDIUM_RISK
+A sales account manager reported that the customer is not presently able to confirm when the funds will be released.,HIGH_RISK
+The external vendor stated that the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+A CRM note says the company is still unable to demonstrate a viable path to paying the invoice.,HIGH_RISK
+"The treasury desk confirms that the payment remains possible, though it has not yet been fully confirmed.",MEDIUM_RISK
+The customer support chair wrote that the payment is still under review and may move a few days later.,MEDIUM_RISK
+A CRM note says the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+The external vendor stated that the payment is already visible and the original due date has been satisfied.,LOW_RISK
+The operations team observed that the bank confirmation shows the invoice was settled earlier than expected.,LOW_RISK
+The finance team says the invoice is disputed and no transfer will occur until the issue is resolved.,HIGH_RISK
+A procurement contact notes that the invoice is being reconciled and the funds are expected after a short check.,MEDIUM_RISK
+The external vendor stated that the account is exposed because the customer cannot provide a clean payment timeline.,HIGH_RISK
+A procurement contact notes that the invoice was already paid and the remittance is on file.,LOW_RISK
+"The operations team observed that the invoice is not refused, but a temporary verification delay is still in effect.",MEDIUM_RISK
+A sales account manager reported that the funds were released this morning and the account is clear.,LOW_RISK
+"Accounts payable reports that the payment is likely, but one more internal review remains.",MEDIUM_RISK
+A sales account manager reported that the customer cannot provide a reliable payment date and the account is at risk.,HIGH_RISK
+"Accounts payable reports that the customer still intends to pay, but the release date is not yet fixed.",MEDIUM_RISK

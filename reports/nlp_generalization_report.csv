@@ -1,0 +1,5 @@
+candidate,train_f1,validation_f1,test_f1,final_unseen_f1,ood_f1,adversarial_f1,high_risk_recall,train_validation_gap,train_final_unseen_gap,train_ood_gap,train_adversarial_gap,validation_ece
+Word TF-IDF + Logistic Regression,1.0,0.921161,0.845863,0.860555,0.808767,0.804956,0.833333,0.078839,0.139445,0.191233,0.195044,0.447747
+Character TF-IDF + Logistic Regression,1.0,0.907242,0.81911,0.934667,0.854847,0.864598,0.76,0.092758,0.065333,0.145153,0.135402,0.328986
+Word + Character TF-IDF + Logistic Regression,1.0,0.919555,0.860406,0.878557,0.769085,0.837688,0.906667,0.080445,0.121443,0.230915,0.162312,0.359725
+Linear SVM (calibrated),1.0,0.925501,0.865788,0.894018,0.739737,0.845594,0.86,0.074499,0.105982,0.260263,0.154406,0.197239

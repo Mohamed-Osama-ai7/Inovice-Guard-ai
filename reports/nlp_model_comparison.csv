@@ -1,0 +1,5 @@
+model,train_f1,validation_f1,test_f1,final_unseen_f1,ood_f1,adversarial_f1,high_risk_recall,validation_ece
+Word TF-IDF + Logistic Regression,1.0,0.921161,0.845863,0.860555,0.808767,0.804956,0.833333,0.447747
+Character TF-IDF + Logistic Regression,1.0,0.907242,0.81911,0.934667,0.854847,0.864598,0.76,0.328986
+Word + Character TF-IDF + Logistic Regression,1.0,0.919555,0.860406,0.878557,0.769085,0.837688,0.906667,0.359725
+Linear SVM (calibrated),1.0,0.925501,0.865788,0.894018,0.739737,0.845594,0.86,0.197239
