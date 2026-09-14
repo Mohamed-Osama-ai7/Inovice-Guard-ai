@@ -63,10 +63,11 @@ This project strictly adheres to enterprise ML best practices:
 - **OOT Performance:** PR-AUC: 0.9700 | ROC-AUC: 0.9878 | Brier Score: 0.0363
 
 **NLP Payment Risk Model:**
-- **Algorithm:** TF-IDF + Logistic Regression
-- **Performance:** 100% accuracy on strictly held-out message validation sets.
+- **Algorithm:** TF-IDF + Logistic Regression (Binary $P(\text{risk}) \in [0, 1]$)
+- **Evaluation:** Group-Disjoint Split (0% template leakage across Train/Val/Test) & Independent Held-Out OOD Corpus
+- **OOD Performance:** ROC-AUC: 0.8800 | PR-AUC: 0.8118 | Risk Recall: 90.00%
 
-*See `docs/model_card.md` and `docs/model_quality_report.md` for exact metrics and evaluation.*
+*See `docs/model_card.md` and `docs/model_quality_report.md` for exact metrics and evaluation details.*
 
 ---
 

@@ -1,6 +1,6 @@
-# Model Quality Report (Retail Intelligence)
+# Model Quality Report (Retail & Invoice Intelligence)
 
-> Automatically generated during model training with temporal validation.
+> Automatically generated during model training with temporal and group-disjoint validation.
 
 ### Repurchase Prediction Model: LogisticRegression
 | Metric | Train | Validation | Test | OOT |
@@ -19,8 +19,6 @@
 | RMSE | 764.2646 | 784.8883 | 895.8685 | 1301.6753 |
 | R2 | 0.8054 | 0.3304 | 0.5617 | 0.5744 |
 
-
-
 ### Invoice Payment Risk Model: logistic_regression
 | Metric | Train | Validation | Test | OOT |
 |---|---|---|---|---|
@@ -31,15 +29,15 @@
 | ROC-AUC | 0.9898 | 0.9892 | 0.9893 | 0.9878 |
 | Brier_Score | 0.0340 | 0.0344 | 0.0372 | 0.0363 |
 
+### NLP Payment Risk Prediction (Group-Disjoint Split & Real-World OOD Evaluation)
+*Methodology Note: Zero template overlap across Train/Val/Test. Evaluation includes an independent held-out real-world out-of-domain (OOD) message corpus.*
 
-
-### NLP Payment Risk Prediction (Text Classification)
-| Metric | Train | Validation | Test | OOT |
+| Metric | Train | Validation (Unseen Templates) | Test (Unseen Templates) | OOT (Held-Out Real-World OOD) |
 |---|---|---|---|---|
-| Precision | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| Recall | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| F1 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| PR-AUC | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| ROC-AUC | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| Brier_Score | 0.0088 | 0.0156 | 0.0191 | 0.0128 |
-
+| Precision | 1.0000 | 0.5250 | 0.4375 | 0.4286 |
+| Recall | 1.0000 | 1.0000 | 1.0000 | 0.9000 |
+| F1 | 1.0000 | 0.6885 | 0.6087 | 0.5806 |
+| Macro F1 | 1.0000 | 0.5875 | 0.4904 | 0.5662 |
+| PR-AUC | 1.0000 | 0.7050 | 0.6829 | 0.8118 |
+| ROC-AUC | 1.0000 | 0.8401 | 0.8259 | 0.8800 |
+| Brier_Score | 0.0011 | 0.2227 | 0.2742 | 0.2318 |

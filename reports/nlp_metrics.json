@@ -1,344 +1,86 @@
 {
-  "best_model": "Character TF-IDF + Logistic Regression",
+  "best_model": "TF-IDF + Calibrated LogisticRegression",
+  "evaluation_note": "Group-Disjoint Split & Independent Held-Out OOD Evaluation Set (No Template Leakage)",
   "thresholds": {
-    "high": 0.45,
-    "medium": 0.5
+    "high": 0.5,
+    "medium": 0.3
   },
-  "train": {
-    "accuracy": 1.0,
-    "precision_macro": 1.0,
-    "recall_macro": 1.0,
-    "f1_macro": 1.0,
-    "roc_auc_ovr": 1.0,
-    "pr_auc_macro": 1.0,
-    "confusion_matrix": [
-      [
-        450,
-        0,
-        0
-      ],
-      [
-        0,
-        450,
-        0
-      ],
-      [
-        0,
-        0,
-        450
+  "metrics": {
+    "Train": {
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "Macro_F1": 1.0,
+      "PR-AUC": 1.0,
+      "ROC-AUC": 1.0,
+      "Brier_Score": 0.0011,
+      "Confusion_Matrix": [
+        [
+          63,
+          0
+        ],
+        [
+          0,
+          84
+        ]
       ]
-    ],
-    "per_class": {
-      "HIGH_RISK": {
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "support": 450
-      },
-      "LOW_RISK": {
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "support": 450
-      },
-      "MEDIUM_RISK": {
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "support": 450
-      }
     },
-    "support": {
-      "HIGH_RISK": 450,
-      "LOW_RISK": 450,
-      "MEDIUM_RISK": 450
-    },
-    "thresholds": {
-      "high": 0.45,
-      "medium": 0.5
-    },
-    "ece": 0.06037740615678917
-  },
-  "validation": {
-    "accuracy": 0.9088888888888889,
-    "precision_macro": 0.908767238686122,
-    "recall_macro": 0.9088888888888889,
-    "f1_macro": 0.9072424299586439,
-    "roc_auc_ovr": 0.9848518518518518,
-    "pr_auc_macro": 0.9730940056131115,
-    "confusion_matrix": [
-      [
-        121,
-        16,
-        13
-      ],
-      [
-        11,
-        139,
-        0
-      ],
-      [
-        1,
-        0,
-        149
+    "Validation": {
+      "Precision": 0.525,
+      "Recall": 1.0,
+      "F1": 0.6885,
+      "Macro_F1": 0.5875,
+      "PR-AUC": 0.705,
+      "ROC-AUC": 0.8401,
+      "Brier_Score": 0.2227,
+      "Confusion_Matrix": [
+        [
+          9,
+          19
+        ],
+        [
+          0,
+          21
+        ]
       ]
-    ],
-    "per_class": {
-      "HIGH_RISK": {
-        "precision": 0.9097744360902256,
-        "recall": 0.8066666666666666,
-        "f1": 0.8551236749116607,
-        "support": 150
-      },
-      "LOW_RISK": {
-        "precision": 0.896774193548387,
-        "recall": 0.9266666666666666,
-        "f1": 0.9114754098360656,
-        "support": 150
-      },
-      "MEDIUM_RISK": {
-        "precision": 0.9197530864197531,
-        "recall": 0.9933333333333333,
-        "f1": 0.9551282051282052,
-        "support": 150
-      }
     },
-    "support": {
-      "HIGH_RISK": 150,
-      "LOW_RISK": 150,
-      "MEDIUM_RISK": 150
-    },
-    "thresholds": {
-      "high": 0.45,
-      "medium": 0.5
-    },
-    "ece": 0.32898573576833
-  },
-  "test": {
-    "accuracy": 0.8177777777777778,
-    "precision_macro": 0.8208061002178649,
-    "recall_macro": 0.8177777777777777,
-    "f1_macro": 0.8191104824768191,
-    "roc_auc_ovr": 0.954925925925926,
-    "pr_auc_macro": 0.915732693645981,
-    "confusion_matrix": [
-      [
-        114,
-        32,
-        4
-      ],
-      [
-        36,
-        114,
-        0
-      ],
-      [
-        3,
-        7,
-        140
+    "Test": {
+      "Precision": 0.4375,
+      "Recall": 1.0,
+      "F1": 0.6087,
+      "Macro_F1": 0.4904,
+      "PR-AUC": 0.6829,
+      "ROC-AUC": 0.8259,
+      "Brier_Score": 0.2742,
+      "Confusion_Matrix": [
+        [
+          8,
+          27
+        ],
+        [
+          0,
+          21
+        ]
       ]
-    ],
-    "per_class": {
-      "HIGH_RISK": {
-        "precision": 0.7450980392156863,
-        "recall": 0.76,
-        "f1": 0.7524752475247525,
-        "support": 150
-      },
-      "LOW_RISK": {
-        "precision": 0.7450980392156863,
-        "recall": 0.76,
-        "f1": 0.7524752475247525,
-        "support": 150
-      },
-      "MEDIUM_RISK": {
-        "precision": 0.9722222222222222,
-        "recall": 0.9333333333333333,
-        "f1": 0.9523809523809523,
-        "support": 150
-      }
     },
-    "support": {
-      "HIGH_RISK": 150,
-      "LOW_RISK": 150,
-      "MEDIUM_RISK": 150
-    },
-    "thresholds": {
-      "high": 0.45,
-      "medium": 0.5
-    },
-    "ece": 0.3576061858918961
-  },
-  "final_unseen": {
-    "accuracy": 0.9353333333333333,
-    "precision_macro": 0.9381767438803327,
-    "recall_macro": 0.9353333333333333,
-    "f1_macro": 0.934666527972816,
-    "roc_auc_ovr": 0.994004,
-    "pr_auc_macro": 0.9888623021223228,
-    "confusion_matrix": [
-      [
-        479,
-        12,
-        9
-      ],
-      [
-        65,
-        424,
-        11
-      ],
-      [
-        0,
-        0,
-        500
+    "OOT_HeldOut_OOD": {
+      "Precision": 0.4286,
+      "Recall": 0.9,
+      "F1": 0.5806,
+      "Macro_F1": 0.5662,
+      "PR-AUC": 0.8118,
+      "ROC-AUC": 0.88,
+      "Brier_Score": 0.2318,
+      "Confusion_Matrix": [
+        [
+          8,
+          12
+        ],
+        [
+          1,
+          9
+        ]
       ]
-    ],
-    "per_class": {
-      "HIGH_RISK": {
-        "precision": 0.8805147058823529,
-        "recall": 0.958,
-        "f1": 0.9176245210727969,
-        "support": 500
-      },
-      "LOW_RISK": {
-        "precision": 0.9724770642201835,
-        "recall": 0.848,
-        "f1": 0.905982905982906,
-        "support": 500
-      },
-      "MEDIUM_RISK": {
-        "precision": 0.9615384615384616,
-        "recall": 1.0,
-        "f1": 0.9803921568627451,
-        "support": 500
-      }
-    },
-    "support": {
-      "HIGH_RISK": 500,
-      "LOW_RISK": 500,
-      "MEDIUM_RISK": 500
-    },
-    "thresholds": {
-      "high": 0.45,
-      "medium": 0.5
-    },
-    "ece": 0.395115523053059
-  },
-  "ood": {
-    "accuracy": 0.8606666666666667,
-    "precision_macro": 0.8694729201405127,
-    "recall_macro": 0.8606666666666666,
-    "f1_macro": 0.8548466003525409,
-    "roc_auc_ovr": 0.9790733333333334,
-    "pr_auc_macro": 0.960536520171885,
-    "confusion_matrix": [
-      [
-        473,
-        21,
-        6
-      ],
-      [
-        69,
-        331,
-        100
-      ],
-      [
-        8,
-        5,
-        487
-      ]
-    ],
-    "per_class": {
-      "HIGH_RISK": {
-        "precision": 0.86,
-        "recall": 0.946,
-        "f1": 0.900952380952381,
-        "support": 500
-      },
-      "LOW_RISK": {
-        "precision": 0.927170868347339,
-        "recall": 0.662,
-        "f1": 0.7724620770128354,
-        "support": 500
-      },
-      "MEDIUM_RISK": {
-        "precision": 0.821247892074199,
-        "recall": 0.974,
-        "f1": 0.8911253430924062,
-        "support": 500
-      }
-    },
-    "support": {
-      "HIGH_RISK": 500,
-      "LOW_RISK": 500,
-      "MEDIUM_RISK": 500
-    },
-    "thresholds": {
-      "high": 0.45,
-      "medium": 0.5
-    },
-    "ece": 0.47422292684091694
-  },
-  "adversarial": {
-    "accuracy": 0.8653333333333333,
-    "precision_macro": 0.8662236746550472,
-    "recall_macro": 0.8653333333333334,
-    "f1_macro": 0.8645984821154181,
-    "roc_auc_ovr": 0.9658906666666667,
-    "pr_auc_macro": 0.929082525511555,
-    "confusion_matrix": [
-      [
-        425,
-        64,
-        11
-      ],
-      [
-        110,
-        382,
-        8
-      ],
-      [
-        5,
-        4,
-        491
-      ]
-    ],
-    "per_class": {
-      "HIGH_RISK": {
-        "precision": 0.7870370370370371,
-        "recall": 0.85,
-        "f1": 0.8173076923076923,
-        "support": 500
-      },
-      "LOW_RISK": {
-        "precision": 0.8488888888888889,
-        "recall": 0.764,
-        "f1": 0.8042105263157895,
-        "support": 500
-      },
-      "MEDIUM_RISK": {
-        "precision": 0.9627450980392157,
-        "recall": 0.982,
-        "f1": 0.9722772277227723,
-        "support": 500
-      }
-    },
-    "support": {
-      "HIGH_RISK": 500,
-      "LOW_RISK": 500,
-      "MEDIUM_RISK": 500
-    },
-    "thresholds": {
-      "high": 0.45,
-      "medium": 0.5
-    },
-    "ece": 0.3655804093157028
-  },
-  "gaps": {
-    "train_validation": 0.0927575700413561,
-    "train_final_unseen": 0.06533347202718398,
-    "train_ood": 0.1451533996474591,
-    "train_adversarial": 0.13540151788458188
-  },
-  "overfitting_level": "MODERATE"
+    }
+  }
 }
