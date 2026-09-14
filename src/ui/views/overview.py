@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from typing import Dict, Any
 from src.ui.components import page_header, kpi_row, section_label, divider
-from app_backup import build_dashboard_dataset # We will import from app_backup for now, or move it to a shared place later. Actually, it's better to move data functions to src.ui.data.py
+from src.ui.data import build_dashboard_dataset, get_dashboard_dataset
 
 def render_overview(artifacts: Dict[str, Any]) -> None:
     page_header(
