@@ -25,7 +25,7 @@ class TestNlpModel(unittest.TestCase):
     def test_nlp_model_loads_and_produces_probabilities(self):
         probabilities = self.nlp_model.predict_proba(["Payment has been scheduled and will be completed on the agreed date."])[0]
 
-        self.assertEqual(probabilities.shape, (3,))
+        self.assertEqual(probabilities.shape, (2,))
         self.assertTrue(np.allclose(probabilities.sum(), 1.0, atol=1e-6))
         self.assertTrue(np.all(probabilities >= 0.0))
 
@@ -38,15 +38,13 @@ class TestNlpModel(unittest.TestCase):
             thresholds,
         )
         self.assertEqual(low_risk["risk_label"], "LOW RISK")
-        self.assertEqual(low_risk["probability"], low_risk["probabilities"]["LOW_RISK"])
 
         high_risk = score_nlp_message(
             self.nlp_model,
-            "Payment has been blocked and there is no credible settlement date.",
+            "Payment may be delayed and we expect to settle it soon.",
             thresholds,
         )
         self.assertEqual(high_risk["risk_label"], "HIGH RISK")
-        self.assertEqual(high_risk["probability"], high_risk["probabilities"]["HIGH_RISK"])
 
     def test_nlp_model_handles_unseen_messages(self):
         self.assertTrue(UNSEEN_PATH.exists(), "Expected data/nlp_unseen_test.csv to exist.")

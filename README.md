@@ -123,8 +123,13 @@ Then open [http://localhost:8501](http://localhost:8501).
 
 ## ☁️ Deployment
 
-### Streamlit Cloud (Primary — Live Demo)
-The app is deployed at **[https://inovice-guard-ai-17.streamlit.app/](https://inovice-guard-ai-17.streamlit.app/)**
+### Streamlit Cloud (Primary)
+
+The application is deployed on Streamlit Community Cloud:
+**[InvoiceGuard AI Enterprise - Live Deployment](https://inovice-guard-ai-17.streamlit.app/)**
+
+> **Note on Access**: This application is currently configured as a private enterprise deployment. You may be redirected to a `share.streamlit.io/-/auth/app` login screen. You must be granted access by the repository owner to view the live dashboard.
+
 Streamlit Cloud runs the highly scalable view router architecture natively from the `main` branch. All required inference artifacts are versioned in `/models`.
 
 ### Docker + FastAPI

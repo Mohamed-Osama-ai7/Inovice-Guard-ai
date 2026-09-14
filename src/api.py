@@ -63,9 +63,11 @@ def predict(i:InvoiceInput):
     rec='Prioritize collection follow-up before the due date.' if risk in ('HIGH','CRITICAL') else 'Monitor payment and schedule routine follow-up.'
     return {'late_probability':round(p,4),'predicted_late':late,'expected_delay_days':round(delay,1),'risk_level':risk,'estimated_financial_exposure':round(exposure,2),'explanation':reasons[:4],'recommendation':rec}
 
+from fastapi import HTTPException
+
 @app.get('/customer/profile/{customer_id}')
 def customer_profile(customer_id: str):
     profile = get_customer_profile(customer_id)
     if not profile.get("data_sources"):
-        return {"error": "Customer not found"}
+        raise HTTPException(status_code=404, detail="Customer not found")
     return profile

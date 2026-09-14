@@ -42,4 +42,4 @@ To prevent temporal data leakage, all datasets are strictly split chronologicall
 - **Test (15%)**: Out-of-sample holdout.
 - **OOT (15%)**: Strictly future, out-of-time data used exclusively for final reporting.
 
-The generalization gaps between Validation and OOT metrics are minimal across all models, proving there is no unacceptable overfitting and the models safely generalize to future time periods.
+The generalization gaps between Validation and OOT metrics are minimal across all models (e.g., Invoice Risk PR-AUC shifts from 0.9750 to 0.9700). This indicates acceptable temporal generalization on the evaluated split, with no evidence of severe overfitting.

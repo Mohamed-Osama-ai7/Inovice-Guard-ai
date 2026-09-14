@@ -215,16 +215,6 @@ def load_nlp_thresholds() -> Dict[str, float]:
     return {"high": 0.5, "medium": 0.45}
 
 
-def get_nlp_class_order(model: Any) -> List[str]:
-    if hasattr(model, "classes_"):
-        return [str(v) for v in model.classes_]
-    if hasattr(model, "named_steps"):
-        clf = model.named_steps.get("classifier")
-        if clf is not None and hasattr(clf, "classes_"):
-            return [str(v) for v in clf.classes_]
-    return ["HIGH_RISK", "LOW_RISK", "MEDIUM_RISK"]
-
-
 def score_nlp_message(
     model: Any, customer_message: str, thresholds: Optional[Dict[str, float]] = None
 ) -> Dict[str, Any]:
@@ -236,28 +226,22 @@ def score_nlp_message(
     except Exception as exc:  # pragma: no cover
         raise RuntimeError(f"Unable to evaluate NLP message: {exc}") from exc
 
-    class_order = get_nlp_class_order(model)
-    probability_map = dict(zip(class_order, probabilities.tolist()))
+    resolved_thresholds = thresholds or {"high": 0.5, "medium": 0.3}
+    
+    # Model is binary (0=Low/No Risk, 1=Risk). The risk probability is at index 1.
+    risk_prob = float(probabilities[1]) if len(probabilities) > 1 else float(probabilities[0])
 
-    if len(probabilities) < 3:
-        raise RuntimeError("NLP model did not return the expected three-class probability vector.")
-
-    resolved_thresholds = thresholds or {"high": 0.5, "medium": 0.45}
-    high_p = float(probability_map.get("HIGH_RISK", 0.0))
-    med_p = float(probability_map.get("MEDIUM_RISK", 0.0))
-    low_p = float(probability_map.get("LOW_RISK", 0.0))
-
-    if high_p >= float(resolved_thresholds.get("high", 0.5)):
-        risk_label, selected_p = "HIGH RISK", high_p
-    elif med_p >= float(resolved_thresholds.get("medium", 0.45)):
-        risk_label, selected_p = "MEDIUM RISK", med_p
+    if risk_prob >= float(resolved_thresholds.get("high", 0.5)):
+        risk_label = "HIGH RISK"
+    elif risk_prob >= float(resolved_thresholds.get("medium", 0.3)):
+        risk_label = "MEDIUM RISK"
     else:
-        risk_label, selected_p = "LOW RISK", low_p
+        risk_label = "LOW RISK"
 
     return {
         "risk_label": risk_label,
-        "probability": selected_p,
-        "probabilities": probability_map,
+        "probability": risk_prob,
+        "probabilities": {"risk": risk_prob, "safe": 1.0 - risk_prob},
         "thresholds": resolved_thresholds,
     }
 
