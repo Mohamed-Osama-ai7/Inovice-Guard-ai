@@ -20,8 +20,43 @@ class Customer360Service:
     def _load_data_and_models(self):
         # Load InvoiceGuard Data (using demo_invoices as the source of truth for customer history)
         invoice_path = DATA_DIR / "demo" / "demo_invoices.csv"
+        self._invoice_profiles = {}
         if invoice_path.exists():
             self.invoice_df = pd.read_csv(invoice_path)
+            # Pre-aggregate to O(1) dictionary for fast Customer 360 lookups
+            if not self.invoice_df.empty and 'customer_id' in self.invoice_df.columns:
+                # Sort by invoice date to get the latest record correctly
+                if 'invoice_date' in self.invoice_df.columns:
+                    sorted_df = self.invoice_df.sort_values('invoice_date')
+                else:
+                    sorted_df = self.invoice_df
+                
+                # Group by customer
+                grouped = sorted_df.groupby('customer_id')
+                for cust_id, group in grouped:
+                    total_invoices = len(group)
+                    total_amount = float(group['invoice_amount'].sum()) if 'invoice_amount' in group.columns else 0.0
+                    latest_record = group.iloc[-1]
+                    
+                    late_ratio = latest_record.get('prior_late_ratio', 0)
+                    avg_delay = latest_record.get('prior_avg_delay', 0)
+                    
+                    risk = "LOW"
+                    if late_ratio > 0.5 or avg_delay > 15:
+                        risk = "HIGH"
+                    elif late_ratio > 0.2 or avg_delay > 5:
+                        risk = "MEDIUM"
+
+                    self._invoice_profiles[cust_id] = {
+                        "source": "InvoiceGuard",
+                        "total_invoices": total_invoices,
+                        "total_invoice_amount": total_amount,
+                        "historical_late_ratio": float(late_ratio),
+                        "historical_avg_delay_days": float(avg_delay),
+                        "payment_risk_level": risk,
+                        "industry": str(latest_record.get('industry', 'Unknown')),
+                        "segment": str(latest_record.get('customer_segment', 'Unknown'))
+                    }
         
         # Load Retail Data (latest snapshot per customer)
         retail_path = DATA_DIR / "processed" / "retail_customer_snapshots.csv"
@@ -40,38 +75,7 @@ class Customer360Service:
             pass # Models not built yet
 
     def get_invoiceguard_profile(self, customer_id: str) -> Dict[str, Any]:
-        if self.invoice_df is None:
-            return {}
-        
-        cust_data = self.invoice_df[self.invoice_df['customer_id'] == customer_id]
-        if cust_data.empty:
-            return {}
-            
-        # Aggregate invoice history
-        total_invoices = len(cust_data)
-        total_amount = cust_data['invoice_amount'].sum()
-        
-        # Determine risk based on latest prior_late_ratio (as a heuristic for the customer profile)
-        latest_record = cust_data.sort_values('invoice_date').iloc[-1]
-        late_ratio = latest_record.get('prior_late_ratio', 0)
-        avg_delay = latest_record.get('prior_avg_delay', 0)
-        
-        risk = "LOW"
-        if late_ratio > 0.5 or avg_delay > 15:
-            risk = "HIGH"
-        elif late_ratio > 0.2 or avg_delay > 5:
-            risk = "MEDIUM"
-
-        return {
-            "source": "InvoiceGuard",
-            "total_invoices": total_invoices,
-            "total_invoice_amount": float(total_amount),
-            "historical_late_ratio": float(late_ratio),
-            "historical_avg_delay_days": float(avg_delay),
-            "payment_risk_level": risk,
-            "industry": str(latest_record.get('industry', 'Unknown')),
-            "segment": str(latest_record.get('customer_segment', 'Unknown'))
-        }
+        return self._invoice_profiles.get(customer_id, {})
 
     def get_retail_profile(self, customer_id: str) -> Dict[str, Any]:
         if self.retail_df is None or customer_id not in self.retail_df.index:

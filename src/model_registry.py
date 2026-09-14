@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from typing import Dict, Any, List
+import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
 MODELS_DIR = ROOT / "models"
@@ -12,6 +13,7 @@ class ModelRegistry:
     """
     
     @staticmethod
+    @st.cache_data
     def _load_metadata(filename: str) -> Dict[str, Any]:
         path = MODELS_DIR / filename
         if not path.exists():
