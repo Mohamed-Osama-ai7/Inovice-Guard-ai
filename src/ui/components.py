@@ -89,12 +89,12 @@ def render_feature_bars(explanation: List[Dict[str, Any]]) -> None:
         color = "var(--danger)" if contrib > 0 else "var(--success)"
         
         st.markdown(f"""
-        <div style="display:flex; align-items:center; gap:1rem;">
-          <div style="flex:0 0 160px; font-size:0.85rem; color:var(--text-light); text-align:right;" class="ig-text-mono">{name}</div>
-          <div style="flex:1;">
-            <div style="width:{w}%; height:8px; border-radius:4px; background:{color};"></div>
+        <div class="ig-feature-row">
+          <div class="ig-feature-name ig-text-mono">{name}</div>
+          <div class="ig-feature-bar-wrapper">
+            <div class="ig-feature-bar" style="width:{w}%; background:{color};"></div>
           </div>
-          <div style="flex:0 0 80px; font-size:0.85rem; color:var(--text-main);" class="ig-text-mono">{val_str}</div>
+          <div class="ig-feature-val ig-text-mono">{val_str}</div>
         </div>
         """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
