@@ -246,36 +246,91 @@ def _cached_build_dashboard_dataset(artifact_signature: str, _artifacts: Dict[st
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
 
+    models = _artifacts.get("models", {})
     metadata = _artifacts.get("metadata", {})
-    predictions: List[Dict[str, Any]] = []
-    for _, row in df.iterrows():
-        payload = row.to_dict()
-        try:
-            pred = run_prediction(payload, "classifier", _artifacts)
-        except Exception:
-            continue
-        record = row.to_dict()
-        record["late_probability"] = float(pred["late_probability"])
-        record["expected_delay_days"] = float(pred["expected_delay_days"])
-        record["risk_level"] = pred["risk_level"]
-        record["estimated_financial_exposure"] = float(pred["estimated_financial_exposure"])
-        record["recommendation"] = pred["recommendation"]
-        record["predicted_late"] = int(pred["late_probability"] >= metadata.get("threshold", 0.5))
-        try:
-            record["days_to_due"] = int(
-                (pd.Timestamp(record["due_date"]) - pd.Timestamp(record["invoice_date"])).days
-            )
-        except Exception:
-            record["days_to_due"] = 0
-        predictions.append(record)
-
-    if not predictions:
+    classifier = models.get("classifier")
+    if classifier is None or not hasattr(classifier, "predict_proba"):
         return pd.DataFrame()
 
-    analytics = pd.DataFrame(predictions)
-    analytics["risk_level"] = analytics["risk_level"].fillna("LOW")
-    analytics["predicted_late"] = analytics["predicted_late"].fillna(0).astype(int)
-    analytics["amount_at_risk"] = analytics["outstanding_amount"].where(
+    feature_order = metadata.get("features") or DEFAULT_FEATURES
+    batch_df = df.copy()
+    if "invoice_amount_clean" not in batch_df.columns:
+        if "invoice_amount" in batch_df.columns:
+            batch_df["invoice_amount_clean"] = pd.to_numeric(batch_df["invoice_amount"], errors="coerce").fillna(0)
+        else:
+            batch_df["invoice_amount_clean"] = 0.0
+
+    batch_df["amount_log1p"] = np.log1p(np.maximum(batch_df["invoice_amount_clean"].values, 0))
+    
+    invoice_dates = pd.to_datetime(batch_df.get("invoice_date"), errors="coerce")
+    due_dates = pd.to_datetime(batch_df.get("due_date"), errors="coerce")
+    batch_df["days_to_due"] = (due_dates - invoice_dates).dt.days.fillna(0).astype(float)
+    batch_df["invoice_year"] = invoice_dates.dt.year.fillna(2025).astype(int)
+    batch_df["invoice_month"] = invoice_dates.dt.month.fillna(1).astype(int)
+    batch_df["invoice_quarter"] = invoice_dates.dt.quarter.fillna(1).astype(int)
+    batch_df["invoice_dayofweek"] = invoice_dates.dt.dayofweek.fillna(0).astype(int)
+
+    if "customer_seen_before" in batch_df.columns:
+        seen = pd.to_numeric(batch_df["customer_seen_before"], errors="coerce").fillna(0).astype(int)
+    else:
+        seen = pd.Series(0, index=batch_df.index)
+        
+    batch_df["customer_seen_before"] = seen
+    batch_df["customer_is_new"] = (seen == 0).astype(int)
+    
+    for col in ["prior_late_count", "prior_late_ratio", "prior_avg_delay", "outstanding_amount"]:
+        if col in batch_df.columns:
+            batch_df[col] = pd.to_numeric(batch_df[col], errors="coerce").fillna(0)
+        else:
+            batch_df[col] = 0.0
+
+    for col in ["industry", "company_size", "payment_method", "customer_segment"]:
+        if col not in batch_df.columns:
+            batch_df[col] = np.nan
+
+    X_batch = batch_df[feature_order]
+    late_probs = classifier.predict_proba(X_batch)[:, 1]
+    
+    delay_model = models.get("delay_regressor")
+    if delay_model is not None and hasattr(delay_model, "predict"):
+        try:
+            expected_delays = np.clip(delay_model.predict(X_batch), 0, None)
+        except Exception:
+            expected_delays = np.zeros(len(df))
+    else:
+        expected_delays = np.zeros(len(df))
+
+    conditions = [
+        late_probs < 0.35,
+        late_probs < 0.65,
+        late_probs < 0.85
+    ]
+    choices = ["LOW", "MEDIUM", "HIGH"]
+    risk_levels = np.select(conditions, choices, default="CRITICAL")
+
+    inv_amounts = pd.to_numeric(df.get("invoice_amount", 0), errors="coerce").fillna(0).values
+    exposures = inv_amounts * late_probs
+    recommendations = np.where(
+        np.isin(risk_levels, ["HIGH", "CRITICAL"]),
+        "Prioritize collection follow-up before the due date.",
+        "Monitor payment and schedule routine follow-up."
+    )
+
+    threshold = metadata.get("threshold", 0.5)
+    predicted_late = (late_probs >= threshold).astype(int)
+    days_to_due = (due_dates - invoice_dates).dt.days.fillna(0).astype(int)
+
+    analytics = df.copy()
+    analytics["late_probability"] = late_probs
+    analytics["expected_delay_days"] = expected_delays
+    analytics["risk_level"] = risk_levels
+    analytics["estimated_financial_exposure"] = exposures
+    analytics["recommendation"] = recommendations
+    analytics["predicted_late"] = predicted_late
+    analytics["days_to_due"] = days_to_due
+
+    out_amounts = pd.to_numeric(analytics.get("outstanding_amount", 0), errors="coerce").fillna(0)
+    analytics["amount_at_risk"] = out_amounts.where(
         analytics["risk_level"].isin(["HIGH", "CRITICAL"]), 0
     )
     analytics["due_soon"] = analytics["days_to_due"].le(7)
