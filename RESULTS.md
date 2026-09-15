@@ -1,25 +1,63 @@
-# Verified local result
+# InvoiceGuard AI — Results
 
-The complete pipeline was executed locally on the included **synthetic demo dataset** to verify that preprocessing, leakage controls, model selection, regression, artifact saving, and API serving are wired correctly.
+## Current Deployed Model: Invoice Payment-Risk Classifier
 
-### Demo test-set metrics (chronological, untouched)
+The deployed inference artifact is `models/classifier.joblib` — a Calibrated Logistic Regression pipeline (isotonic regression via `CalibratedClassifierCV(cv="prefit")`).
 
-- Best classifier: **XGBoost**
-- Accuracy: **94.78%**
-- Precision: **90.96%**
-- Recall: **91.30%**
-- F1: **91.13%**
-- ROC-AUC: **98.89%**
-- PR-AUC: **97.79%**
-- Delay-regression MAE: **5.90 days**
-- Delay-regression RMSE: **7.96 days**
+### Test-Set and OOT Metrics (Current Deployed Classifier)
 
-**These are not Kaggle results.** They only certify that the project runs end-to-end and that the demonstration dataset is learnable. After downloading the real Kaggle dataset, rerun training and use the generated `reports/test_metrics.json` for the thesis/report.
+Metrics are from `models/classifier_metadata.json`.
 
-## Main Kaggle source
-Customer Invoices Dataset — Payment Date Prediction on Open Invoices:
-https://www.kaggle.com/datasets/pradumn203/payment-date-prediction-for-invoices-dataset
+| Split | Precision | Recall | F1 | PR-AUC | ROC-AUC | Brier |
+|---|---|---|---|---|---|---|
+| Train | 0.9553 | 0.9036 | 0.9287 | 0.9782 | 0.9898 | 0.0340 |
+| Validation | 0.9491 | 0.9031 | 0.9255 | 0.9750 | 0.9892 | 0.0344 |
+| Test | 0.9616 | 0.8870 | 0.9228 | 0.9751 | 0.9893 | 0.0372 |
+| OOT | 0.9491 | 0.8809 | 0.9137 | 0.9700 | 0.9878 | 0.0363 |
 
-This is the source for the **invoice payment-risk model**. The Kaggle page lists the license as CC BY-NC 4.0. This dataset is not included in the repository; it must be downloaded separately via `python scripts/download_data.py` (requires Kaggle API credentials).
+Generalization assessment: Strong temporal generalization on the evaluated OOT split.
 
-**Note:** The UCI Online Retail II dataset (used for customer analytics and revenue intelligence modules) is a separate dataset licensed under CC BY 4.0. See README.md for attribution and DOI.
+### Payment Delay Regression
+
+Source: `models/metadata.json`.
+
+- MAE: 5.90 days
+- RMSE: 7.96 days
+- Evaluated on: delayed invoices in the test split (n=529)
+
+---
+
+## Historical / Experimental Benchmark
+
+> **Note:** The results below are from an earlier experimental benchmark run against the **synthetic demo dataset** using an XGBoost classifier during model selection. These are NOT the current deployed inference artifact.
+>
+> They are preserved for reference only and should not be cited as current performance.
+
+### Demo Dataset Experimental Benchmark (Historical, XGBoost, Model Selection)
+
+- Best classifier in selection: XGBoost
+- Accuracy: 94.78%
+- Precision: 90.96%
+- Recall: 91.30%
+- F1: 91.13%
+- ROC-AUC: 98.89%
+- PR-AUC: 97.79%
+- Delay-regression MAE: 5.90 days
+- Delay-regression RMSE: 7.96 days
+
+These results confirm the end-to-end pipeline runs correctly on the demo dataset. They are not performance claims for the deployed model.
+
+---
+
+## Data Sources
+
+### UCI Online Retail II (Retail & Customer Intelligence Modules)
+- License: CC BY 4.0
+- Source: https://archive.ics.uci.edu/dataset/502/online+retail+ii
+- DOI: https://doi.org/10.24432/C5CG6D
+
+### Kaggle Invoice Dataset (Invoice Payment-Risk Model)
+- License: CC BY-NC 4.0 (Kaggle listing)
+- Source: https://www.kaggle.com/datasets/pradumn203/payment-date-prediction-for-invoices-dataset
+- Not included in the repository. Download requires Kaggle API credentials.
+- The application ships with a pre-trained model; retraining requires downloading this dataset separately.
