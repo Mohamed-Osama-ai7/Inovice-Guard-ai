@@ -27,6 +27,13 @@ class TestUIImports(unittest.TestCase):
         self.assertTrue(callable(render_repurchase_risk))
         self.assertTrue(callable(render_data_quality))
 
+        # Verify security module import
+        from src.security import require_admin, is_admin, login_admin, logout
+        self.assertTrue(callable(require_admin))
+        self.assertTrue(callable(is_admin))
+        self.assertTrue(callable(login_admin))
+        self.assertTrue(callable(logout))
+
 
 
 if __name__ == "__main__":

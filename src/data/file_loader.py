@@ -15,13 +15,17 @@ def validate_and_load_uploaded_file(uploaded_file) -> Tuple[Optional[pd.DataFram
         return None, "No file uploaded."
     
     # Check size (uploaded_file.size is in bytes)
-    size_mb = uploaded_file.size / (1024 * 1024)
+    file_size = getattr(uploaded_file, "size", 0)
+    size_mb = file_size / (1024 * 1024)
     if size_mb > MAX_FILE_SIZE_MB:
         return None, f"File size ({size_mb:.1f} MB) exceeds maximum allowed ({MAX_FILE_SIZE_MB} MB)."
+
+    if file_size == 0:
+        return None, "The uploaded file is empty (0 bytes)."
         
     try:
         # Load based on extension without writing to disk
-        filename = uploaded_file.name.lower()
+        filename = getattr(uploaded_file, "name", "").lower()
         if filename.endswith(".csv"):
             # Try multiple encodings
             for enc in ("utf-8", "latin1", "cp1252"):
@@ -47,5 +51,5 @@ def validate_and_load_uploaded_file(uploaded_file) -> Tuple[Optional[pd.DataFram
             
         return df, None
         
-    except Exception as e:
-        return None, f"Failed to parse file: {str(e)}"
+    except Exception:
+        return None, "Failed to parse file. Please verify that the file is a properly formatted, valid CSV or Excel document."

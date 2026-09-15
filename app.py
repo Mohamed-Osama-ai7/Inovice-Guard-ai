@@ -1599,10 +1599,10 @@ def render_batch_predictions(artifacts: Dict[str, Any]) -> None:
     if uploaded_file is None:
         return
 
-    try:
-        batch_df = pd.read_csv(uploaded_file)
-    except Exception as exc:
-        st.error(f"Could not read uploaded CSV: {exc}")
+    from src.data.file_loader import validate_and_load_uploaded_file
+    batch_df, load_err = validate_and_load_uploaded_file(uploaded_file)
+    if load_err or batch_df is None:
+        st.error(load_err or "Unable to process uploaded file.")
         return
 
     required_cols = {
@@ -1645,8 +1645,8 @@ def render_batch_predictions(artifacts: Dict[str, Any]) -> None:
                     "estimated_financial_exposure": pred["estimated_financial_exposure"],
                     "recommendation": pred["recommendation"],
                 })
-            except Exception as exc:
-                rows.append({"row_index": idx, "status": "failed", "errors": str(exc)})
+            except Exception:
+                rows.append({"row_index": idx, "status": "failed", "errors": "Inference computation error"})
 
     result_df = pd.DataFrame(rows)
     if result_df.empty:
@@ -1811,6 +1811,10 @@ def render_alert_center(artifacts: Dict[str, Any]) -> None:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def render_artifact_diagnostics(artifacts: Dict[str, Any]) -> None:
+    from src.security.auth import require_admin
+    if not require_admin():
+        return
+
     page_header(
         "System Status",
         "Platform operational health, ingestion status, and service availability.",
@@ -1915,6 +1919,14 @@ def main() -> None:
         "System Status":         render_artifact_diagnostics,
     }
 
+
+    # Admin authorization gate
+    admin_pages = {"Data Quality", "System Status"}
+    if current_page in admin_pages:
+        from src.security.auth import is_admin, require_admin
+        if not is_admin():
+            require_admin()
+            return
 
     render_fn = page_map.get(current_page, render_overview)
     render_fn(artifacts)

@@ -1,15 +1,20 @@
 import streamlit as st
 from typing import Dict, Any
 from src.ui.components import page_header, kpi_row, divider, badge
-from app import render_artifact_diagnostics
+from src.security.auth import require_admin
 
 
 def render_system_status(artifacts: Dict[str, Any]) -> None:
     """Delegates to the main artifact diagnostics view, branded as System Status."""
+    if not require_admin():
+        return
+    from app import render_artifact_diagnostics
     render_artifact_diagnostics(artifacts)
 
 
 def render_data_quality(artifacts: Dict[str, Any]) -> None:
+    if not require_admin():
+        return
     page_header("Data Quality", "Portfolio data integrity, validation rules, and schema health.")
     
     st.markdown(
