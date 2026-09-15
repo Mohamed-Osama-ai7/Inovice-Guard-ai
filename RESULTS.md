@@ -20,4 +20,6 @@ The complete pipeline was executed locally on the included **synthetic demo data
 Customer Invoices Dataset — Payment Date Prediction on Open Invoices:
 https://www.kaggle.com/datasets/pradumn203/payment-date-prediction-for-invoices-dataset
 
-Kaggle shows the dataset as B2B invoice/accounts-receivable data with payment due date, invoice date, invoice amount, baseline date and payment date, and the page currently shows CC BY-NC 4.0.
+This is the source for the **invoice payment-risk model**. The Kaggle page lists the license as CC BY-NC 4.0. This dataset is not included in the repository; it must be downloaded separately via `python scripts/download_data.py` (requires Kaggle API credentials).
+
+**Note:** The UCI Online Retail II dataset (used for customer analytics and revenue intelligence modules) is a separate dataset licensed under CC BY 4.0. See README.md for attribution and DOI.

@@ -1,5 +1,8 @@
 # Enterprise System Audit: InvoiceGuard AI
 
+> **Historical Baseline Note:** This document captures the system architecture and gap analysis recorded at an early project milestone. Many items listed as gaps (calibration, security, file handling, responsive UI) have since been addressed. Refer to `README.md`, `docs/model_card.md`, and `docs/model_quality_report.md` for the current verified state of the system.
+
+
 ## 1. ARCHITECTURE
 The current architecture is a hybrid monolithic Streamlit application with a FastAPI backend (`src/api.py`) for programmatic access. 
 - **Frontend**: Streamlit-based UI recently refactored into a `src/ui/` package with views (`overview.py`, `customer_360.py`, etc.) and a master router.

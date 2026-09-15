@@ -171,7 +171,7 @@ The application UI supports Desktop, Laptop, Tablet, and Mobile devices:
 
 ## Testing & Quality Assurance
 
-- **Pytest Suite:** 32 / 32 PASSED (0 failures, 0 warnings).
+- **Pytest Suite:** 25 core tests PASSED. An additional 7 FastAPI HTTP integration tests in `tests/test_api.py` require `httpx>=0.23.0` (listed in `requirements.txt`); they are skipped gracefully when `httpx` is unavailable in restricted environments and pass fully when it is installed.
 - **Python Compilation:** `python -m compileall src/ app.py scripts/` completed cleanly with 0 errors.
 - **Startup Smoke Test:** `python -c "from src.ui.views.overview import render_overview; from app import main; print('STARTUP OK')"` output verified (`STARTUP OK`).
 - **Vectorized Equivalence:** Equivalence check verified exact prediction equality ($0.0000$ max difference) between vectorized batch inference and legacy implementations.
@@ -233,11 +233,21 @@ Copy `.env.example` to `.env` if external services (such as optional Groq API fe
 cp .env.example .env
 ```
 
-### 5. Download & Prepare Datasets
+### 5. Download Datasets
+
+Two separate datasets power different parts of the application:
+
+**UCI Online Retail II** (customer analytics and revenue intelligence modules):
 ```bash
 python scripts/download_retail_data.py
+```
+Downloads `online_retail_II.xlsx` from the UCI ML Repository into `data/raw/`.
+
+**Kaggle Invoice Dataset** (invoice payment-risk model retraining):
+```bash
 python scripts/download_data.py
 ```
+Downloads the B2B invoice dataset via `kagglehub` (requires Kaggle API credentials). The application ships with pre-trained demo artifacts and does not require this step to run.
 
 ### 6. Run Application
 ```bash

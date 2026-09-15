@@ -1,9 +1,14 @@
 import pytest
 from unittest.mock import patch
+
+# httpx is required by FastAPI's TestClient. Skip this module if unavailable.
+pytest.importorskip("httpx", reason="httpx is required for API tests (pip install httpx)")
+
 from fastapi.testclient import TestClient
 from src.api import app, InvoiceInput
 
 client = TestClient(app)
+
 
 def test_home_endpoint():
     response = client.get("/")
