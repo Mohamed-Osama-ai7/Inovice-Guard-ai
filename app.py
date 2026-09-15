@@ -1384,7 +1384,26 @@ def render_financial_impact(artifacts: Dict[str, Any]) -> None:
     section_label("Top Invoices by Financial Exposure")
     top_df = analytics.nlargest(20, "estimated_financial_exposure")
     disp = [c for c in ["invoice_id", "customer", "invoice_amount", "outstanding_amount", "estimated_financial_exposure", "risk_level", "late_probability"] if c in top_df.columns]
-    st.dataframe(top_df[disp], use_container_width=True, hide_index=True)
+    exp_table = top_df[disp].copy()
+    exp_table.rename(columns={
+        "invoice_id": "Invoice",
+        "customer": "Customer",
+        "invoice_amount": "Amount",
+        "outstanding_amount": "Outstanding",
+        "estimated_financial_exposure": "Revenue at Risk",
+        "risk_level": "Risk Level",
+        "late_probability": "Payment Risk",
+    }, inplace=True)
+    if "Amount" in exp_table.columns:
+        exp_table["Amount"] = exp_table["Amount"].apply(lambda x: f"${x:,.0f}")
+    if "Outstanding" in exp_table.columns:
+        exp_table["Outstanding"] = exp_table["Outstanding"].apply(lambda x: f"${x:,.0f}")
+    if "Revenue at Risk" in exp_table.columns:
+        exp_table["Revenue at Risk"] = exp_table["Revenue at Risk"].apply(lambda x: f"${x:,.0f}")
+    if "Payment Risk" in exp_table.columns:
+        exp_table["Payment Risk"] = exp_table["Payment Risk"].apply(lambda x: f"{x:.1%}")
+    st.dataframe(exp_table, use_container_width=True, hide_index=True)
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1401,13 +1420,12 @@ def render_ai_explanation(artifacts: Dict[str, Any]) -> None:
         st.markdown('<div class="ig-empty"><div class="ig-empty-icon">🧠</div><div class="ig-empty-title">No prediction data</div><div class="ig-empty-sub">Demo dataset unavailable.</div></div>', unsafe_allow_html=True)
         return
 
-    model_options = [n for n in ["classifier", "logistic_regression", "random_forest", "mlp_neural_network"] if n in artifacts["models"]]
-    if not model_options:
-        st.warning("No compatible classifier artifacts are available for explanation.")
+    if "classifier" not in artifacts.get("models", {}):
+        st.warning("Risk driver explanation service is currently unavailable.")
         return
 
-    # Always use the primary deployed classifier; do not expose raw model keys to users
-    selected_model = model_options[0]
+    selected_model = "classifier"
+
 
     col_a, _ = st.columns([2, 1])
     with col_a:
@@ -1772,7 +1790,16 @@ def render_alert_center(artifacts: Dict[str, Any]) -> None:
     if rising.empty:
         st.success("✅ No customers currently show elevated rising-risk conditions in the available dataset.")
     else:
-        st.dataframe(rising, use_container_width=True, hide_index=True)
+        rising_display = rising.copy()
+        rising_display.rename(columns={
+            "customer": "Customer",
+            "invoice_count": "Active Invoices",
+            "avg_probability": "Payment Risk",
+            "latest_risk": "Risk Level",
+        }, inplace=True)
+        rising_display["Payment Risk"] = rising_display["Payment Risk"].apply(lambda x: f"{x:.1%}")
+        st.dataframe(rising_display, use_container_width=True, hide_index=True)
+
 
 
 

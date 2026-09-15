@@ -2,7 +2,8 @@
 
 ## Tabular Invoice Models
 
-- `models/classifier.joblib`: Selected classifier pipeline. The current artifact uses Random Forest as the best-performing model (see `models/metadata.json: best_model`).
+- `models/classifier.joblib`: Deployed production classifier pipeline. The active artifact is an isotonically calibrated Logistic Regression pipeline (`CalibratedClassifierCV` over `LogisticRegression`) with `ColumnTransformer` preprocessing. (Note: `models/metadata.json: best_model` records `random_forest` from historical raw-AUC benchmark selection, whereas `classifier.joblib` is the calibrated production model).
+
 - `models/logistic_regression.joblib`: Logistic Regression baseline.
 - `models/random_forest.joblib`: Random Forest baseline.
 - `models/mlp_neural_network.joblib`: Feed-forward MLP neural network pipeline.

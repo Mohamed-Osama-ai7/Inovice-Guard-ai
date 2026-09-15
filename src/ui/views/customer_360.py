@@ -107,9 +107,19 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
             if "late_probability" in disp_df.columns:
                 disp_df["late_probability"] = disp_df["late_probability"].apply(lambda x: f"{x:.1%}")
             if "expected_delay_days" in disp_df.columns:
-                disp_df["expected_delay_days"] = disp_df["expected_delay_days"].apply(lambda x: f"{x:.1f}")
+                disp_df["expected_delay_days"] = disp_df["expected_delay_days"].apply(lambda x: f"{x:.1f}d")
                 
+            disp_df.rename(columns={
+                "invoice_id": "Invoice",
+                "invoice_date": "Invoice Date",
+                "due_date": "Due Date",
+                "invoice_amount": "Amount",
+                "risk_level": "Risk Level",
+                "late_probability": "Payment Risk",
+                "expected_delay_days": "Est. Delay",
+            }, inplace=True)
             st.dataframe(disp_df, use_container_width=True, hide_index=True)
+
         else:
             empty_state("📄", "No invoice data", "This customer does not have any invoice history in the InvoiceGuard system.")
             
