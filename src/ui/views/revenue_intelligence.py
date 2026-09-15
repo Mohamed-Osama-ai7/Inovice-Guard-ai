@@ -11,14 +11,13 @@ def _load_retail_data() -> pd.DataFrame:
         return pd.DataFrame()
 
 def render_revenue_forecast(artifacts: Dict[str, Any]) -> None:
-    page_header("Revenue Forecast", "60-Day future revenue predictions driven by customer behavior models.")
+    page_header("Revenue Forecast", "60-day revenue projections based on customer behavioral patterns and historical transaction activity.")
     df = _load_retail_data()
     if df.empty or "target_future_revenue_60d" not in df.columns:
         empty_state("📈", "No Revenue Data", "Retail data pipeline has not generated forecast data.")
         return
-        
-    st.write("Using the HistGradientBoosting Regressor for Revenue Forecasting.")
     
+
     total_forecast = df["target_future_revenue_60d"].sum()
     avg_forecast = df["target_future_revenue_60d"].mean()
     
@@ -36,14 +35,12 @@ def render_revenue_forecast(artifacts: Dict[str, Any]) -> None:
     st.dataframe(top, use_container_width=True, hide_index=True)
 
 def render_repurchase_risk(artifacts: Dict[str, Any]) -> None:
-    page_header("Repurchase Risk", "Predictive retention risk indicating which customers are likely to churn.")
+    page_header("Customer Retention", "Accounts showing behavioral signals associated with elevated churn risk over the next 60 days.")
     df = _load_retail_data()
     if df.empty or "target_repurchase_60d" not in df.columns:
         empty_state("📉", "No Retention Data", "Retail data pipeline has not generated retention data.")
         return
         
-    st.write("Using the Logistic Regression model for 60-Day Repurchase classification.")
-    
     churn_rate = 1 - df["target_repurchase_60d"].mean()
     at_risk_count = len(df[df["target_repurchase_60d"] == 0])
     

@@ -923,11 +923,12 @@ def render_feature_bars(explanation: List[Dict[str, Any]]) -> None:
 # ─────────────────────────────────────────────────────────────────────────────
 
 _NAV_GROUPS = [
-    ("PLATFORM",      ["Overview", "Invoice Risk", "Customer 360", "Customer Risk"]),
-    ("INTELLIGENCE",  ["Revenue Intelligence", "Retention", "Customer Segments", "Product Intelligence", "NLP Intelligence", "Explainable AI"]),
-    ("OPERATIONS",    ["Risk Queue"]),
-    ("SYSTEM",        ["Model Center", "Data Quality", "API / Integration", "Documentation"]),
+    ("PLATFORM",      ["Overview", "Invoices", "Customer 360", "Customer Risk"]),
+    ("INTELLIGENCE",  ["Revenue Forecast", "Customer Retention", "Message Intelligence", "Risk Drivers"]),
+    ("OPERATIONS",    ["Collections"]),
+    ("SETTINGS",      ["Data Quality", "System Status"]),
 ]
+
 
 
 def render_sidebar(artifacts: Dict[str, Any]) -> str:
@@ -1505,9 +1506,8 @@ def render_financial_impact(artifacts: Dict[str, Any]) -> None:
 
 def render_ai_explanation(artifacts: Dict[str, Any]) -> None:
     page_header(
-        "AI Explanation",
-        "Understand which factors drive each payment-risk prediction using SHAP explainability.",
-        eyebrow="Explainable AI",
+        "Risk Drivers",
+        "Understand which factors drive each payment-risk prediction. Select an invoice to see the key signals behind the assessment.",
     )
     analytics = build_dashboard_dataset(artifacts)
     if analytics.empty:
@@ -1519,12 +1519,14 @@ def render_ai_explanation(artifacts: Dict[str, Any]) -> None:
         st.warning("No compatible classifier artifacts are available for explanation.")
         return
 
-    col_a, col_b = st.columns([2, 1])
+    # Always use the primary deployed classifier; do not expose raw model keys to users
+    selected_model = model_options[0]
+
+    col_a, _ = st.columns([2, 1])
     with col_a:
         invoice_options = analytics["invoice_id"].tolist()
         selected_invoice = st.selectbox("Select Invoice", invoice_options)
-    with col_b:
-        selected_model = st.selectbox("Model", model_options)
+
 
     selected_row = analytics[analytics["invoice_id"] == selected_invoice].iloc[0]
     result = run_prediction(selected_row.to_dict(), selected_model, artifacts)
@@ -1538,7 +1540,7 @@ def render_ai_explanation(artifacts: Dict[str, Any]) -> None:
           <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
             <div>
               <div class="ig-result-risk {text_cls}" style="font-size:2rem;">{risk}</div>
-              <div style="color:var(--muted);font-size:.82rem;">Invoice: {selected_invoice} &nbsp;·&nbsp; Model: {selected_model.replace('_',' ').title()}</div>
+              <div style="color:var(--muted);font-size:.82rem;">Invoice: {selected_invoice}</div>
             </div>
             <div style="display:flex; gap:.75rem; flex-wrap:wrap;">
               <div class="ig-result-item"><div class="ig-result-item-lbl">Probability</div><div class="ig-result-item-val">{result['late_probability']:.1%}</div></div>
@@ -1577,8 +1579,7 @@ def render_ai_explanation(artifacts: Dict[str, Any]) -> None:
 def render_nlp_section(artifacts: Dict[str, Any]) -> None:
     page_header(
         "Message Intelligence",
-        "Analyze customer communication for payment-risk signals using the trained NLP classifier.",
-        eyebrow="NLP Payment-Risk Intelligence",
+        "Analyze customer payment communications for risk signals. Paste any customer message to receive a risk assessment.",
     )
 
     nlp_model = artifacts["models"].get("nlp_payment_risk")
@@ -1606,17 +1607,18 @@ def render_nlp_section(artifacts: Dict[str, Any]) -> None:
         st.caption(f"Decision thresholds — HIGH ≥ {thresholds['high']:.2f} · MEDIUM ≥ {thresholds['medium']:.2f}")
 
     customer_message = st.text_area(
-        "Customer payment-related message",
+        "Customer message",
         value=sample_text,
         height=140,
         placeholder="Paste a customer message here…",
     )
 
-    analyze_clicked = st.button("🔍  Analyze Message", type="primary")
+    analyze_clicked = st.button("Analyze Message", type="primary")
 
     if not analyze_clicked or not customer_message.strip():
-        st.caption("Enter a customer message and click Analyze to run the NLP assessment.")
+        st.caption("Enter a customer message and click Analyze to run the risk assessment.")
         return
+
 
     try:
         analysis = score_nlp_message(nlp_model, customer_message, thresholds)
@@ -1632,7 +1634,7 @@ def render_nlp_section(artifacts: Dict[str, Any]) -> None:
 
     st.markdown(
         f"""<div class="ig-nlp-result {result_cls}">
-          <div class="ig-nlp-label">NLP Risk Assessment</div>
+          <div class="ig-nlp-label">Payment Risk Assessment</div>
           <div class="ig-nlp-risk-text {text_cls}">{risk_label}</div>
           <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:.5rem;">
             <div><div class="ig-nlp-label">Confidence</div><strong style="font-size:1.15rem;color:var(--text)">{prob:.1%}</strong></div>
@@ -2032,10 +2034,10 @@ def load_comparison_reports() -> Tuple[Optional[pd.DataFrame], Optional[pd.DataF
 
 def render_artifact_diagnostics(artifacts: Dict[str, Any]) -> None:
     page_header(
-        "Artifact Diagnostics",
-        "System health, loaded artifact status, thresholds, and runtime configuration.",
-        eyebrow="System",
+        "System Status",
+        "Platform health, loaded service status, and operational diagnostics.",
     )
+
     models = artifacts.get("models", {})
     load_errors = artifacts.get("load_errors", {})
     metadata = artifacts.get("metadata", {})
@@ -2061,13 +2063,14 @@ def render_artifact_diagnostics(artifacts: Dict[str, Any]) -> None:
     # Model artifacts
     section_label("Loaded Model Artifacts")
     artifact_defs = [
-        ("XGBoost Classifier",   "classifier"),
-        ("Delay Regressor",      "delay_regressor"),
-        ("Logistic Regression",  "logistic_regression"),
-        ("Random Forest",        "random_forest"),
-        ("MLP Neural Network",   "mlp_neural_network"),
-        ("NLP Classifier",       "nlp_payment_risk"),
+        ("Payment Risk Model",   "classifier"),
+        ("Payment Delay Model",  "delay_regressor"),
+        ("Risk Model (Alt A)",   "logistic_regression"),
+        ("Risk Model (Alt B)",   "random_forest"),
+        ("Risk Model (Alt C)",   "mlp_neural_network"),
+        ("Message Intelligence", "nlp_payment_risk"),
     ]
+
     col1, col2 = st.columns(2)
     for i, (label, key) in enumerate(artifact_defs):
         col = col1 if i % 2 == 0 else col2
@@ -2158,8 +2161,9 @@ def main() -> None:
     from src.ui.views.receivables import render_collections
     from src.ui.views.customer_search import render_customer_search
     from src.ui.views.revenue_intelligence import render_revenue_forecast, render_repurchase_risk, render_revenue_at_risk
-    from src.ui.views.ai_insights import render_ai_recommendations, render_risk_signals
+    from src.ui.views.ai_insights import render_ai_recommendations
     from src.ui.views.system import render_data_quality
+
     
     # We use inject_css from src.ui.css to get the new enterprise styles, but keep old ones if needed
     inject_css()
@@ -2182,22 +2186,22 @@ def main() -> None:
 
     # Page routing
     page_map = {
-        "Overview":             render_overview,
-        "Invoice Risk":         lambda a: render_single_prediction(a, cold_start=False),
-        "Collections":          render_collections,
-        "Customer 360":         render_customer_360,
-        "Customer Search":      render_customer_search,
-        "Customer Risk":        render_risk_center,
-        "Revenue Forecast":     render_revenue_forecast,
-        "Repurchase Risk":      render_repurchase_risk,
-        "Revenue at Risk":      render_revenue_at_risk,
-        "AI Recommendations":   render_ai_recommendations,
-        "Risk Signals":         render_risk_signals,
-        "Explainable AI":       render_ai_explanation,
-        "Model Performance":    render_model_center,
-        "Data Quality":         render_data_quality,
-        "System Health":        render_artifact_diagnostics,
+        "Overview":              render_overview,
+        "Invoices":              lambda a: render_single_prediction(a, cold_start=False),
+        "Collections":           render_collections,
+        "Customer 360":          render_customer_360,
+        "Customer Search":       render_customer_search,
+        "Customer Risk":         render_risk_center,
+        "Revenue Forecast":      render_revenue_forecast,
+        "Customer Retention":    render_repurchase_risk,
+        "Revenue at Risk":       render_revenue_at_risk,
+        "Message Intelligence":  render_nlp_section,
+        "Risk Drivers":          render_ai_explanation,
+        "Recommendations":       render_ai_recommendations,
+        "Data Quality":          render_data_quality,
+        "System Status":         render_artifact_diagnostics,
     }
+
 
     render_fn = page_map.get(current_page, render_overview)
     render_fn(artifacts)

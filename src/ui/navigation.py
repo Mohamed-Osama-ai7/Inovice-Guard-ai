@@ -2,12 +2,12 @@ import streamlit as st
 from typing import Dict, Any
 
 _NAV_GROUPS = [
-    ("OVERVIEW",            ["Overview"]),
-    ("RECEIVABLES",         ["Invoice Risk", "Collections"]),
-    ("CUSTOMER INTELLIGENCE",["Customer 360", "Customer Search", "Customer Risk"]),
-    ("REVENUE INTELLIGENCE",["Revenue Forecast", "Repurchase Risk", "Revenue at Risk"]),
-    ("AI INSIGHTS",         ["AI Recommendations", "Risk Signals", "Explainable AI"]),
-    ("SYSTEM",              ["Model Performance", "Data Quality", "System Health"]),
+    ("OVERVIEW",              ["Overview"]),
+    ("RECEIVABLES",           ["Invoices", "Collections"]),
+    ("CUSTOMER INTELLIGENCE", ["Customer 360", "Customer Search", "Customer Risk"]),
+    ("REVENUE INTELLIGENCE",  ["Revenue Forecast", "Customer Retention", "Revenue at Risk"]),
+    ("INSIGHTS",              ["Message Intelligence", "Risk Drivers", "Recommendations"]),
+    ("SETTINGS",              ["Data Quality", "System Status"]),
 ]
 
 

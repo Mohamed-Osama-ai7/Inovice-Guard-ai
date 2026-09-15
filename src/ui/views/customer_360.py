@@ -128,7 +128,7 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
             preds = retail_data.get("predictions", {})
             st.markdown('<div class="ig-card">', unsafe_allow_html=True)
             st.markdown(f'<h3>60-Day Revenue Forecast: ${preds.get("expected_future_revenue_60d", 0):,.2f}</h3>', unsafe_allow_html=True)
-            st.write("This forecast is generated using the HistGradientBoosting model trained on historical retail transactions.")
+            st.write("Estimated based on behavioral patterns and historical purchasing activity.")
             st.markdown('</div>', unsafe_allow_html=True)
         else:
             empty_state("📈", "No Revenue Intelligence", "No retail behavioral data available for this customer.")
