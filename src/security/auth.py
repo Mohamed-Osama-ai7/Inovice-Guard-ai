@@ -22,10 +22,45 @@ SESSION_ROLE_KEY = "auth_role"
 SESSION_USER_KEY = "auth_user"
 SESSION_AUTH_KEY = "auth_authenticated"
 
-# Default fallback values for local/demo testing (overridden by env vars or st.secrets in production)
+# Default fallback values for local/demo testing only (strictly forbidden in production)
 _DEFAULT_ADMIN_USER = "admin"
 _DEFAULT_ADMIN_PASS = "admin123"
 _DEFAULT_SALT = "invoiceguard_salt_2026"
+
+
+def is_production_environment() -> bool:
+    """
+    Determines if the application is running in a production environment
+    (e.g., Streamlit Community Cloud, production container, or explicit env var).
+    """
+    # 1. Explicit production environment variable
+    env = os.environ.get("INVOICEGUARD_ENV", os.environ.get("ENVIRONMENT", "")).lower().strip()
+    if env in ("production", "prod"):
+        return True
+
+    # 2. Explicit demo mode override (if set to false/0, treat as production/restricted)
+    allow_demo = os.environ.get("INVOICEGUARD_ALLOW_DEMO_LOGIN", "").lower().strip()
+    if allow_demo in ("0", "false", "no", "disabled"):
+        return True
+
+    # 3. Streamlit Community Cloud runtime indicators
+    if os.environ.get("STREAMLIT_SHARING_MODE") or os.environ.get("IS_STREAMLIT_CLOUD"):
+        return True
+
+    # 4. Hosted cloud file paths (e.g. /mount/src on Streamlit Cloud or /app/src)
+    file_path = str(os.path.abspath(__file__)).replace("\\", "/")
+    if "/mount/src/" in file_path or "/app/src/" in file_path:
+        return True
+
+    return False
+
+
+def is_demo_fallback_allowed() -> bool:
+    """
+    Returns True only in non-production local development when demo fallback is permitted.
+    Production strictly rejects any fallback demo credentials.
+    """
+    return not is_production_environment()
 
 
 def hash_password(password: str, salt: Optional[str] = None) -> str:
@@ -98,13 +133,36 @@ def _get_config(key: str, default: str = "") -> str:
 def authenticate_admin(username: str, password: str) -> bool:
     """
     Validates administrator credentials using constant-time comparisons.
-    Returns True if valid, False otherwise.
+    In production, explicit credentials configured via st.secrets or environment
+    variables are mandatory; fallback demo credentials are never accepted.
+    In local development, fallback demo credentials (admin / admin123) are permitted
+    only if no explicit credentials have been configured.
     """
     if not username or not password:
         return False
 
-    configured_user = _get_config("INVOICEGUARD_ADMIN_USERNAME", _DEFAULT_ADMIN_USER)
-    
+    explicit_user = _get_config("INVOICEGUARD_ADMIN_USERNAME", default="")
+    explicit_pass = _get_config("INVOICEGUARD_ADMIN_PASSWORD", default="")
+    explicit_hash = _get_config("INVOICEGUARD_ADMIN_PASSWORD_HASH", default="")
+
+    has_explicit_creds = bool(explicit_user and (explicit_pass or explicit_hash))
+
+    if not has_explicit_creds:
+        if not is_demo_fallback_allowed():
+            logger.warning(
+                "Admin authentication denied: Production environment requires explicit "
+                "admin credentials configured via st.secrets or environment variables."
+            )
+            return False
+        # Local development demo fallback only
+        configured_user = _DEFAULT_ADMIN_USER
+        configured_pass = _DEFAULT_ADMIN_PASS
+        configured_hash = ""
+    else:
+        configured_user = explicit_user
+        configured_pass = explicit_pass
+        configured_hash = explicit_hash
+
     # Constant-time username match
     user_match = hmac.compare_digest(
         username.strip().encode("utf-8"),
@@ -114,12 +172,10 @@ def authenticate_admin(username: str, password: str) -> bool:
         logger.warning("Admin authentication failed: unrecognized username.")
         return False
 
-    # Check for password hash or plaintext secret
-    configured_hash = _get_config("INVOICEGUARD_ADMIN_PASSWORD_HASH", "")
+    # Constant-time password verification
     if configured_hash:
         pass_valid = verify_password(password, configured_hash)
     else:
-        configured_pass = _get_config("INVOICEGUARD_ADMIN_PASSWORD", _DEFAULT_ADMIN_PASS)
         pass_valid = verify_password(password, configured_pass)
 
     if not pass_valid:
@@ -141,7 +197,13 @@ def get_current_role() -> str:
 
 def is_admin() -> bool:
     """Returns True if the active session is authenticated with ADMIN role."""
-    return get_current_role() == ROLE_ADMIN
+    try:
+        import streamlit as st
+        is_auth = bool(st.session_state.get(SESSION_AUTH_KEY, False))
+        role = st.session_state.get(SESSION_ROLE_KEY, ROLE_USER)
+        return is_auth and (role == ROLE_ADMIN)
+    except Exception:
+        return False
 
 
 def login_admin(username: str, password: str) -> bool:

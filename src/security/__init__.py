@@ -10,6 +10,8 @@ from src.security.auth import (
     hash_password,
     verify_password,
     authenticate_admin,
+    is_production_environment,
+    is_demo_fallback_allowed,
 )
 
 __all__ = [
@@ -23,4 +25,6 @@ __all__ = [
     "hash_password",
     "verify_password",
     "authenticate_admin",
+    "is_production_environment",
+    "is_demo_fallback_allowed",
 ]

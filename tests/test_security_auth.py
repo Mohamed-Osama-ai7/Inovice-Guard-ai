@@ -15,6 +15,8 @@ from src.security.auth import (
     is_admin,
     get_current_role,
     require_admin,
+    is_production_environment,
+    is_demo_fallback_allowed,
 )
 from src.ui.navigation import get_nav_groups, _BUSINESS_NAV_GROUPS, _ADMIN_NAV_GROUP
 from src.data.file_loader import validate_and_load_uploaded_file, MAX_FILE_SIZE_MB
@@ -57,12 +59,39 @@ class TestSecurityAuth(unittest.TestCase):
         self.assertFalse(verify_password("", hashed))
         self.assertFalse(verify_password("SuperSecretPass123!", ""))
 
-    def test_default_admin_authentication(self):
-        """Verify default demo admin credentials work in test environment."""
-        self.assertTrue(authenticate_admin("admin", "admin123"))
-        self.assertFalse(authenticate_admin("admin", "wrongpassword"))
-        self.assertFalse(authenticate_admin("unknown_user", "admin123"))
-        self.assertFalse(authenticate_admin("", ""))
+    def test_default_admin_authentication_in_local_dev(self):
+        """Verify fallback demo admin credentials work only in non-production local dev."""
+        with patch.dict(os.environ, {"ENVIRONMENT": "development", "INVOICEGUARD_ENV": "development"}):
+            self.assertTrue(authenticate_admin("admin", "admin123"))
+            self.assertFalse(authenticate_admin("admin", "wrongpassword"))
+            self.assertFalse(authenticate_admin("unknown_user", "admin123"))
+            self.assertFalse(authenticate_admin("", ""))
+
+    def test_production_strictly_rejects_fallback_demo_credentials(self):
+        """Verify that production rejects fallback demo credentials if no explicit secrets are configured."""
+        with patch.dict(os.environ, {
+            "ENVIRONMENT": "production",
+            "INVOICEGUARD_ADMIN_USERNAME": "",
+            "INVOICEGUARD_ADMIN_PASSWORD": "",
+            "INVOICEGUARD_ADMIN_PASSWORD_HASH": "",
+        }):
+            self.assertTrue(is_production_environment())
+            self.assertFalse(is_demo_fallback_allowed())
+            # In production without explicit credentials, demo credentials must be denied
+            self.assertFalse(authenticate_admin("admin", "admin123"))
+
+    def test_production_accepts_explicit_credentials(self):
+        """Verify production permits authentication only when explicit credentials are configured."""
+        with patch.dict(os.environ, {
+            "ENVIRONMENT": "production",
+            "INVOICEGUARD_ADMIN_USERNAME": "cloud_admin",
+            "INVOICEGUARD_ADMIN_PASSWORD": "CloudAdminSecret!999",
+        }):
+            self.assertTrue(is_production_environment())
+            self.assertTrue(authenticate_admin("cloud_admin", "CloudAdminSecret!999"))
+            # Demo credentials must still fail even when explicit ones exist
+            self.assertFalse(authenticate_admin("admin", "admin123"))
+            self.assertFalse(authenticate_admin("cloud_admin", "wrongpassword"))
 
     def test_custom_environment_credentials(self):
         """Verify credentials configured via environment variables."""
@@ -85,33 +114,50 @@ class TestSecurityAuth(unittest.TestCase):
             self.assertFalse(authenticate_admin("hashed_admin", "wrong_attempt"))
 
     def test_session_role_lifecycle(self):
-        """Test login_admin elevates role and logout safely demotes to USER."""
+        """Test guest -> admin -> logout -> guest lifecycle."""
+        # Initial guest/user state
         self.assertEqual(get_current_role(), ROLE_USER)
         self.assertFalse(is_admin())
 
+        # Successful admin login
         success = login_admin("admin", "admin123")
         self.assertTrue(success)
         self.assertEqual(get_current_role(), ROLE_ADMIN)
         self.assertTrue(is_admin())
 
-        # When logged in as admin viewing an admin page
+        # Page switching while authenticated preserves admin role
+        st.session_state["current_page"] = "Customer Risk"
+        self.assertTrue(is_admin())
         st.session_state["current_page"] = "System Status"
+        self.assertTrue(is_admin())
+
+        # Admin logout clears credentials and redirects safely
         logout()
         self.assertEqual(get_current_role(), ROLE_USER)
         self.assertFalse(is_admin())
-        self.assertEqual(st.session_state["current_page"], "Overview")
+        self.assertIsNone(st.session_state.get("auth_user"))
+        self.assertEqual(st.session_state.get("current_page"), "Overview")
+
+    def test_session_tampering_resilience(self):
+        """Verify is_admin() requires both authenticated flag AND admin role."""
+        st.session_state["auth_role"] = ROLE_ADMIN
+        st.session_state["auth_authenticated"] = False
+        self.assertFalse(is_admin())
 
     def test_require_admin_guard(self):
         """Verify require_admin blocks unauthenticated users and allows admins."""
         st.session_state["auth_role"] = ROLE_USER
+        st.session_state["auth_authenticated"] = False
         self.assertFalse(require_admin())
 
         st.session_state["auth_role"] = ROLE_ADMIN
+        st.session_state["auth_authenticated"] = True
         self.assertTrue(require_admin())
 
     def test_navigation_role_filtering(self):
         """Verify navigation groups hide admin views from normal users."""
         st.session_state["auth_role"] = ROLE_USER
+        st.session_state["auth_authenticated"] = False
         user_nav = get_nav_groups()
         group_names = [name for name, _ in user_nav]
         all_pages = [page for _, pages in user_nav for page in pages]
@@ -123,6 +169,7 @@ class TestSecurityAuth(unittest.TestCase):
 
         # As Admin
         st.session_state["auth_role"] = ROLE_ADMIN
+        st.session_state["auth_authenticated"] = True
         admin_nav = get_nav_groups()
         admin_group_names = [name for name, _ in admin_nav]
         admin_pages = [page for _, pages in admin_nav for page in pages]
@@ -132,22 +179,31 @@ class TestSecurityAuth(unittest.TestCase):
         self.assertIn("System Status", admin_pages)
         self.assertEqual(len(admin_nav), 6)
 
+    def test_env_example_contains_placeholders_only(self):
+        """Verify .env.example does not contain real secrets or production credentials."""
+        env_example_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.example")
+        if os.path.exists(env_example_path):
+            with open(env_example_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            self.assertIn("change_this_in_production", content)
+            self.assertNotIn("supersecret", content.lower())
+
     def test_file_upload_empty_file_rejected(self):
-        """Verify 0-byte upload is safely rejected."""
+        """Verify 0-byte upload is safely handled."""
         empty_upload = MockUpload("test.csv", b"", size=0)
         df, err = validate_and_load_uploaded_file(empty_upload)
         self.assertIsNone(df)
         self.assertIn("empty", err.lower())
 
     def test_file_upload_oversized_rejected(self):
-        """Verify oversized files (>50MB) are safely rejected."""
+        """Verify oversized files (>50MB) are safely handled."""
         oversized = MockUpload("big.csv", b"sample", size=55 * 1024 * 1024)
         df, err = validate_and_load_uploaded_file(oversized)
         self.assertIsNone(df)
         self.assertIn("exceeds maximum allowed", err)
 
     def test_file_upload_unsupported_extension_rejected(self):
-        """Verify unsupported file extensions are safely rejected."""
+        """Verify unsupported file extensions are safely handled."""
         bad_ext = MockUpload("script.exe", b"binary content")
         df, err = validate_and_load_uploaded_file(bad_ext)
         self.assertIsNone(df)
