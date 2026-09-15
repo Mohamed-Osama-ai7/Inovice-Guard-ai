@@ -1880,6 +1880,7 @@ def main() -> None:
     from src.ui.views.revenue_intelligence import render_revenue_forecast, render_repurchase_risk, render_revenue_at_risk
     from src.ui.views.ai_insights import render_ai_recommendations
     from src.ui.views.system import render_data_quality
+    from src.ui.views.retail_views import render_customer_segmentation, render_product_intelligence
 
     
     # We use inject_css from src.ui.css to get the new enterprise styles, but keep old ones if needed
@@ -1909,11 +1910,13 @@ def main() -> None:
         "Customer 360":          render_customer_360,
         "Customer Search":       render_customer_search,
         "Customer Risk":         render_risk_center,
+        "Customer Segmentation": render_customer_segmentation,
         "Revenue Forecast":      render_revenue_forecast,
         "Customer Retention":    render_repurchase_risk,
         "Revenue at Risk":       render_revenue_at_risk,
         "Message Intelligence":  render_nlp_section,
         "Risk Drivers":          render_ai_explanation,
+        "Product Intelligence":  render_product_intelligence,
         "Recommendations":       render_ai_recommendations,
         "Data Quality":          render_data_quality,
         "System Status":         render_artifact_diagnostics,

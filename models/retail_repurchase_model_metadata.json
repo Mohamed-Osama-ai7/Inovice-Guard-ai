@@ -1,5 +1,14 @@
 {
-  "model_name": "LogisticRegression",
+  "model_name": "LogisticRegression (Isotonic Calibrated)",
+  "domain": "UCI Online Retail II",
+  "task": "Repurchase & Inactivity Risk Prediction (60-Day Forward Horizon)",
+  "version": "1.2.0",
+  "algorithm": "LogisticRegression with Isotonic Probability Calibration",
+  "data_source": "UCI Machine Learning Repository: Online Retail II (2009-2011)",
+  "temporal_validation": "Chronological split (Train: 2010-06..2010-12, Val: 2011-01..2011-03, Test: 2011-04..2011-06, OOT: 2011-07..2011-10)",
+  "target_definition": "repurchase_60d: Binary indicator (1 if customer placed >=1 valid order within [T, T+60d), 0 otherwise)",
+  "leakage_prevention": "Point-in-time snapshot generation: features strictly computed from transactions where invoice_date < snapshot_date",
+  "limitations": "Trained on wholesale gift/retail telemetry. Recalibration advised if deployed on B2B subscription products.",
   "features": [
     "recency_days",
     "customer_age_days",

@@ -1,0 +1,800 @@
+{
+  "dataset": "UCI Online Retail II",
+  "top_products_by_revenue": [
+    {
+      "stock_code": "22423",
+      "description": "REGENCY CAKESTAND 3 TIER",
+      "gross_revenue": 327813.65,
+      "total_quantity": 26109,
+      "cancellation_rate": 0.0787
+    },
+    {
+      "stock_code": "DOT",
+      "description": "DOTCOM POSTAGE",
+      "gross_revenue": 322647.47,
+      "total_quantity": 1433,
+      "cancellation_rate": 0.0021
+    },
+    {
+      "stock_code": "85123A",
+      "description": "WHITE HANGING HEART T-LIGHT HOLDER",
+      "gross_revenue": 253541.51,
+      "total_quantity": 92448,
+      "cancellation_rate": 0.0232
+    },
+    {
+      "stock_code": "47566",
+      "description": "PARTY BUNTING",
+      "gross_revenue": 147948.5,
+      "total_quantity": 28093,
+      "cancellation_rate": 0.0083
+    },
+    {
+      "stock_code": "85099B",
+      "description": "JUMBO BAG RED RETROSPOT",
+      "gross_revenue": 146689.0,
+      "total_quantity": 77665,
+      "cancellation_rate": 0.0215
+    },
+    {
+      "stock_code": "84879",
+      "description": "ASSORTED COLOUR BIRD ORNAMENT",
+      "gross_revenue": 131413.85,
+      "total_quantity": 81298,
+      "cancellation_rate": 0.0064
+    },
+    {
+      "stock_code": "22086",
+      "description": "PAPER CHAIN KIT 50'S CHRISTMAS ",
+      "gross_revenue": 121662.14,
+      "total_quantity": 35985,
+      "cancellation_rate": 0.0077
+    },
+    {
+      "stock_code": "POST",
+      "description": "POSTAGE",
+      "gross_revenue": 112341.0,
+      "total_quantity": 5158,
+      "cancellation_rate": 0.1083
+    },
+    {
+      "stock_code": "79321",
+      "description": "CHILLI LIGHTS",
+      "gross_revenue": 84854.16,
+      "total_quantity": 16695,
+      "cancellation_rate": 0.0174
+    },
+    {
+      "stock_code": "84347",
+      "description": "ROTATING SILVER ANGELS T-LIGHT HLDR",
+      "gross_revenue": 73814.72,
+      "total_quantity": 13775,
+      "cancellation_rate": 0.0095
+    },
+    {
+      "stock_code": "21137",
+      "description": "BLACK RECORD COVER FRAME",
+      "gross_revenue": 69247.18,
+      "total_quantity": 19931,
+      "cancellation_rate": 0.0106
+    },
+    {
+      "stock_code": "85099F",
+      "description": "JUMBO BAG STRAWBERRY",
+      "gross_revenue": 67976.57,
+      "total_quantity": 36841,
+      "cancellation_rate": 0.0136
+    },
+    {
+      "stock_code": "23084",
+      "description": "RABBIT NIGHT LIGHT",
+      "gross_revenue": 66756.59,
+      "total_quantity": 30680,
+      "cancellation_rate": 0.0143
+    },
+    {
+      "stock_code": "22114",
+      "description": "HOT WATER BOTTLE TEA AND SYMPATHY",
+      "gross_revenue": 62722.55,
+      "total_quantity": 12242,
+      "cancellation_rate": 0.0076
+    },
+    {
+      "stock_code": "82484",
+      "description": "WOOD BLACK BOARD ANT WHITE FINISH",
+      "gross_revenue": 62517.02,
+      "total_quantity": 11005,
+      "cancellation_rate": 0.0194
+    },
+    {
+      "stock_code": "21931",
+      "description": "JUMBO STORAGE BAG SUKI",
+      "gross_revenue": 61574.65,
+      "total_quantity": 29113,
+      "cancellation_rate": 0.014
+    },
+    {
+      "stock_code": "22910",
+      "description": "PAPER CHAIN KIT VINTAGE CHRISTMAS",
+      "gross_revenue": 60533.44,
+      "total_quantity": 19148,
+      "cancellation_rate": 0.0115
+    },
+    {
+      "stock_code": "21621",
+      "description": "VINTAGE UNION JACK BUNTING",
+      "gross_revenue": 60124.54,
+      "total_quantity": 6881,
+      "cancellation_rate": 0.0075
+    },
+    {
+      "stock_code": "22112",
+      "description": "CHOCOLATE HOT WATER BOTTLE",
+      "gross_revenue": 60075.64,
+      "total_quantity": 11400,
+      "cancellation_rate": 0.007
+    },
+    {
+      "stock_code": "85099C",
+      "description": "JUMBO  BAG BAROQUE BLACK WHITE",
+      "gross_revenue": 59721.44,
+      "total_quantity": 30936,
+      "cancellation_rate": 0.0133
+    },
+    {
+      "stock_code": "15056N",
+      "description": "EDWARDIAN PARASOL NATURAL",
+      "gross_revenue": 57587.04,
+      "total_quantity": 11215,
+      "cancellation_rate": 0.0195
+    },
+    {
+      "stock_code": "22411",
+      "description": "JUMBO SHOPPER VINTAGE RED PAISLEY",
+      "gross_revenue": 57483.93,
+      "total_quantity": 27291,
+      "cancellation_rate": 0.0096
+    },
+    {
+      "stock_code": "22470",
+      "description": "HEART OF WICKER LARGE",
+      "gross_revenue": 54870.17,
+      "total_quantity": 18155,
+      "cancellation_rate": 0.0104
+    },
+    {
+      "stock_code": "22189",
+      "description": "CREAM HEART CARD HOLDER",
+      "gross_revenue": 54430.0,
+      "total_quantity": 18320,
+      "cancellation_rate": 0.0104
+    },
+    {
+      "stock_code": "22178",
+      "description": "VICTORIAN GLASS HANGING T-LIGHT",
+      "gross_revenue": 52065.05,
+      "total_quantity": 39738,
+      "cancellation_rate": 0.0233
+    },
+    {
+      "stock_code": "21623",
+      "description": "VINTAGE UNION JACK MEMOBOARD",
+      "gross_revenue": 51623.53,
+      "total_quantity": 7144,
+      "cancellation_rate": 0.023
+    },
+    {
+      "stock_code": "22111",
+      "description": "SCOTTIE DOG HOT WATER BOTTLE",
+      "gross_revenue": 51255.66,
+      "total_quantity": 10001,
+      "cancellation_rate": 0.0081
+    },
+    {
+      "stock_code": "22469",
+      "description": "HEART OF WICKER SMALL",
+      "gross_revenue": 50701.66,
+      "total_quantity": 28755,
+      "cancellation_rate": 0.0086
+    },
+    {
+      "stock_code": "21733",
+      "description": "RED HANGING HEART T-LIGHT HOLDER",
+      "gross_revenue": 50451.77,
+      "total_quantity": 17575,
+      "cancellation_rate": 0.0189
+    },
+    {
+      "stock_code": "22386",
+      "description": "JUMBO BAG PINK POLKADOT",
+      "gross_revenue": 50021.77,
+      "total_quantity": 25166,
+      "cancellation_rate": 0.0112
+    },
+    {
+      "stock_code": "21929",
+      "description": "JUMBO BAG PINK VINTAGE PAISLEY",
+      "gross_revenue": 49850.13,
+      "total_quantity": 25682,
+      "cancellation_rate": 0.0125
+    },
+    {
+      "stock_code": "22457",
+      "description": "NATURAL SLATE HEART CHALKBOARD ",
+      "gross_revenue": 48346.25,
+      "total_quantity": 15659,
+      "cancellation_rate": 0.0149
+    },
+    {
+      "stock_code": "21731",
+      "description": "RED TOADSTOOL LED NIGHT LIGHT",
+      "gross_revenue": 48081.79,
+      "total_quantity": 28725,
+      "cancellation_rate": 0.0148
+    },
+    {
+      "stock_code": "21754",
+      "description": "HOME BUILDING BLOCK WORD",
+      "gross_revenue": 47848.04,
+      "total_quantity": 7808,
+      "cancellation_rate": 0.0091
+    },
+    {
+      "stock_code": "21232",
+      "description": "STRAWBERRY CERAMIC TRINKET BOX",
+      "gross_revenue": 47549.03,
+      "total_quantity": 36682,
+      "cancellation_rate": 0.0705
+    },
+    {
+      "stock_code": "84029E",
+      "description": "RED WOOLLY HOTTIE WHITE HEART.",
+      "gross_revenue": 47409.68,
+      "total_quantity": 11744,
+      "cancellation_rate": 0.0086
+    },
+    {
+      "stock_code": "15056BL",
+      "description": "EDWARDIAN PARASOL BLACK",
+      "gross_revenue": 47030.54,
+      "total_quantity": 9433,
+      "cancellation_rate": 0.013
+    },
+    {
+      "stock_code": "21181",
+      "description": "PLEASE ONE PERSON METAL SIGN",
+      "gross_revenue": 46909.75,
+      "total_quantity": 23135,
+      "cancellation_rate": 0.0087
+    },
+    {
+      "stock_code": "21843",
+      "description": "RED RETROSPOT CAKE STAND",
+      "gross_revenue": 45611.19,
+      "total_quantity": 4265,
+      "cancellation_rate": 0.0829
+    },
+    {
+      "stock_code": "22326",
+      "description": "ROUND SNACK BOXES SET OF4 WOODLAND ",
+      "gross_revenue": 44680.88,
+      "total_quantity": 15566,
+      "cancellation_rate": 0.0177
+    },
+    {
+      "stock_code": "20727",
+      "description": "LUNCH BAG  BLACK SKULL.",
+      "gross_revenue": 44643.54,
+      "total_quantity": 25915,
+      "cancellation_rate": 0.0178
+    },
+    {
+      "stock_code": "21915",
+      "description": "RED  HARMONICA IN BOX ",
+      "gross_revenue": 43812.8,
+      "total_quantity": 37303,
+      "cancellation_rate": 0.0147
+    },
+    {
+      "stock_code": "22197",
+      "description": "SMALL POPCORN HOLDER",
+      "gross_revenue": 43809.96,
+      "total_quantity": 49580,
+      "cancellation_rate": 0.034
+    },
+    {
+      "stock_code": "82494L",
+      "description": "WOODEN FRAME ANTIQUE WHITE ",
+      "gross_revenue": 43471.05,
+      "total_quantity": 15134,
+      "cancellation_rate": 0.0181
+    },
+    {
+      "stock_code": "48138",
+      "description": "DOORMAT UNION FLAG",
+      "gross_revenue": 42704.41,
+      "total_quantity": 6361,
+      "cancellation_rate": 0.0097
+    },
+    {
+      "stock_code": "22355",
+      "description": "CHARLOTTE BAG SUKI DESIGN",
+      "gross_revenue": 42697.56,
+      "total_quantity": 28105,
+      "cancellation_rate": 0.0183
+    },
+    {
+      "stock_code": "23298",
+      "description": "SPOTTY BUNTING",
+      "gross_revenue": 42065.32,
+      "total_quantity": 8217,
+      "cancellation_rate": 0.0103
+    },
+    {
+      "stock_code": "22138",
+      "description": "BAKING SET 9 PIECE RETROSPOT ",
+      "gross_revenue": 41893.41,
+      "total_quantity": 8520,
+      "cancellation_rate": 0.0981
+    },
+    {
+      "stock_code": "82482",
+      "description": "WOODEN PICTURE FRAME WHITE FINISH",
+      "gross_revenue": 41478.43,
+      "total_quantity": 16738,
+      "cancellation_rate": 0.0142
+    },
+    {
+      "stock_code": "20725",
+      "description": "LUNCH BAG RED RETROSPOT",
+      "gross_revenue": 41245.48,
+      "total_quantity": 22203,
+      "cancellation_rate": 0.0262
+    }
+  ],
+  "top_products_by_volume": [
+    {
+      "stock_code": "84077",
+      "description": "WORLD WAR 2 GLIDERS ASSTD DESIGNS",
+      "total_quantity": 108434,
+      "gross_revenue": 24898.22,
+      "cancellation_rate": 0.0104
+    },
+    {
+      "stock_code": "85123A",
+      "description": "WHITE HANGING HEART T-LIGHT HOLDER",
+      "total_quantity": 92448,
+      "gross_revenue": 253541.51,
+      "cancellation_rate": 0.0232
+    },
+    {
+      "stock_code": "84879",
+      "description": "ASSORTED COLOUR BIRD ORNAMENT",
+      "total_quantity": 81298,
+      "gross_revenue": 131413.85,
+      "cancellation_rate": 0.0064
+    },
+    {
+      "stock_code": "85099B",
+      "description": "JUMBO BAG RED RETROSPOT",
+      "total_quantity": 77665,
+      "gross_revenue": 146689.0,
+      "cancellation_rate": 0.0215
+    },
+    {
+      "stock_code": "17003",
+      "description": "BROCADE RING PURSE ",
+      "total_quantity": 70690,
+      "gross_revenue": 14743.41,
+      "cancellation_rate": 0.0124
+    },
+    {
+      "stock_code": "21977",
+      "description": "PACK OF 60 PINK PAISLEY CAKE CASES",
+      "total_quantity": 56575,
+      "gross_revenue": 28373.68,
+      "cancellation_rate": 0.0053
+    },
+    {
+      "stock_code": "84991",
+      "description": "60 TEATIME FAIRY CAKE CASES",
+      "total_quantity": 54366,
+      "gross_revenue": 27216.27,
+      "cancellation_rate": 0.0062
+    },
+    {
+      "stock_code": "22197",
+      "description": "SMALL POPCORN HOLDER",
+      "total_quantity": 49580,
+      "gross_revenue": 43809.96,
+      "cancellation_rate": 0.034
+    },
+    {
+      "stock_code": "21212",
+      "description": "PACK OF 72 RETROSPOT CAKE CASES",
+      "total_quantity": 49344,
+      "gross_revenue": 28688.28,
+      "cancellation_rate": 0.0097
+    },
+    {
+      "stock_code": "21212",
+      "description": "PACK OF 72 RETRO SPOT CAKE CASES",
+      "total_quantity": 46106,
+      "gross_revenue": 23759.26,
+      "cancellation_rate": 0.0068
+    },
+    {
+      "stock_code": "22492",
+      "description": "MINI PAINT SET VINTAGE ",
+      "total_quantity": 44124,
+      "gross_revenue": 28102.14,
+      "cancellation_rate": 0.0188
+    },
+    {
+      "stock_code": "15036",
+      "description": "ASSORTED COLOURS SILK FAN",
+      "total_quantity": 43436,
+      "gross_revenue": 32397.52,
+      "cancellation_rate": 0.0138
+    },
+    {
+      "stock_code": "21213",
+      "description": "PACK OF 72 SKULL CAKE CASES",
+      "total_quantity": 40644,
+      "gross_revenue": 21685.9,
+      "cancellation_rate": 0.0019
+    },
+    {
+      "stock_code": "84755",
+      "description": "COLOUR GLASS T-LIGHT HOLDER HANGING",
+      "total_quantity": 40110,
+      "gross_revenue": 25059.7,
+      "cancellation_rate": 0.0211
+    },
+    {
+      "stock_code": "22616",
+      "description": "PACK OF 12 LONDON TISSUES ",
+      "total_quantity": 40091,
+      "gross_revenue": 12741.98,
+      "cancellation_rate": 0.0034
+    },
+    {
+      "stock_code": "22178",
+      "description": "VICTORIAN GLASS HANGING T-LIGHT",
+      "total_quantity": 39738,
+      "gross_revenue": 52065.05,
+      "cancellation_rate": 0.0233
+    },
+    {
+      "stock_code": "84568",
+      "description": "GIRLS ALPHABET IRON ON PATCHES ",
+      "total_quantity": 37709,
+      "gross_revenue": 7881.06,
+      "cancellation_rate": 0.0126
+    },
+    {
+      "stock_code": "21915",
+      "description": "RED  HARMONICA IN BOX ",
+      "total_quantity": 37303,
+      "gross_revenue": 43812.8,
+      "cancellation_rate": 0.0147
+    },
+    {
+      "stock_code": "85099F",
+      "description": "JUMBO BAG STRAWBERRY",
+      "total_quantity": 36841,
+      "gross_revenue": 67976.57,
+      "cancellation_rate": 0.0136
+    },
+    {
+      "stock_code": "21232",
+      "description": "STRAWBERRY CERAMIC TRINKET BOX",
+      "total_quantity": 36682,
+      "gross_revenue": 47549.03,
+      "cancellation_rate": 0.0705
+    },
+    {
+      "stock_code": "22197",
+      "description": "POPCORN HOLDER",
+      "total_quantity": 36334,
+      "gross_revenue": 33969.46,
+      "cancellation_rate": 0.0416
+    },
+    {
+      "stock_code": "22086",
+      "description": "PAPER CHAIN KIT 50'S CHRISTMAS ",
+      "total_quantity": 35985,
+      "gross_revenue": 121662.14,
+      "cancellation_rate": 0.0077
+    },
+    {
+      "stock_code": "84992",
+      "description": "72 SWEETHEART FAIRY CAKE CASES",
+      "total_quantity": 35028,
+      "gross_revenue": 17409.83,
+      "cancellation_rate": 0.0045
+    },
+    {
+      "stock_code": "21982",
+      "description": "PACK OF 12 SUKI TISSUES ",
+      "total_quantity": 32790,
+      "gross_revenue": 10578.52,
+      "cancellation_rate": 0.0026
+    },
+    {
+      "stock_code": "21975",
+      "description": "PACK OF 60 DINOSAUR CAKE CASES",
+      "total_quantity": 31456,
+      "gross_revenue": 15319.49,
+      "cancellation_rate": 0.0036
+    },
+    {
+      "stock_code": "85099C",
+      "description": "JUMBO  BAG BAROQUE BLACK WHITE",
+      "total_quantity": 30936,
+      "gross_revenue": 59721.44,
+      "cancellation_rate": 0.0133
+    },
+    {
+      "stock_code": "23084",
+      "description": "RABBIT NIGHT LIGHT",
+      "total_quantity": 30680,
+      "gross_revenue": 66756.59,
+      "cancellation_rate": 0.0143
+    },
+    {
+      "stock_code": "71459",
+      "description": "HANGING JAM JAR T-LIGHT HOLDER",
+      "total_quantity": 30440,
+      "gross_revenue": 24639.73,
+      "cancellation_rate": 0.0348
+    },
+    {
+      "stock_code": "16014",
+      "description": "SMALL CHINESE STYLE SCISSOR",
+      "total_quantity": 30370,
+      "gross_revenue": 9839.4,
+      "cancellation_rate": 0.0
+    },
+    {
+      "stock_code": "21931",
+      "description": "JUMBO STORAGE BAG SUKI",
+      "total_quantity": 29113,
+      "gross_revenue": 61574.65,
+      "cancellation_rate": 0.014
+    },
+    {
+      "stock_code": "22469",
+      "description": "HEART OF WICKER SMALL",
+      "total_quantity": 28755,
+      "gross_revenue": 50701.66,
+      "cancellation_rate": 0.0086
+    },
+    {
+      "stock_code": "21731",
+      "description": "RED TOADSTOOL LED NIGHT LIGHT",
+      "total_quantity": 28725,
+      "gross_revenue": 48081.79,
+      "cancellation_rate": 0.0148
+    },
+    {
+      "stock_code": "22952",
+      "description": "60 CAKE CASES VINTAGE CHRISTMAS",
+      "total_quantity": 28192,
+      "gross_revenue": 17088.29,
+      "cancellation_rate": 0.0043
+    },
+    {
+      "stock_code": "22355",
+      "description": "CHARLOTTE BAG SUKI DESIGN",
+      "total_quantity": 28105,
+      "gross_revenue": 42697.56,
+      "cancellation_rate": 0.0183
+    },
+    {
+      "stock_code": "47566",
+      "description": "PARTY BUNTING",
+      "total_quantity": 28093,
+      "gross_revenue": 147948.5,
+      "cancellation_rate": 0.0083
+    },
+    {
+      "stock_code": "21790",
+      "description": "VINTAGE SNAP CARDS",
+      "total_quantity": 27739,
+      "gross_revenue": 23932.93,
+      "cancellation_rate": 0.0065
+    },
+    {
+      "stock_code": "22411",
+      "description": "JUMBO SHOPPER VINTAGE RED PAISLEY",
+      "total_quantity": 27291,
+      "gross_revenue": 57483.93,
+      "cancellation_rate": 0.0096
+    },
+    {
+      "stock_code": "22151",
+      "description": "PLACE SETTING WHITE HEART",
+      "total_quantity": 26982,
+      "gross_revenue": 11422.39,
+      "cancellation_rate": 0.0092
+    },
+    {
+      "stock_code": "84970S",
+      "description": "HANGING HEART ZINC T-LIGHT HOLDER",
+      "total_quantity": 26719,
+      "gross_revenue": 22026.98,
+      "cancellation_rate": 0.0095
+    },
+    {
+      "stock_code": "21981",
+      "description": "PACK OF 12 WOODLAND TISSUES ",
+      "total_quantity": 26441,
+      "gross_revenue": 7204.17,
+      "cancellation_rate": 0.0034
+    },
+    {
+      "stock_code": "22423",
+      "description": "REGENCY CAKESTAND 3 TIER",
+      "total_quantity": 26109,
+      "gross_revenue": 327813.65,
+      "cancellation_rate": 0.0787
+    },
+    {
+      "stock_code": "20727",
+      "description": "LUNCH BAG  BLACK SKULL.",
+      "total_quantity": 25915,
+      "gross_revenue": 44643.54,
+      "cancellation_rate": 0.0178
+    },
+    {
+      "stock_code": "37410",
+      "description": "BLACK AND WHITE PAISLEY FLOWER MUG",
+      "total_quantity": 25701,
+      "gross_revenue": 3281.15,
+      "cancellation_rate": 0.0294
+    },
+    {
+      "stock_code": "21929",
+      "description": "JUMBO BAG PINK VINTAGE PAISLEY",
+      "total_quantity": 25682,
+      "gross_revenue": 49850.13,
+      "cancellation_rate": 0.0125
+    },
+    {
+      "stock_code": "21985",
+      "description": "PACK OF 12 HEARTS DESIGN TISSUES ",
+      "total_quantity": 25600,
+      "gross_revenue": 9001.64,
+      "cancellation_rate": 0.0031
+    },
+    {
+      "stock_code": "21984",
+      "description": "PACK OF 12 PINK PAISLEY TISSUES ",
+      "total_quantity": 25341,
+      "gross_revenue": 7028.81,
+      "cancellation_rate": 0.0129
+    },
+    {
+      "stock_code": "22386",
+      "description": "JUMBO BAG PINK POLKADOT",
+      "total_quantity": 25166,
+      "gross_revenue": 50021.77,
+      "cancellation_rate": 0.0112
+    },
+    {
+      "stock_code": "20719",
+      "description": "WOODLAND CHARLOTTE BAG",
+      "total_quantity": 24810,
+      "gross_revenue": 28180.5,
+      "cancellation_rate": 0.0104
+    },
+    {
+      "stock_code": "84212",
+      "description": "ASSORTED FLOWER COLOUR \"LEIS\"",
+      "total_quantity": 24729,
+      "gross_revenue": 11919.24,
+      "cancellation_rate": 0.0036
+    },
+    {
+      "stock_code": "20728",
+      "description": "LUNCH BAG CARS BLUE",
+      "total_quantity": 23752,
+      "gross_revenue": 41106.74,
+      "cancellation_rate": 0.0197
+    }
+  ],
+  "country_distribution": [
+    {
+      "country": "United Kingdom",
+      "revenue": 16541260.04,
+      "orders": 43850,
+      "customers": 5407
+    },
+    {
+      "country": "EIRE",
+      "revenue": 615519.55,
+      "orders": 806,
+      "customers": 5
+    },
+    {
+      "country": "Netherlands",
+      "revenue": 548524.95,
+      "orders": 249,
+      "customers": 23
+    },
+    {
+      "country": "Germany",
+      "revenue": 417988.56,
+      "orders": 1095,
+      "customers": 107
+    },
+    {
+      "country": "France",
+      "revenue": 328191.8,
+      "orders": 746,
+      "customers": 95
+    },
+    {
+      "country": "Australia",
+      "revenue": 167129.07,
+      "orders": 117,
+      "customers": 15
+    },
+    {
+      "country": "Switzerland",
+      "revenue": 99728.76,
+      "orders": 123,
+      "customers": 22
+    },
+    {
+      "country": "Spain",
+      "revenue": 91859.48,
+      "orders": 188,
+      "customers": 41
+    },
+    {
+      "country": "Sweden",
+      "revenue": 87809.42,
+      "orders": 129,
+      "customers": 19
+    },
+    {
+      "country": "Denmark",
+      "revenue": 65741.09,
+      "orders": 53,
+      "customers": 12
+    },
+    {
+      "country": "Belgium",
+      "revenue": 63574.49,
+      "orders": 183,
+      "customers": 29
+    },
+    {
+      "country": "Portugal",
+      "revenue": 53136.8,
+      "orders": 124,
+      "customers": 24
+    },
+    {
+      "country": "Japan",
+      "revenue": 43776.58,
+      "orders": 56,
+      "customers": 10
+    },
+    {
+      "country": "Channel Islands",
+      "revenue": 41453.61,
+      "orders": 79,
+      "customers": 14
+    },
+    {
+      "country": "Norway",
+      "revenue": 39243.03,
+      "orders": 53,
+      "customers": 13
+    }
+  ],
+  "total_analyzed_products": 4932
+}

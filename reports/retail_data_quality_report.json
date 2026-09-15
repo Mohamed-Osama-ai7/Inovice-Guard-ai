@@ -1,0 +1,61 @@
+{
+  "dataset_name": "UCI Online Retail II",
+  "official_source": "https://archive.ics.uci.edu/dataset/502/online+retail+ii",
+  "total_rows": 1067371,
+  "duplicate_rows": 34335,
+  "duplicate_rate": 0.03217,
+  "missing_customer_id_count": 243007,
+  "missing_customer_id_rate": 0.22767,
+  "missing_description_count": 4382,
+  "missing_description_rate": 0.00411,
+  "missing_values_by_column": {
+    "Invoice": 0,
+    "StockCode": 0,
+    "Description": 4382,
+    "Quantity": 0,
+    "InvoiceDate": 0,
+    "Price": 0,
+    "Customer ID": 243007,
+    "Country": 0
+  },
+  "cancellation_transactions_count": 19494,
+  "cancellation_rate": 0.01826,
+  "negative_quantities_count": 22950,
+  "zero_or_negative_price_count": 6207,
+  "invalid_dates_count": 0,
+  "date_range": {
+    "min_date": "2009-12-01",
+    "max_date": "2011-12-09"
+  },
+  "suspicious_stock_codes_count": 5351,
+  "extreme_values": {
+    "max_quantity": 80995,
+    "min_quantity": -80995,
+    "max_price": 38970.0
+  },
+  "cardinality": {
+    "unique_customers": 5942,
+    "unique_invoices": 53628,
+    "unique_products": 5305,
+    "countries_count": 43,
+    "top_countries": [
+      "Australia",
+      "Austria",
+      "Bahrain",
+      "Belgium",
+      "Bermuda",
+      "Brazil",
+      "Canada",
+      "Channel Islands",
+      "Cyprus",
+      "Czech Republic"
+    ]
+  },
+  "cleaning_rules_applied": [
+    "Retained all valid customer transactions with non-null CustomerID for behavioral models",
+    "Preserved cancellation records (Invoice starting with 'C') as explicit behavioral signals (cancellation_rate, returned_quantity)",
+    "Excluded zero/negative price items (system adjustments, gifts, accounting entries)",
+    "Standardized schema to snake_case: invoice_no, stock_code, description, quantity, invoice_date, unit_price, customer_id, country",
+    "Separated customer populations: Retail domain customer IDs are kept disjoint from InvoiceGuard demo IDs to prevent false entity resolution"
+  ]
+}

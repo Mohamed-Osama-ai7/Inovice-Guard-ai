@@ -1,0 +1,45 @@
+{
+  "model_type": "KMeans (RFM + Cancellation Behavior)",
+  "n_clusters": 4,
+  "silhouette_score": 0.3231,
+  "davies_bouldin_score": 0.993,
+  "evaluated_customers": 5499,
+  "clusters": {
+    "At-Risk High Value": {
+      "size": 589,
+      "share": 0.1071,
+      "median_recency": 330.0,
+      "median_frequency": 3.0,
+      "median_monetary": 370.4,
+      "mean_cancellation_rate": 0.5236599668737889,
+      "cluster_id": 0
+    },
+    "Dormant / Low Activity": {
+      "size": 1535,
+      "share": 0.2791,
+      "median_recency": 381.0,
+      "median_frequency": 1.0,
+      "median_monetary": 306.58000000000004,
+      "mean_cancellation_rate": 0.007642572772865931,
+      "cluster_id": 1
+    },
+    "Champions / High Value": {
+      "size": 1580,
+      "share": 0.2873,
+      "median_recency": 33.0,
+      "median_frequency": 12.0,
+      "median_monetary": 3447.48,
+      "mean_cancellation_rate": 0.20390616107599252,
+      "cluster_id": 2
+    },
+    "Promising / Growing": {
+      "size": 1795,
+      "share": 0.3264,
+      "median_recency": 87.0,
+      "median_frequency": 3.0,
+      "median_monetary": 714.3900000000001,
+      "mean_cancellation_rate": 0.04055931379051155,
+      "cluster_id": 3
+    }
+  }
+}

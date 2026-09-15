@@ -5,8 +5,8 @@ from src.security.auth import is_admin, login_admin, logout
 _BUSINESS_NAV_GROUPS: List[Tuple[str, List[str]]] = [
     ("DASHBOARD",    ["Overview"]),
     ("RECEIVABLES",  ["Invoices", "Collections"]),
-    ("CUSTOMERS",    ["Customer 360", "Customer Search", "Customer Risk"]),
-    ("INTELLIGENCE", ["Risk Drivers", "Message Intelligence"]),
+    ("CUSTOMERS",    ["Customer 360", "Customer Search", "Customer Risk", "Customer Segmentation"]),
+    ("INTELLIGENCE", ["Risk Drivers", "Message Intelligence", "Product Intelligence"]),
     ("REVENUE",      ["Revenue Forecast", "Customer Retention", "Revenue at Risk"]),
 ]
 

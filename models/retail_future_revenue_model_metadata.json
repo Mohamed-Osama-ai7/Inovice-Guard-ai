@@ -1,5 +1,14 @@
 {
-  "model_name": "HistGradientBoosting",
+  "model_name": "HistGradientBoostingRegressor",
+  "domain": "UCI Online Retail II",
+  "task": "Future Revenue Prediction (60-Day Forward Horizon)",
+  "version": "1.2.0",
+  "algorithm": "Histogram-based Gradient Boosting Regressor",
+  "data_source": "UCI Machine Learning Repository: Online Retail II (2009-2011)",
+  "temporal_validation": "Chronological split (Train: 2010-06..2010-12, Val: 2011-01..2011-03, Test: 2011-04..2011-06, OOT: 2011-07..2011-10)",
+  "target_definition": "future_revenue_60d: Continuous monetary value of valid orders placed within [T, T+60d)",
+  "leakage_prevention": "Point-in-time snapshot generation: features strictly computed from transactions where invoice_date < snapshot_date",
+  "limitations": "Trained on wholesale gift/retail transactions in GBP. Extreme outliers (> £100k) clipped for numerical stability.",
   "features": [
     "recency_days",
     "customer_age_days",
