@@ -157,4 +157,5 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
             """, unsafe_allow_html=True)
             
         if not has_insights:
-            empty_state("✨", "No AI Insights", "The AI models did not generate any critical alerts or recommendations for this customer at this time.")
+            empty_state("✨", "No Critical Alerts", "No critical payment risk alerts or follow-up recommendations for this customer at this time.")
+

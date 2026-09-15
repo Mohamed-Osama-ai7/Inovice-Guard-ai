@@ -65,10 +65,32 @@ html, body, [data-testid="stApp"], [data-testid="stAppViewContainer"], .stApp {
   box-sizing: border-box !important;
 }
 
-/* Hide Streamlit default chrome */
-#MainMenu, footer, header[data-testid="stHeader"], [data-testid="stToolbar"] { 
+/* Hide Streamlit default chrome except the mobile sidebar toggle */
+#MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDecoration"], [data-testid="stStatusWidget"] { 
   display: none !important; 
 }
+header[data-testid="stHeader"] {
+  background: transparent !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+}
+header[data-testid="stHeader"] [data-testid="stSidebarCollapsedControl"] {
+  pointer-events: auto !important;
+  display: flex !important;
+  visibility: visible !important;
+  position: fixed !important;
+  top: 0.65rem !important;
+  left: 0.65rem !important;
+  z-index: 999999 !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-md) !important;
+  padding: 0.25rem !important;
+  color: var(--text-main) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
 
 /* ── Responsive Container Padding Across Viewports ── */
 .main .block-container {
@@ -296,6 +318,38 @@ h3 { font-size: clamp(0.9rem, 2.5vw, 1rem) !important; color: var(--text-light) 
 [data-testid="stSidebar"] div[role="radiogroup"] div[data-baseweb="radio"] div:first-child {
   display: none !important;
 }
+
+/* ── Sidebar Navigation Buttons ── */
+[data-testid="stSidebar"] .stButton > button {
+  text-align: left !important;
+  justify-content: flex-start !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  padding: 0.45rem 0.75rem !important;
+  margin-bottom: 0.2rem !important;
+  border-radius: var(--r-md) !important;
+  transition: all 0.15s ease !important;
+  width: 100% !important;
+  border: 1px solid transparent !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="secondary"] {
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  border-color: transparent !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover {
+  background: var(--surface) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border) !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="primary"] {
+  background: var(--primary) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: var(--shadow-sm) !important;
+  border-color: var(--primary) !important;
+}
+
 
 /* ── Custom Responsive Data Tables ── */
 .stDataFrame, div[data-testid="stTable"], div.stTable, [data-testid="stDataFrameContainer"] {

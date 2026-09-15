@@ -897,20 +897,44 @@ def kpi_row(items: List[Dict[str, Any]]) -> None:
             )
 
 
+_FEATURE_LABELS = {
+    "prior_late_count": "Previous Late Payments",
+    "prior_late_ratio": "Historical Late Payment Rate",
+    "prior_avg_delay": "Average Historical Delay",
+    "outstanding_amount": "Outstanding Account Balance",
+    "invoice_amount": "Invoice Amount",
+    "days_to_due": "Payment Window / Due Days",
+    "customer_seen_before": "Established Customer History",
+    "industry": "Industry Sector",
+    "company_size": "Company Size",
+    "payment_method": "Payment Method",
+    "customer_segment": "Customer Segment",
+}
+
 def render_feature_bars(explanation: List[Dict[str, Any]]) -> None:
     if not explanation:
         return
     max_impact = max(e["impact"] for e in explanation) or 1.0
     for e in explanation:
+        raw_feat = e.get("feature", "")
+        clean_name = _FEATURE_LABELS.get(raw_feat, raw_feat.replace("_", " ").title())
         pct = min(int(e["impact"] / max_impact * 100), 100)
         is_risk = "increases risk" in e.get("direction", "")
         bar_cls = "ig-fbar-pos" if is_risk else "ig-fbar-neg"
-        dir_badge = badge("HIGH RISK" if is_risk else "LOW RISK")
+        
+        if pct >= 65:
+            impact_level = "High Impact"
+        elif pct >= 30:
+            impact_level = "Moderate Impact"
+        else:
+            impact_level = "Lower Impact"
+            
+        dir_text = "Increases Risk" if is_risk else "Lowers Risk"
         st.markdown(
             f"""<div class="ig-fbar">
               <div class="ig-fbar-head">
-                <span class="ig-fbar-name">{e['feature']}</span>
-                <span class="ig-fbar-val">{e['impact']:.4f} &nbsp;{dir_badge}</span>
+                <span class="ig-fbar-name" style="font-weight:600; color:var(--text-main);">{clean_name}</span>
+                <span class="ig-fbar-val" style="font-size:0.8rem; color:var(--text-muted);">{impact_level} &nbsp;·&nbsp; {dir_text}</span>
               </div>
               <div class="ig-fbar-bg"><div class="ig-fbar-fill {bar_cls}" style="width:{pct}%"></div></div>
             </div>""",
@@ -918,172 +942,8 @@ def render_feature_bars(explanation: List[Dict[str, Any]]) -> None:
         )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# NAVIGATION
-# ─────────────────────────────────────────────────────────────────────────────
-
-_NAV_GROUPS = [
-    ("PLATFORM",      ["Overview", "Invoices", "Customer 360", "Customer Risk"]),
-    ("INTELLIGENCE",  ["Revenue Forecast", "Customer Retention", "Message Intelligence", "Risk Drivers"]),
-    ("OPERATIONS",    ["Collections"]),
-    ("SETTINGS",      ["Data Quality", "System Status"]),
-]
 
 
-
-def render_sidebar(artifacts: Dict[str, Any]) -> str:
-    if "current_page" not in st.session_state:
-        st.session_state.current_page = "Overview"
-
-    models = artifacts.get("models", {})
-    load_errors = artifacts.get("load_errors", {})
-    metadata = artifacts.get("metadata", {})
-    model_count = len(models)
-    healthy = not load_errors
-
-    with st.sidebar:
-        st.markdown(
-            f"""<div class="ig-brand">
-              <div class="ig-brand-logo">💳 InvoiceGuard AI</div>
-              <div class="ig-brand-tag">Payment Risk Intelligence</div>
-              <div class="ig-brand-st">
-                <span class="ig-dot {'ig-dot-on' if healthy else 'ig-dot-off'}"></span>
-                {model_count} models active
-              </div>
-            </div>""",
-            unsafe_allow_html=True,
-        )
-
-        for group_name, pages in _NAV_GROUPS:
-            st.markdown(f'<div class="ig-ng">{group_name}</div>', unsafe_allow_html=True)
-            for page in pages:
-                if st.button(page, key=f"_nav_{page}", use_container_width=True):
-                    st.session_state.current_page = page
-                    st.rerun()
-
-        # Performance snapshot at the bottom
-        test_metrics = metadata.get("test_metrics", {})
-        if test_metrics:
-            divider()
-            st.markdown('<div class="ig-ng">MODEL PERFORMANCE</div>', unsafe_allow_html=True)
-            acc = test_metrics.get("accuracy", 0)
-            auc = test_metrics.get("roc_auc", 0)
-            f1 = test_metrics.get("f1", 0)
-            st.markdown(
-                f"""<div class="ig-sm"><span>Accuracy</span><strong>{acc:.1%}</strong></div>
-                    <div class="ig-sm"><span>ROC-AUC</span><strong>{auc:.3f}</strong></div>
-                    <div class="ig-sm"><span>F1 Score</span><strong>{f1:.3f}</strong></div>""",
-                unsafe_allow_html=True,
-            )
-
-    return str(st.session_state.current_page)
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# PAGE: EXECUTIVE DASHBOARD
-# ─────────────────────────────────────────────────────────────────────────────
-
-def render_exec_dashboard(artifacts: Dict[str, Any]) -> None:
-    metadata = artifacts.get("metadata", {})
-    threshold = float(metadata.get("threshold", 0.5))
-
-    # Hero
-    st.markdown(
-        """<div class="ig-hero">
-          <div class="ig-hero-ey">AI-Powered Payment Risk Intelligence</div>
-          <div class="ig-hero-t">Know which payments are at risk<br>before they become losses.</div>
-          <div class="ig-hero-s">Predict late payments, quantify financial exposure, analyze customer communication, and act on AI-generated recommendations — before invoices become overdue.</div>
-        </div>""",
-        unsafe_allow_html=True,
-    )
-
-    analytics = build_dashboard_dataset(artifacts)
-
-    if analytics.empty:
-        st.markdown(
-            """<div class="ig-empty">
-              <div class="ig-empty-icon">📊</div>
-              <div class="ig-empty-title">No portfolio data available</div>
-              <div class="ig-empty-sub">The demo invoice dataset could not be loaded. Navigate to Single Invoice Prediction to run individual assessments.</div>
-            </div>""",
-            unsafe_allow_html=True,
-        )
-        return
-
-    # KPIs
-    total_receivables = float(analytics["outstanding_amount"].sum())
-    at_risk = float(analytics.loc[analytics["risk_level"].isin(["HIGH", "CRITICAL"]), "outstanding_amount"].sum())
-    predicted_late = int((analytics["late_probability"] >= threshold).sum())
-    high_risk_customers = int(analytics.loc[analytics["risk_level"].isin(["HIGH", "CRITICAL"]), "customer"].nunique())
-    exposure = float(analytics["estimated_financial_exposure"].sum())
-    total_invoices = len(analytics)
-
-    section_label("Portfolio Overview")
-    kpi_row([
-        {"icon": "📄", "label": "Total Invoices", "value": f"{total_invoices:,}", "sub": "Active portfolio"},
-        {"icon": "💰", "label": "Total Receivables", "value": f"${total_receivables:,.0f}", "sub": "Outstanding"},
-        {"icon": "⚠️", "label": "Revenue at Risk", "value": f"${at_risk:,.0f}", "sub": "High + Critical"},
-        {"icon": "🔴", "label": "Predicted Late", "value": f"{predicted_late}", "sub": f"Threshold {threshold:.2f}"},
-        {"icon": "👥", "label": "High-Risk Customers", "value": f"{high_risk_customers}", "sub": "Requiring attention"},
-        {"icon": "📉", "label": "Total Exposure", "value": f"${exposure:,.0f}", "sub": "Projected impact"},
-    ])
-
-    divider()
-
-    # Charts
-    col1, col2 = st.columns(2)
-    with col1:
-        section_label("Risk Distribution")
-        risk_dist = analytics["risk_level"].value_counts().reindex(["LOW", "MEDIUM", "HIGH", "CRITICAL"], fill_value=0)
-        st.bar_chart(risk_dist, color="#3B82F6")
-
-    with col2:
-        section_label("Financial Exposure by Month")
-        if "invoice_date" in analytics.columns:
-            exp_by_month = (
-                analytics.assign(month=analytics["invoice_date"].dt.to_period("M").astype(str))
-                .groupby("month")["estimated_financial_exposure"]
-                .sum()
-                .sort_index()
-            )
-            st.area_chart(exp_by_month, color="#EF4444")
-
-    col3, col4 = st.columns(2)
-    with col3:
-        section_label("Late-Payment Trend")
-        if "invoice_date" in analytics.columns:
-            trend = (
-                analytics.assign(month=analytics["invoice_date"].dt.to_period("M").astype(str))
-                .groupby("month")["predicted_late"]
-                .sum()
-                .sort_index()
-            )
-            st.line_chart(trend, color="#F59E0B")
-
-    with col4:
-        section_label("Top Risk Customers")
-        customer_risk = (
-            analytics.groupby("customer")["late_probability"]
-            .mean()
-            .sort_values(ascending=False)
-            .head(10)
-        )
-        st.bar_chart(customer_risk, color="#EF4444")
-
-    divider()
-
-    # Industry breakdown
-    if "industry" in analytics.columns:
-        section_label("Risk by Industry")
-        industry_risk = analytics.groupby("industry")["late_probability"].mean().sort_values(ascending=False)
-        st.bar_chart(industry_risk, color="#3B82F6")
-        divider()
-
-    # Priority table
-    section_label("Priority Attention — Highest Risk Invoices")
-    display_cols = [c for c in ["invoice_id", "customer", "invoice_date", "due_date", "invoice_amount", "outstanding_amount", "risk_level", "late_probability", "estimated_financial_exposure"] if c in analytics.columns]
-    top_invoices = analytics[display_cols].sort_values("late_probability", ascending=False).head(20)
-    st.dataframe(top_invoices, use_container_width=True, hide_index=True)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1092,27 +952,19 @@ def render_exec_dashboard(artifacts: Dict[str, Any]) -> None:
 
 def render_single_prediction(artifacts: Dict[str, Any], cold_start: bool = False) -> None:
     metadata = artifacts["metadata"]
-    model_options = ["classifier"] + [
-        n for n in ["logistic_regression", "random_forest", "mlp_neural_network"]
-        if n in artifacts["models"]
-    ]
-    if "classifier" not in model_options:
-        model_options = [n for n in artifacts["models"] if n != "delay_regressor"]
-
+    model_choice = "classifier"
     demo_options = load_demo_options()
 
     if cold_start:
         page_header(
             "Cold Start Assessment",
-            "AI risk scoring for a first-time customer with no payment history.",
-            eyebrow="New Customer Mode",
+            "Payment risk assessment for a first-time customer with no prior transaction history.",
         )
-        st.info("ℹ️ Cold Start: All prior-history features are set to zero. The model uses only invoice and profile attributes.", icon=None)
+        st.info("Cold Start: Prior history indicators are set to baseline. Risk is evaluated from invoice attributes and company profile.", icon=None)
     else:
         page_header(
             "Invoice Risk Assessment",
-            "Run a complete AI risk assessment for a single invoice using the trained prediction pipeline.",
-            eyebrow="Single Invoice",
+            "Evaluate payment delay risk and projected revenue exposure for an individual invoice.",
         )
 
     # Step indicator
@@ -1127,7 +979,7 @@ def render_single_prediction(artifacts: Dict[str, Any], cold_start: bool = False
           </div>
           <span class="ig-step-arrow">›</span>
           <div class="ig-step">
-            <div class="ig-step-num">3</div><span>AI Assessment</span>
+            <div class="ig-step-num">3</div><span>Risk Assessment</span>
           </div>
         </div>""",
         unsafe_allow_html=True,
@@ -1178,7 +1030,7 @@ def render_single_prediction(artifacts: Dict[str, Any], cold_start: bool = False
         # Section 3: Customer Profile
         st.markdown('<div class="ig-form-section">', unsafe_allow_html=True)
         st.markdown('<div class="ig-form-section-title">🏢 Customer Profile</div>', unsafe_allow_html=True)
-        p1, p2, p3, p4, p5 = st.columns(5)
+        p1, p2, p3, p4 = st.columns(4)
         with p1:
             industry = st.selectbox("Industry", options=demo_options.get("industry", DEFAULT_CATEGORICALS["industry"]))
         with p2:
@@ -1187,11 +1039,9 @@ def render_single_prediction(artifacts: Dict[str, Any], cold_start: bool = False
             payment_method = st.selectbox("Payment Method", options=demo_options.get("payment_method", DEFAULT_CATEGORICALS["payment_method"]))
         with p4:
             customer_segment = st.selectbox("Segment", options=demo_options.get("customer_segment", DEFAULT_CATEGORICALS["customer_segment"]))
-        with p5:
-            model_choice = st.selectbox("AI Model", options=model_options)
         st.markdown("</div>", unsafe_allow_html=True)
 
-        submitted = st.form_submit_button("🔍  Run AI Assessment", type="primary")
+        submitted = st.form_submit_button("Run Risk Assessment", type="primary")
 
     if not submitted:
         return
@@ -1217,11 +1067,11 @@ def render_single_prediction(artifacts: Dict[str, Any], cold_start: bool = False
             st.error(msg)
         return
 
-    with st.spinner("Running AI assessment…"):
+    with st.spinner("Analyzing invoice risk…"):
         try:
             result = run_prediction(payload, model_choice, artifacts)
         except Exception as exc:
-            st.error(f"Prediction failed: {exc}")
+            st.error(f"Assessment failed: {exc}")
             return
 
     risk = result["risk_level"]
@@ -1241,7 +1091,7 @@ def render_single_prediction(artifacts: Dict[str, Any], cold_start: bool = False
           </div>
           <span class="ig-step-arrow">›</span>
           <div class="ig-step active">
-            <div class="ig-step-num">3</div><span>AI Assessment</span>
+            <div class="ig-step-num">3</div><span>Risk Assessment</span>
           </div>
         </div>""",
         unsafe_allow_html=True,
@@ -1267,8 +1117,8 @@ def render_single_prediction(artifacts: Dict[str, Any], cold_start: bool = False
               <div class="ig-result-item-val">${result['estimated_financial_exposure']:,.2f}</div>
             </div>
             <div class="ig-result-item">
-              <div class="ig-result-item-lbl">Model Used</div>
-              <div class="ig-result-item-val">{model_choice.replace('_', ' ').title()}</div>
+              <div class="ig-result-item-lbl">Risk Tier</div>
+              <div class="ig-result-item-val">{risk}</div>
             </div>
           </div>
         </div>""",
@@ -1286,17 +1136,13 @@ def render_single_prediction(artifacts: Dict[str, Any], cold_start: bool = False
     )
 
     # Explainability
-    section_label("AI Explanation — Feature Drivers")
+    section_label("Why this invoice is flagged — Risk Drivers")
     explanation = explain_prediction(artifacts["models"].get(model_choice), result["feature_frame"], metadata)
     if explanation:
         render_feature_bars(explanation)
     else:
-        st.caption("SHAP explainability is not available for this model. Feature importances or coefficient magnitudes are used where possible.")
+        st.caption("Key driver analysis is not available for this invoice.")
 
-    # Artifact metrics
-    if "test_metrics.json" in artifacts.get("reports", {}):
-        with st.expander("📊 Model Performance Metrics", expanded=False):
-            st.json(artifacts["reports"]["test_metrics.json"])
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1305,9 +1151,8 @@ def render_single_prediction(artifacts: Dict[str, Any], cold_start: bool = False
 
 def render_risk_center(artifacts: Dict[str, Any]) -> None:
     page_header(
-        "Risk Center",
-        "Monitor, filter, and prioritize invoices by payment risk across your entire portfolio.",
-        eyebrow="Command Center",
+        "Customer Risk",
+        "Portfolio-level risk prioritization and customer payment monitoring.",
     )
     analytics = build_dashboard_dataset(artifacts)
     if analytics.empty:
@@ -1324,15 +1169,12 @@ def render_risk_center(artifacts: Dict[str, Any]) -> None:
     divider()
     section_label("Filters")
 
-    f1, f2, f3, f4 = st.columns(4)
+    f1, f2, f3 = st.columns(3)
     with f1:
         risk_filter = st.selectbox("Risk Level", ["All", "CRITICAL", "HIGH", "MEDIUM", "LOW"])
     with f2:
         customer_filter = st.selectbox("Customer", ["All", *sorted(analytics["customer"].dropna().unique())])
     with f3:
-        industry_vals = sorted(analytics["industry"].dropna().unique()) if "industry" in analytics.columns else []
-        industry_filter = st.selectbox("Industry", ["All", *industry_vals]) if industry_vals else None
-    with f4:
         amount_max = max(int(analytics["invoice_amount"].quantile(0.95)), 1)
         amount_cap = st.slider("Max Invoice Amount", 0, amount_max, amount_max)
 
@@ -1341,14 +1183,37 @@ def render_risk_center(artifacts: Dict[str, Any]) -> None:
         filtered = filtered[filtered["risk_level"] == risk_filter]
     if customer_filter != "All":
         filtered = filtered[filtered["customer"] == customer_filter]
-    if industry_filter and industry_filter != "All" and "industry" in filtered.columns:
-        filtered = filtered[filtered["industry"] == industry_filter]
     filtered = filtered[filtered["invoice_amount"] <= amount_cap]
 
     st.caption(f"Showing {len(filtered):,} of {len(analytics):,} invoices")
 
-    display_cols = [c for c in ["invoice_id", "customer", "industry", "invoice_date", "due_date", "invoice_amount", "late_probability", "expected_delay_days", "risk_level", "estimated_financial_exposure", "recommendation"] if c in filtered.columns]
-    st.dataframe(filtered[display_cols].sort_values("late_probability", ascending=False), use_container_width=True, hide_index=True)
+    display_cols = [c for c in ["invoice_id", "customer", "invoice_date", "due_date", "invoice_amount", "late_probability", "expected_delay_days", "risk_level", "estimated_financial_exposure", "recommendation"] if c in filtered.columns]
+    table_df = filtered[display_cols].sort_values("late_probability", ascending=False).copy()
+    
+    rename_map = {
+        "invoice_id": "Invoice",
+        "customer": "Customer",
+        "invoice_date": "Invoice Date",
+        "due_date": "Due Date",
+        "invoice_amount": "Amount",
+        "late_probability": "Payment Risk",
+        "expected_delay_days": "Est. Delay",
+        "risk_level": "Risk Level",
+        "estimated_financial_exposure": "Revenue at Risk",
+        "recommendation": "Recommended Action",
+    }
+    table_df.rename(columns=rename_map, inplace=True)
+    if "Amount" in table_df.columns:
+        table_df["Amount"] = table_df["Amount"].apply(lambda x: f"${x:,.0f}")
+    if "Payment Risk" in table_df.columns:
+        table_df["Payment Risk"] = table_df["Payment Risk"].apply(lambda x: f"{x:.1%}")
+    if "Est. Delay" in table_df.columns:
+        table_df["Est. Delay"] = table_df["Est. Delay"].apply(lambda x: f"{x:.0f}d")
+    if "Revenue at Risk" in table_df.columns:
+        table_df["Revenue at Risk"] = table_df["Revenue at Risk"].apply(lambda x: f"${x:,.0f}")
+        
+    st.dataframe(table_df, use_container_width=True, hide_index=True)
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1359,7 +1224,6 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
     page_header(
         "Customer 360",
         "Complete customer intelligence — payment behavior, risk trend, and invoice history.",
-        eyebrow="Customer Intelligence",
     )
     analytics = build_dashboard_dataset(artifacts)
     if analytics.empty:
@@ -1399,34 +1263,34 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
         unsafe_allow_html=True,
     )
 
-    # KPIs (InvoiceGuard Risk + Retail Intelligence if available)
+    # KPIs
     kpis = [
         {"icon": "📄", "label": "Total Invoices",   "value": f"{total_invoices}"},
         {"icon": "⚠️", "label": "Late-Payment Rate", "value": f"{late_rate:.0%}"},
         {"icon": "💰", "label": "Outstanding",        "value": f"${outstanding:,.0f}"},
-        {"icon": "🎯", "label": "Avg Risk Prob",      "value": f"{avg_prob:.1%}"},
+        {"icon": "🎯", "label": "Payment Risk Score", "value": f"{avg_prob:.1%}"},
     ]
     if retail:
         kpis.append({"icon": "⭐", "label": "Retention Risk", "value": retail.get("predictions", {}).get("retention_risk", "N/A")})
-        kpis.append({"icon": "💵", "label": "Est Future Rev", "value": f"${retail.get('predictions', {}).get('expected_future_revenue_60d', 0):,.0f}"})
+        kpis.append({"icon": "💵", "label": "Forecasted Revenue", "value": f"${retail.get('predictions', {}).get('expected_future_revenue_60d', 0):,.0f}"})
     
     kpi_row(kpis)
 
     divider()
     
     if retail:
-        st.markdown("### 🛍️ Retail Intelligence (Customer 360)")
+        st.markdown("### Customer Behavioral Profile")
         col_r1, col_r2, col_r3, col_r4 = st.columns(4)
         rfm = retail.get("rfm", {})
         col_r1.metric("Recency (Days)", rfm.get("recency_days", 0))
         col_r2.metric("Frequency (Orders)", rfm.get("frequency", 0))
-        col_r3.metric("Monetary Value", f"${rfm.get('monetary', 0):,.2f}")
+        col_r3.metric("Historical Revenue", f"${rfm.get('monetary', 0):,.2f}")
         col_r4.metric("Average Order Value", f"${rfm.get('avg_order_value', 0):,.2f}")
         
         recs = retail.get("recommendations", [])
         if recs:
             for r in recs:
-                st.info(f"💡 Recommendation: {r}")
+                st.info(f"Recommended Action: {r}")
         divider()
 
     col_a, col_b = st.columns([2, 1])
@@ -1444,7 +1308,30 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
     divider()
     section_label("Invoice History")
     disp_cols = [c for c in ["invoice_id", "invoice_date", "due_date", "invoice_amount", "outstanding_amount", "late_probability", "expected_delay_days", "risk_level", "estimated_financial_exposure"] if c in customer_df.columns]
-    st.dataframe(customer_df[disp_cols], use_container_width=True, hide_index=True)
+    inv_df = customer_df[disp_cols].copy()
+    inv_df.rename(columns={
+        "invoice_id": "Invoice",
+        "invoice_date": "Invoice Date",
+        "due_date": "Due Date",
+        "invoice_amount": "Amount",
+        "outstanding_amount": "Outstanding",
+        "late_probability": "Payment Risk",
+        "expected_delay_days": "Est. Delay",
+        "risk_level": "Risk Level",
+        "estimated_financial_exposure": "Revenue at Risk",
+    }, inplace=True)
+    if "Amount" in inv_df.columns:
+        inv_df["Amount"] = inv_df["Amount"].apply(lambda x: f"${x:,.0f}")
+    if "Outstanding" in inv_df.columns:
+        inv_df["Outstanding"] = inv_df["Outstanding"].apply(lambda x: f"${x:,.0f}")
+    if "Payment Risk" in inv_df.columns:
+        inv_df["Payment Risk"] = inv_df["Payment Risk"].apply(lambda x: f"{x:.1%}")
+    if "Est. Delay" in inv_df.columns:
+        inv_df["Est. Delay"] = inv_df["Est. Delay"].apply(lambda x: f"{x:.0f}d")
+    if "Revenue at Risk" in inv_df.columns:
+        inv_df["Revenue at Risk"] = inv_df["Revenue at Risk"].apply(lambda x: f"${x:,.0f}")
+    st.dataframe(inv_df, use_container_width=True, hide_index=True)
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1553,23 +1440,19 @@ def render_ai_explanation(artifacts: Dict[str, Any]) -> None:
     )
 
     divider()
-    section_label("Top Risk Drivers — Feature Attribution")
+    section_label("Key Risk Drivers")
 
     explanation = explain_prediction(artifacts["models"].get(selected_model), result["feature_frame"], artifacts["metadata"])
     if explanation:
         st.markdown(
-            '<div class="ig-card"><div class="ig-card-title">Why did the AI make this prediction?</div>',
+            '<div class="ig-card"><div class="ig-card-title">Primary factors influencing this risk assessment</div>',
             unsafe_allow_html=True,
         )
         render_feature_bars(explanation)
         st.markdown("</div>", unsafe_allow_html=True)
-
-        divider()
-        # Table view
-        section_label("Full Attribution Table")
-        st.dataframe(pd.DataFrame(explanation), use_container_width=True, hide_index=True)
     else:
-        st.info("SHAP explainability is not available for the selected model. Feature importances are shown where possible.")
+        st.caption("Key risk driver analysis is not available for this invoice.")
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1603,8 +1486,6 @@ def render_nlp_section(artifacts: Dict[str, Any]) -> None:
     col_a, col_b = st.columns([1, 2])
     with col_a:
         sample_text = st.selectbox("Load example message", options=text_examples)
-    with col_b:
-        st.caption(f"Decision thresholds — HIGH ≥ {thresholds['high']:.2f} · MEDIUM ≥ {thresholds['medium']:.2f}")
 
     customer_message = st.text_area(
         "Customer message",
@@ -1619,7 +1500,6 @@ def render_nlp_section(artifacts: Dict[str, Any]) -> None:
         st.caption("Enter a customer message and click Analyze to run the risk assessment.")
         return
 
-
     try:
         analysis = score_nlp_message(nlp_model, customer_message, thresholds)
     except Exception as exc:
@@ -1632,52 +1512,37 @@ def render_nlp_section(artifacts: Dict[str, Any]) -> None:
     result_cls = f"ig-nlp-result-{risk_key}"
     text_cls = f"ig-nlp-risk-{risk_key}"
 
+    if risk_key == "high":
+        signal_text = "Language indicates payment difficulty, disputes, or elevated non-payment risk."
+        action_text = "Prioritize direct outreach and confirm payment status with accounts payable."
+    elif risk_key == "medium":
+        signal_text = "Communication suggests potential processing delay or timing constraint."
+        action_text = "Monitor account and confirm expected payment date."
+    else:
+        signal_text = "Standard payment communication without risk indicators."
+        action_text = "Standard processing; no immediate collection intervention required."
+
     st.markdown(
         f"""<div class="ig-nlp-result {result_cls}">
           <div class="ig-nlp-label">Payment Risk Assessment</div>
           <div class="ig-nlp-risk-text {text_cls}">{risk_label}</div>
-          <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:.5rem;">
-            <div><div class="ig-nlp-label">Confidence</div><strong style="font-size:1.15rem;color:var(--text)">{prob:.1%}</strong></div>
+          <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:.75rem;">
+            <div><div class="ig-nlp-label">Risk Score</div><strong style="font-size:1.25rem;color:var(--text)">{prob:.1%}</strong></div>
+            <div><div class="ig-nlp-label">Key Signal</div><div style="font-size:0.95rem;color:var(--text-light);margin-top:0.2rem;">{signal_text}</div></div>
           </div>
         </div>""",
         unsafe_allow_html=True,
     )
 
-    # Probability breakdown
-    divider()
-    c1, c2, c3 = st.columns(3)
-    probs = analysis["probabilities"]
-    with c1:
-        st.metric("HIGH RISK", f"{probs.get('HIGH_RISK', 0):.1%}")
-    with c2:
-        st.metric("MEDIUM RISK", f"{probs.get('MEDIUM_RISK', 0):.1%}")
-    with c3:
-        st.metric("LOW RISK", f"{probs.get('LOW_RISK', 0):.1%}")
+    border_color = "var(--danger)" if risk_key == "high" else ("var(--warning)" if risk_key == "medium" else "var(--success)")
+    st.markdown(
+        f"""<div class="ig-card" style="border-left: 4px solid {border_color}; margin-top:1rem;">
+          <div class="ig-card-title">Recommended Action</div>
+          <p style="color:var(--text-main); margin:0; font-size:.95rem;">{action_text}</p>
+        </div>""",
+        unsafe_allow_html=True,
+    )
 
-    divider()
-    st.info("The NLP model is an independent signal. It analyzes language patterns in customer messages and is separate from the invoice ML classifier.")
-
-    # Cross-reference with invoice risk
-    section_label("Cross-Reference — Baseline Invoice Risk")
-    baseline_payload = {
-        "invoice_date": "2026-09-01",
-        "due_date": "2026-10-01",
-        "invoice_amount": 50000,
-        "customer_seen_before": 6,
-        "prior_late_count": 3,
-        "prior_late_ratio": 0.5,
-        "prior_avg_delay": 9,
-        "industry": "Retail",
-        "company_size": "Small",
-        "payment_method": "Bank Transfer",
-        "customer_segment": "SME",
-        "outstanding_amount": 80000,
-    }
-    try:
-        baseline = run_prediction(baseline_payload, "classifier", artifacts)
-        st.metric("Baseline Invoice Risk (reference scenario)", f"{baseline['late_probability']:.1%}")
-    except Exception:
-        st.caption("Baseline invoice risk could not be computed for this deployment.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1781,29 +1646,36 @@ def render_batch_predictions(artifacts: Dict[str, Any]) -> None:
         unsafe_allow_html=True,
     )
 
-    ok_rows = result_df[result_df["status"] == "ok"]
-    total_amount = float(batch_df.get("invoice_amount", pd.Series([0] * len(batch_df))).sum())
+    failed_count = len(result_df) - len(ok_rows)
+    if failed_count > 0:
+        st.warning(f"{failed_count} record(s) could not be processed due to invalid format or missing required fields.")
 
-    if not ok_rows.empty:
-        kpi_row([
-            {"icon": "📄", "label": "Total Invoices", "value": f"{len(result_df):,}"},
-            {"icon": "🔴", "label": "High-Risk",  "value": f"{int(ok_rows['risk_level'].isin(['HIGH','CRITICAL']).sum()):,}"},
-            {"icon": "🟡", "label": "Medium-Risk", "value": f"{int((ok_rows['risk_level'] == 'MEDIUM').sum()):,}"},
-            {"icon": "🟢", "label": "Low-Risk",    "value": f"{int((ok_rows['risk_level'] == 'LOW').sum()):,}"},
-            {"icon": "💰", "label": "Total Amount", "value": f"${total_amount:,.0f}"},
-            {"icon": "📉", "label": "Exposure",     "value": f"${float(ok_rows['estimated_financial_exposure'].sum()):,.0f}"},
-        ])
-        divider()
+    # Build clean business presentation table
+    display_rows = []
+    for _, r in ok_rows.iterrows():
+        orig_row = batch_df.iloc[int(r["row_index"])]
+        display_rows.append({
+            "Invoice": orig_row.get("invoice_id", f"INV-{int(r['row_index'])+1:04d}"),
+            "Customer": orig_row.get("customer", orig_row.get("industry", "Account")),
+            "Due Date": str(orig_row.get("due_date", "—")),
+            "Amount": f"${orig_row.get('invoice_amount', 0):,.0f}",
+            "Payment Risk": f"{r['late_probability']:.1%}",
+            "Risk Level": r["risk_level"],
+            "Est. Delay": f"{r['expected_delay_days']:.0f}d",
+            "Revenue at Risk": f"${r['estimated_financial_exposure']:,.0f}",
+            "Recommended Action": r["recommendation"],
+        })
+    display_df = pd.DataFrame(display_rows)
+    st.dataframe(display_df, use_container_width=True, hide_index=True)
 
-    st.dataframe(result_df, use_container_width=True, hide_index=True)
-
-    csv_out = result_df.to_csv(index=False)
+    csv_out = display_df.to_csv(index=False)
     st.download_button(
-        "⬇️  Download Results CSV",
+        "Download Results CSV",
         data=csv_out,
         file_name="invoiceguard_batch_results.csv",
         mime="text/csv",
     )
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1903,128 +1775,7 @@ def render_alert_center(artifacts: Dict[str, Any]) -> None:
         st.dataframe(rising, use_container_width=True, hide_index=True)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# PAGE: MODEL CENTER
-# ─────────────────────────────────────────────────────────────────────────────
 
-def render_model_center(artifacts: Dict[str, Any]) -> None:
-    page_header(
-        "Model Center",
-        "AI model inventory, performance metrics, and artifact configuration.",
-        eyebrow="System",
-    )
-    reports = artifacts.get("reports", {})
-    metadata = artifacts.get("metadata", {})
-    models = artifacts.get("models", {})
-
-    test_m = reports.get("test_metrics.json", metadata.get("test_metrics", {}))
-    reg_m  = reports.get("regression_metrics.json", metadata.get("regression_metrics", {}))
-    nlp_m  = reports.get("nlp_metrics.json", {})
-
-    # Model cards
-    section_label("Classifier Models")
-    model_cards = [
-        {
-            "name": "XGBoost Classifier",
-            "role": "Primary Risk Classifier",
-            "key": "classifier",
-            "metrics": {
-                "Accuracy":  f"{test_m.get('accuracy', 0):.1%}" if test_m else "—",
-                "Precision": f"{test_m.get('precision', 0):.1%}" if test_m else "—",
-                "Recall":    f"{test_m.get('recall', 0):.1%}"    if test_m else "—",
-                "F1 Score":  f"{test_m.get('f1', 0):.3f}"        if test_m else "—",
-                "ROC-AUC":   f"{test_m.get('roc_auc', 0):.3f}"   if test_m else "—",
-                "Threshold": f"{test_m.get('threshold', 0):.3f}" if test_m else "—",
-            },
-        },
-        {
-            "name": "Delay Regressor",
-            "role": "Payment Delay Estimator",
-            "key": "delay_regressor",
-            "metrics": {
-                "MAE (days)": f"{reg_m.get('mae_days', 0):.1f}"    if reg_m else "—",
-                "RMSE (days)":f"{reg_m.get('rmse_days', 0):.1f}"   if reg_m else "—",
-                "Test samples":f"{reg_m.get('n_test_delayed', '—')}" if reg_m else "—",
-            },
-        },
-        {
-            "name": "NLP Risk Classifier",
-            "role": "Message Risk Intelligence",
-            "key": "nlp_payment_risk",
-            "metrics": {
-                "Best model": nlp_m.get("best_model", "—"),
-                "High thresh": f"{nlp_m.get('thresholds', {}).get('high', '—')}",
-                "Med thresh":  f"{nlp_m.get('thresholds', {}).get('medium', '—')}",
-            },
-        },
-    ]
-
-    cols = st.columns(3)
-    for col, card in zip(cols, model_cards):
-        with col:
-            status = "ACTIVE" if card["key"] in models else "UNAVAILABLE"
-            s_badge = badge(status)
-            metrics_html = "".join(
-                f'<div class="ig-mcard-row"><span class="ig-mcard-k">{k}</span><span class="ig-mcard-v">{v}</span></div>'
-                for k, v in card["metrics"].items()
-            )
-            st.markdown(
-                f"""<div class="ig-mcard">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.2rem;">
-                    <div class="ig-mcard-name">{card['name']}</div>
-                    {s_badge}
-                  </div>
-                  <div class="ig-mcard-role">{card['role']}</div>
-                  {metrics_html}
-                </div>""",
-                unsafe_allow_html=True,
-            )
-
-    # Additional models
-    divider()
-    section_label("Alternative Classifiers")
-    alt_models = [
-        ("Logistic Regression", "logistic_regression"),
-        ("Random Forest", "random_forest"),
-        ("MLP Neural Network", "mlp_neural_network"),
-    ]
-    alt_cols = st.columns(3)
-    for col, (name, key) in zip(alt_cols, alt_models):
-        with col:
-            status = "ACTIVE" if key in models else "NOT LOADED"
-            s_badge = badge("ACTIVE" if key in models else "FAIL")
-            st.markdown(
-                f"""<div class="ig-mcard">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                    <div class="ig-mcard-name">{name}</div>
-                    {s_badge}
-                  </div>
-                  <div class="ig-mcard-role">Alternative Classifier</div>
-                  <div class="ig-mcard-row"><span class="ig-mcard-k">Status</span><span class="ig-mcard-v">{status}</span></div>
-                </div>""",
-                unsafe_allow_html=True,
-            )
-
-    # Model comparison
-    comparison_df, nlp_compare_df = load_comparison_reports()
-    if comparison_df is not None:
-        divider()
-        section_label("Model Comparison Report")
-        st.dataframe(comparison_df, use_container_width=True, hide_index=True)
-
-    if nlp_compare_df is not None:
-        divider()
-        section_label("NLP Model Comparison")
-        st.dataframe(nlp_compare_df, use_container_width=True, hide_index=True)
-
-
-@st.cache_data(show_spinner=False)
-def load_comparison_reports() -> Tuple[Optional[pd.DataFrame], Optional[pd.DataFrame]]:
-    model_compare_path = REPORTS / "model_comparison.csv"
-    nlp_compare_path = REPORTS / "nlp_model_comparison.csv"
-    comp_df = pd.read_csv(model_compare_path) if model_compare_path.exists() else None
-    nlp_df = pd.read_csv(nlp_compare_path) if nlp_compare_path.exists() else None
-    return comp_df, nlp_df
 
 
 
@@ -2035,119 +1786,54 @@ def load_comparison_reports() -> Tuple[Optional[pd.DataFrame], Optional[pd.DataF
 def render_artifact_diagnostics(artifacts: Dict[str, Any]) -> None:
     page_header(
         "System Status",
-        "Platform health, loaded service status, and operational diagnostics.",
+        "Platform operational health, ingestion status, and service availability.",
     )
 
     models = artifacts.get("models", {})
     load_errors = artifacts.get("load_errors", {})
-    metadata = artifacts.get("metadata", {})
-    reports = artifacts.get("reports", {})
+    all_healthy = ("classifier" in models and "delay_regressor" in models and not load_errors)
 
-    all_healthy = not load_errors
-    system_badge = badge("PASS" if all_healthy else "FAIL")
     st.markdown(
-        f"""<div class="ig-card" style="margin-bottom:1.25rem;">
-          <div style="display:flex;align-items:center;gap:1rem;">
+        f"""<div class="ig-card" style="margin-bottom:1.5rem; border-left: 4px solid var(--{'success' if all_healthy else 'danger'});">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
             <div>
-              <div class="ig-card-title">System Health</div>
-              <div style="font-size:1.1rem;font-weight:700;color:var(--text);">
-                {'All systems operational' if all_healthy else f'{len(load_errors)} artifact warning(s)'}
+              <div class="ig-card-title" style="margin-bottom:0.25rem;">Platform Status</div>
+              <div style="font-size:1.2rem;font-weight:700;color:var(--text-main);">
+                {'All core services operational' if all_healthy else 'Operational warnings detected'}
               </div>
             </div>
-            {system_badge}
+            {badge('ACTIVE' if all_healthy else 'WARNING')}
           </div>
         </div>""",
         unsafe_allow_html=True,
     )
 
-    # Model artifacts
-    section_label("Loaded Model Artifacts")
-    artifact_defs = [
-        ("Payment Risk Model",   "classifier"),
-        ("Payment Delay Model",  "delay_regressor"),
-        ("Risk Model (Alt A)",   "logistic_regression"),
-        ("Risk Model (Alt B)",   "random_forest"),
-        ("Risk Model (Alt C)",   "mlp_neural_network"),
-        ("Message Intelligence", "nlp_payment_risk"),
+    section_label("Service Availability")
+    services = [
+        ("Receivables Intelligence Engine", "classifier" in models),
+        ("Payment Delay Forecaster", "delay_regressor" in models),
+        ("Message Risk Intelligence", "nlp_payment_risk" in models),
+        ("Customer Analytics Pipeline", True),
     ]
 
     col1, col2 = st.columns(2)
-    for i, (label, key) in enumerate(artifact_defs):
+    for i, (name, is_ok) in enumerate(services):
         col = col1 if i % 2 == 0 else col2
         with col:
-            loaded = key in models
-            s_badge = badge("PASS" if loaded else "FAIL")
-            detail = "Loaded — available for inference" if loaded else load_errors.get(key, "File not found in /models")
-            path = MODELS / f"{key}.joblib"
-            size_str = f"{path.stat().st_size / 1024 / 1024:.1f} MB" if path.exists() else "—"
+            s_badge = badge("ACTIVE" if is_ok else "WARNING")
             st.markdown(
-                f"""<div class="ig-card" style="margin-bottom:.6rem;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem;">
-                    <strong style="color:var(--text);font-size:.9rem;">{label}</strong>
+                f"""<div class="ig-card" style="margin-bottom:0.75rem; padding:1rem;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-weight:600; color:var(--text-main); font-size:0.9rem;">{name}</span>
                     {s_badge}
                   </div>
-                  <div class="ig-srow" style="padding:.2rem 0;">
-                    <span class="ig-srow-lbl">File</span>
-                    <code style="font-size:.75rem;color:var(--muted)">{key}.joblib</code>
+                  <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.35rem;">
+                    Status: {'Available for real-time inference' if is_ok else 'Service temporarily unavailable'}
                   </div>
-                  <div class="ig-srow" style="padding:.2rem 0;border-bottom:none;">
-                    <span class="ig-srow-lbl">Size</span>
-                    <span style="color:var(--muted);font-size:.8rem;">{size_str}</span>
-                  </div>
-                  <div style="font-size:.75rem;color:var(--muted);margin-top:.3rem;">{detail}</div>
                 </div>""",
                 unsafe_allow_html=True,
             )
 
-    divider()
-
-    # Reports
-    section_label("Report Artifacts")
-    report_files = [
-        ("test_metrics.json", "Classifier Test Metrics"),
-        ("regression_metrics.json", "Regression Metrics"),
-        ("nlp_metrics.json", "NLP Model Metrics"),
-        ("nlp_thresholds.json", "NLP Decision Thresholds"),
-        ("all_model_artifacts.json", "Model Artifacts Summary"),
-    ]
-    st.markdown('<div class="ig-card">', unsafe_allow_html=True)
-    for fname, label in report_files:
-        present = fname in reports
-        s_badge = badge("PASS" if present else "FAIL")
-        st.markdown(
-            f"""<div class="ig-srow">
-              <span class="ig-srow-lbl">{label} <code style="font-size:.72rem;color:var(--muted2)">({fname})</code></span>
-              {s_badge}
-            </div>""",
-            unsafe_allow_html=True,
-        )
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    divider()
-
-    # Configuration
-    section_label("Model Configuration")
-    if metadata:
-        best_model = metadata.get("best_model", "—")
-        threshold = metadata.get("threshold", "—")
-        features = metadata.get("features", [])
-        st.markdown(
-            f"""<div class="ig-card">
-              <div class="ig-srow"><span class="ig-srow-lbl">Best Model</span><strong style="color:var(--text)">{best_model}</strong></div>
-              <div class="ig-srow"><span class="ig-srow-lbl">Decision Threshold</span><strong style="color:var(--text)">{threshold}</strong></div>
-              <div class="ig-srow" style="border-bottom:none;"><span class="ig-srow-lbl">Feature Count</span><strong style="color:var(--text)">{len(features)}</strong></div>
-            </div>""",
-            unsafe_allow_html=True,
-        )
-        if features:
-            with st.expander("Feature Order", expanded=False):
-                st.code("\n".join(features), language="text")
-
-    if load_errors:
-        divider()
-        section_label("Load Warnings")
-        for key, err in load_errors.items():
-            st.warning(f"**{key}**: {err}")
 
 
 # ─────────────────────────────────────────────────────────────────────────────

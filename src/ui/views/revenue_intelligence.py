@@ -55,6 +55,24 @@ def render_repurchase_risk(artifacts: Dict[str, Any]) -> None:
     risky["Historical Value"] = risky["Historical Value"].apply(lambda x: f"${x:,.2f}")
     st.dataframe(risky, use_container_width=True, hide_index=True)
 
+    # Contextual priority retention actions
+    priority_recs = df[(df["target_repurchase_60d"] == 0) & (df["monetary"] > 1000)].sort_values("monetary", ascending=False).head(3)
+    if not priority_recs.empty:
+        st.markdown("### Priority Retention Actions")
+        for _, row in priority_recs.iterrows():
+            st.markdown(
+                f"""<div class="ig-card" style="margin-bottom:0.75rem; border-left: 4px solid var(--danger);">
+                  <div style="font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">
+                    Account {row['Customer ID']} — Elevated Churn Risk (${row['monetary']:,.0f} Historical Value)
+                  </div>
+                  <div style="color:var(--text-light); font-size:0.9rem;">
+                    <strong>Recommended Action:</strong> Initiate proactive account management outreach. Inactive for {row['recency_days']:.0f} days across {row['frequency']:.0f} previous orders.
+                  </div>
+                </div>""",
+                unsafe_allow_html=True,
+            )
+
+
 def render_revenue_at_risk(artifacts: Dict[str, Any]) -> None:
     page_header("Revenue at Risk", "Intersection of predicted churn and historical monetary value.")
     df = _load_retail_data()
