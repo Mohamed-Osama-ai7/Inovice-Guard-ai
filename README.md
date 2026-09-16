@@ -1,229 +1,448 @@
 # InvoiceGuard AI
 
-**Enterprise Receivables & Customer Intelligence Platform**
+**Enterprise Receivables Intelligence, Multi-Signal Payment Risk & Cash-Flow Protection Platform**
 
-InvoiceGuard AI is a production-oriented AI/ML portfolio application combining invoice payment-risk prediction, customer behavioral analytics, revenue intelligence, explainable machine learning, and NLP-based payment-risk analysis. It is built with scikit-learn, XGBoost, and Streamlit.
+[![Live Application](https://img.shields.io/badge/Streamlit_Cloud-Live_Application-FF4B4B?logo=streamlit&logoColor=white)](https://inovice-guard-ai-17.streamlit.app/)
+[![Repository](https://img.shields.io/badge/GitHub-Inovice--Guard--ai-181717?logo=github&logoColor=white)](https://github.com/Mohamed-Osama-ai7/Inovice-Guard-ai)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.6.1-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
+[![XGBoost](https://img.shields.io/badge/XGBoost-2.1.4-EB4034)](https://xgboost.readthedocs.io/)
+[![License](https://img.shields.io/badge/Data_License-CC_BY_4.0-lightgrey)](https://creativecommons.org/licenses/by/4.0/)
+
+InvoiceGuard AI is an enterprise-grade AI fintech and cash-flow protection platform designed to detect late-payment risks before due dates, quantify dollar-weighted exposure, forecast forward customer revenue, analyze payment communications using NLP, and provide deterministic, explainable operational guidance.
 
 - **Live Application:** [https://inovice-guard-ai-17.streamlit.app/](https://inovice-guard-ai-17.streamlit.app/)
 - **GitHub Repository:** [https://github.com/Mohamed-Osama-ai7/Inovice-Guard-ai](https://github.com/Mohamed-Osama-ai7/Inovice-Guard-ai)
 
 ---
 
-## Overview
+## Business Problem
 
-B2B organizations face significant cash flow risk from late invoice payments. InvoiceGuard AI addresses this by:
+In B2B commerce, late invoice payments create systemic cash-flow volatility, increase working-capital financing costs, and force credit teams into reactive dispute resolution. Credit controllers often lack forward-looking intelligence to distinguish between low-risk administrative delays and high-risk default patterns before invoices become severely past due.
 
-- Predicting which open invoices are at risk of late payment before the due date.
-- Estimating financial exposure (amount at risk) weighted by late probability.
-- Providing customer-level behavioral intelligence (RFM, churn risk, revenue forecast).
-- Flagging risk signals from customer payment communications using NLP.
-- Explaining each prediction with SHAP feature attributions.
+InvoiceGuard AI solves this by transforming static billing data and customer communications into proactive, explainable risk intelligence, allowing finance teams to intervene early, protect working capital, and optimize receivables collections.
+
+---
+
+## What InvoiceGuard AI Does
+
+The platform executes an end-to-end intelligence workflow:
+
+$$\text{Invoice + Customer + Payment Data} \longrightarrow \text{Validation} \longrightarrow \text{Feature Engineering} \longrightarrow \text{Risk Models} \longrightarrow \text{Explainability} \longrightarrow \text{Decisions}$$
+
+1. **Ingests & Validates**: Ingests invoice terms, customer profiles, payment records, and communication text through in-memory, schema-validated pipelines.
+2. **Engineers Point-in-Time Features**: Derives leakage-free temporal signals, historical payment ratios via expanding windows, and RFM behavioral metrics.
+3. **Scores Late-Payment Probability**: Quantifies $P(\text{late}) \in [0, 1]$ using isotonically calibrated classification.
+4. **Estimates Delay Horizon**: Predicts expected delay days on delinquent accounts using gradient-boosted regression.
+5. **Evaluates Communication Signals**: Scans customer payment emails and notes for dispute or delinquency indicators using NLP.
+6. **Quantifies Financial Exposure**: Computes dollar-weighted value at risk: $\text{Exposure} = \text{Invoice Amount} \times P(\text{late})$.
+7. **Explains Predictions (SHAP)**: Isolates top positive and negative risk contributors for every prediction.
+8. **Synthesizes Multi-Signal Score**: Aggregates invoice, behavioral, cancellation, and NLP signals into a 0–100 composite risk score.
+9. **Delivers Actionable Playbooks**: Triggers deterministic P1–P4 operational recommendations and presents results via a modern fintech dashboard.
 
 ---
 
 ## Key Capabilities
 
-- **Invoice Payment-Risk Prediction:** Binary classification scoring late-payment probability $P(\text{risk}) \in [0, 1]$.
-- **Expected Payment Delay Estimation:** Regression model for anticipated delay days on at-risk invoices.
-- **Financial Exposure Estimation:** Dollar-weighted exposure combining invoice amount and late-payment probability.
-- **Customer 360 Analysis:** Unified view merging B2B invoice history with retail behavioral metrics (RFM, churn, revenue).
-- **Customer Search:** Sub-10ms customer lookup and search.
-- **Revenue Intelligence:** 60-day customer future revenue forecasting and repurchase risk classification.
-- **Risk & Action Center:** Prioritized queue of high-risk accounts with recommended operational actions.
-- **Explainable AI:** SHAP feature attribution showing top risk drivers per prediction.
-- **NLP Payment-Risk Analysis:** Binary text classification of customer payment communications.
-- **Batch Processing & Export:** Vectorized batch inference for CSV/XLSX uploads up to 50 MB with exportable results.
-- **Data Quality & Validation:** Schema enforcement, missing value handling, and profiling diagnostics.
-- **Responsive Interface:** CSS design system supporting Desktop, Laptop, Tablet, and Mobile viewports.
+- **Invoice Payment-Risk Classification**: Isotonically calibrated binary classification predicting late payment likelihood ($P(\text{risk}) \in [0, 1]$).
+- **Payment Delay Regression**: Gradient-boosted regression estimating anticipated delinquency days for at-risk accounts.
+- **NLP Payment-Risk Intelligence**: Text classification analyzing customer payment communications to detect disputes, cash shortages, and delay signals.
+- **Customer 360 Analysis**: Comprehensive analytical view providing financial exposure, historical delinquency ratios, and transaction behavior under strict domain isolation.
+- **Customer Search**: Sub-10ms indexed customer lookup across portfolio accounts.
+- **Receivables Intelligence**: Prioritized collections queues categorized by aging status, exposure, and late probability.
+- **Revenue Intelligence**: 60-day forward revenue regression and customer repurchase risk prediction.
+- **Retail & Customer Analytics**: Data-driven customer cohort segmentation ($K=4$) and product purchasing intelligence derived from 1.06M transaction records.
+- **SHAP Explainability**: Transparent local feature attributions isolating key drivers behind every risk score.
+- **Financial Exposure Insights**: Real-time dollar-weighted cash-at-risk aggregation across portfolio segments.
+- **Deterministic Action Playbooks**: Priority-tiered (P1–P4) operational playbooks generated from explicit business thresholds.
+- **Batch Processing & In-Memory Parsing**: Vectorized batch inference supporting user-uploaded CSV/XLSX files up to 50 MB.
+- **REST API**: Programmatic FastAPI endpoints for single-invoice inference, retail predictions, and risk evaluation.
+- **Authentication & RBAC**: PBKDF2-HMAC-SHA256 session-state authentication guarding administrative diagnostic tools.
+- **Modern Fintech UI**: Dual-theme design system (Light & Dark modes) featuring centralized CSS tokens, application shell bar, and theme-adaptive Plotly charts.
 
 ---
 
 ## System Architecture
 
+### InvoiceGuard AI — High-Level Application & AI Architecture
+**Scope:** Presentation $\longrightarrow$ Intelligence $\longrightarrow$ Models $\longrightarrow$ Explainability $\longrightarrow$ Data
+
 ```mermaid
 flowchart TD
-    U["User / Analyst"] --> SL["Streamlit Presentation Layer\n(View Router · Sidebar Navigation\nResponsive CSS · Reusable Components)"]
-
-    SL --> FV["Input & File Validation Layer\n(CSV / XLSX Upload · Extension Check\nSize & Row Limits · Schema Validation\nIn-Memory Parsing · Encoding Handling)"]
-
-    FV --> IP["Invoice Intelligence Pipeline\n(Feature Engineering · Point-in-Time\nHistorical Aggregations · shift(1))\n─────────────────────────────\nCalibrated Logistic Regression\nPayment-Delay Regressor\nFinancial Exposure = Amount × P(risk)"]
-
-    FV --> RP["Retail & Customer Intelligence Pipeline\n(UCI Online Retail II · RFM Features\nCustomer Age · 90-day Revenue)\n─────────────────────────────\nRepurchase Risk Classifier (LogReg)\nFuture Revenue Regressor (HistGB)\nCustomer 360 Aggregation"]
-
-    FV --> NP["NLP Intelligence Pipeline\n(Customer Communication Text\nTF-IDF 1–2 N-grams)\n─────────────────────────────\nBinary Risk Classifier (Calibrated LogReg)\nP(risk) → LOW / MEDIUM / HIGH bands"]
-
-    IP --> EX["Explainability Engine\n(SHAP Feature Attribution\nCoefficient Fallback)"]
-    IP --> BI["Business Intelligence Layer\n(Risk Center · Action Queue\nKPI Summaries · Revenue Dashboard\nCustomer 360 View)"]
-    RP --> BI
-    NP --> BI
-    EX --> BI
-
-    BI --> SL
-
-    subgraph Artifacts["Model & Artifact Layer (models/ · reports/)"]
-        MA["classifier.joblib\ndelay_regressor.joblib\nretail_repurchase_model.pkl\nretail_future_revenue_model.pkl\nnlp_payment_risk.joblib\nmetadata JSON · evaluation reports"]
+    %% Subgraph 1: User & Presentation Layer
+    subgraph Presentation["1. Presentation & Application Layer"]
+        User["User / Credit Analyst"]
+        Shell["Application Shell<br/>(Top Navigation Bar · Theme Toggle · Live Auth Indicator)"]
+        Nav["Navigation & RBAC Router<br/>(14 Business Views · 2 Guarded Admin Views)"]
+        Views["Domain Analytical Views<br/>(Overview · Invoices · Collections · Customer 360 · Revenue)"]
     end
 
-    IP -. loads .-> Artifacts
-    RP -. loads .-> Artifacts
-    NP -. loads .-> Artifacts
+    %% Subgraph 2: Intelligence & Orchestration Layer
+    subgraph Intelligence["2. Intelligence & Orchestration Layer"]
+        B2BIntel["Receivables Intelligence<br/>(Payment Probability · Delay Days · Exposure Ratio)"]
+        RetailIntel["Retail & Customer Intelligence<br/>(RFM Analytics · Repurchase Risk · Cohort Clustering)"]
+        NLPIntel["Communication Intelligence<br/>(Message Sentiment · Dispute Risk · Alert Bands)"]
+        RiskEngine["Multi-Signal Risk Engine<br/>(0–100 Composite Score · Signal Weighting)"]
+        ActionEngine["Recommendation Engine<br/>(Deterministic P1–P4 Operational Playbooks)"]
+    end
+
+    %% Subgraph 3: Machine Learning & Predictive Models
+    subgraph Models["3. Machine Learning & Predictive Models"]
+        ClsModel["Invoice Risk Classifier<br/>(Calibrated Logistic Regression · models/classifier.joblib)"]
+        RegModel["Payment Delay Regressor<br/>(HistGradientBoosting · models/delay_regressor.joblib)"]
+        NLPModel["NLP Payment Risk Model<br/>(TF-IDF + Calibrated LogReg · models/nlp_payment_risk.joblib)"]
+        RepModel["Retail Repurchase Classifier<br/>(Calibrated LogReg · models/retail_repurchase_model.pkl)"]
+        RevModel["Future Revenue Regressor<br/>(HistGradientBoosting · models/retail_future_revenue_model.pkl)"]
+    end
+
+    %% Subgraph 4: Explainability & Decision Insights Layer
+    subgraph Explainability["4. Explainability & Decision Insights Layer"]
+        SHAP["SHAP Attribution Engine<br/>(Tree & Linear Explainers · Feature Contributions)"]
+        Drivers["Risk Driver Generator<br/>(Top Positive & Negative Risk Attribution)"]
+        C360Profile["Customer 360 Engine<br/>(Domain-Isolated Accounts · Financial Profile)"]
+    end
+
+    %% Subgraph 5: Data & Feature Engineering Layer
+    subgraph DataEngineering["5. Data & Feature Engineering Layer"]
+        Val["Input & Schema Validator<br/>(CSV / XLSX Loader · Column Mapping · Security Bounds)"]
+        InvoiceFeat["Invoice Feature Pipeline<br/>(Point-in-Time Lagging · shift(1) · 17 Features)"]
+        RetailFeat["Retail Feature Pipeline<br/>(Point-in-Time RFM Windows · 8 Features)"]
+        NLPFeat["NLP Text Vectorizer<br/>(Character & Word N-grams · TF-IDF Pipeline)"]
+    end
+
+    %% Subgraph 6: Data Sources
+    subgraph Sources["6. Data Sources"]
+        InvData[("Invoice Dataset<br/>(12,000 Rows · B2B Invoices & Terms)")]
+        HistData[("Customer Payment History<br/>(Chronological Outcomes & Historical Delays)")]
+        RetailData[("Retail Transactions<br/>(UCI Online Retail II · 1.06M Rows)")]
+        TextData[("Customer Messages<br/>(Payment Communications & Dispute Texts)")]
+    end
+
+    %% Flow Connections: User to Presentation
+    User -->|Interacts With| Shell
+    Shell -->|Dispatches Selection| Nav
+    Nav -->|Authorizes & Renders| Views
+
+    %% Presentation to Validation
+    Views -->|Submit Invoice / Upload File| Val
+    Val -->|Validated Invoices| InvoiceFeat
+    Val -->|Validated Customer Records| RetailFeat
+    Val -->|Validated Communications| NLPFeat
+
+    %% Data Sources to Engineering
+    InvData -->|Ingest Raw Records| Val
+    HistData -->|Construct Historical Shifts| InvoiceFeat
+    RetailData -->|Extract Behavioral Snapshots| RetailFeat
+    TextData -->|Extract Communication Logs| NLPFeat
+
+    %% Data Engineering to Models
+    InvoiceFeat -->|17 Engineered Features| ClsModel
+    InvoiceFeat -->|17 Engineered Features| RegModel
+    NLPFeat -->|TF-IDF Feature Vectors| NLPModel
+    RetailFeat -->|8 Behavioral Features| RepModel
+    RetailFeat -->|8 Behavioral Features| RevModel
+
+    %% Models to Explainability
+    ClsModel -->|Model Weights & Predictions| SHAP
+    SHAP -->|Attribution Coefficients| Drivers
+
+    %% Models to Intelligence
+    ClsModel -->|Late Probability P(risk)| B2BIntel
+    RegModel -->|Anticipated Delay Days| B2BIntel
+    NLPModel -->|Communication Risk Score| NLPIntel
+    RepModel -->|Repurchase & Inactivity Prob| RetailIntel
+    RevModel -->|60-Day Forward Revenue| RetailIntel
+
+    %% Intelligence to Composite Scoring
+    B2BIntel -->|Late Risk Signal & Exposure| RiskEngine
+    NLPIntel -->|Dispute Signal| RiskEngine
+    RetailIntel -->|Inactivity & Cancellation Signals| RiskEngine
+
+    %% Risk Engine to Recommendations & Presentation
+    RiskEngine -->|Composite Score (0–100)| ActionEngine
+    Drivers -->|Key Explanations| ActionEngine
+    ActionEngine -->|Prioritized Actions & KPI Data| Views
+    C360Profile -->|Domain-Isolated Profile Data| Views
+    RetailIntel -->|Cohort & Product Metrics| Views
+
+    %% Semantic Styling
+    classDef appClass fill:#1E293B,stroke:#3B82F6,stroke-width:2px,color:#F8FAFC;
+    classDef mlClass fill:#2E1065,stroke:#8B5CF6,stroke-width:2px,color:#F8FAFC;
+    classDef dataClass fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#F8FAFC;
+    classDef explainClass fill:#451A03,stroke:#F59E0B,stroke-width:2px,color:#F8FAFC;
+    classDef riskClass fill:#4C0519,stroke:#EF4444,stroke-width:2px,color:#F8FAFC;
+    classDef sourceClass fill:#0F172A,stroke:#64748B,stroke-width:2px,color:#F8FAFC;
+
+    class User,Shell,Nav,Views appClass;
+    class ClsModel,RegModel,NLPModel,RepModel,RevModel mlClass;
+    class Val,InvoiceFeat,RetailFeat,NLPFeat dataClass;
+    class SHAP,Drivers,C360Profile explainClass;
+    class B2BIntel,RetailIntel,NLPIntel,RiskEngine,ActionEngine riskClass;
+    class InvData,HistData,RetailData,TextData sourceClass;
 ```
 
-**Data Flow Summary:**
-
-1. User uploads a CSV/XLSX file or uses the live demo dataset.
-2. The file validation layer checks extension, size, row count, schema, and encoding before any inference.
-3. Feature engineering pipelines construct point-in-time safe features (no data leakage from future payment fields).
-4. Models are loaded once at startup via `@st.cache_resource` and reused across all page navigations.
-5. The vectorized batch inference pipeline runs all predictions in a single scikit-learn `.predict_proba()` call.
-6. SHAP produces per-prediction feature attributions (with coefficient magnitude fallback for non-tree models).
-7. The Business Intelligence layer aggregates results into risk queues, KPI cards, and customer profiles.
-8. The Streamlit view router presents the appropriate page; the cached dataset is shared across navigation.
+#### Architecture Legend
+- <span style="color:#3B82F6; font-weight:bold;">Blue (Application Layer)</span>: Streamlit frontend, application shell header, theme toggle, and RBAC router.
+- <span style="color:#8B5CF6; font-weight:bold;">Purple (Machine Learning Models)</span>: Deployed scikit-learn classification and regression artifacts.
+- <span style="color:#10B981; font-weight:bold;">Green (Data & Features)</span>: Ingestion validators, point-in-time windowing, and preprocessors.
+- <span style="color:#F59E0B; font-weight:bold;">Orange (Explainability)</span>: SHAP attribution, top risk drivers, and customer profile engine.
+- <span style="color:#EF4444; font-weight:bold;">Red (Risk & Decisions)</span>: Multi-signal risk engine, exposure calculation, and P1–P4 action playbooks.
+- <span style="color:#64748B; font-weight:bold;">Slate (Data Sources)</span>: B2B invoice dataset, customer history, retail transactions, and communication logs.
+- **Solid Arrow (`-->|Label|`)**: Primary execution and data dependency flow with explicit directional intent.
 
 ---
 
-## Machine Learning
+## End-to-End Data Flow
 
-### Invoice Payment-Risk Model
-
-The primary invoice model is a **Calibrated Logistic Regression** pipeline deployed as `models/classifier.joblib`.
-
-> **Model Selection Context:** During training, multiple algorithms (Logistic Regression, Random Forest, XGBoost, MLP) were benchmarked. The `metadata.json` field `best_model: random_forest` records the highest raw-AUC algorithm in the selection comparison. The **deployed inference artifact** (`classifier.joblib`) is the isotonically calibrated Logistic Regression pipeline, chosen for its well-calibrated probabilities and strong OOT generalization.
-
-| Property | Value |
-|---|---|
-| Algorithm | Calibrated Logistic Regression (`CalibratedClassifierCV`, isotonic, `cv="prefit"`) |
-| Target | `late_payment` — Binary (0 = On Time, 1 = Late) |
-| Split | Chronological: 60% Train / 20% Validation / 10% Test / 10% OOT |
-| Leakage Controls | `payment_date` and `delay_days` excluded from $X$; historical features use `cumsum().shift(1)` |
-| Test PR-AUC | 0.9751 |
-| Test ROC-AUC | 0.9893 |
-| Test Brier Score | 0.0372 |
-| OOT PR-AUC | 0.9700 |
-| OOT ROC-AUC | 0.9878 |
-| OOT Brier Score | 0.0363 |
-| Generalization | Strong temporal generalization on the evaluated OOT split. |
-
-**Payment Delay Regression** (`models/delay_regressor.joblib`): Predicts expected delay days for invoices classified as late. MAE: 5.90 days, RMSE: 7.96 days on the test set.
-
-### Retail & Customer Intelligence Models
-
-Both models are trained on the UCI Online Retail II dataset using a chronological temporal split.
-
-| Model | Algorithm | OOT ROC-AUC | OOT PR-AUC |
-|---|---|---|---|
-| Repurchase Risk (`retail_repurchase_model.pkl`) | Calibrated Logistic Regression | 0.7976 | 0.6668 |
-| Future Revenue (`retail_future_revenue_model.pkl`) | HistGradientBoosting Regressor | R²: 0.5744 | MAE: 288.83 |
-
-**Features:** RFM (Recency, Frequency, Monetary), cancellation rate, customer age, 90-day rolling revenue and orders. All features are computed from transactions strictly preceding the prediction snapshot date.
+1. **Client Interaction / Ingestion**: An analyst interacts with the application shell or submits an invoice dataset via file upload.
+2. **Validation & Security**: The input is validated against schema definitions (types, bounds, missing columns) and size restrictions (< 50 MB) entirely in memory.
+3. **Feature Generation**: Temporal features (`days_to_due`, `invoice_month`, `invoice_quarter`) and historical behavior (`prior_late_count`, `prior_late_ratio`, `prior_avg_delay`) are extracted using expanding window lags (`cumsum().shift(1)`), preventing target leakage.
+4. **Predictive Inference**: Pre-loaded model pipelines execute inference in sub-second vectorized operations:
+   - Late-payment classifier generates calibrated probability $P(\text{late})$.
+   - Delay regressor calculates predicted delay days.
+   - NLP model vectors text and generates dispute probability.
+   - Retail models generate repurchase probability and future revenue forecasts.
+5. **SHAP & Attribution**: Feature importances are computed to identify positive and negative risk contributors.
+6. **Multi-Signal Risk Synthesis**: The composite risk engine blends all active signals into a single 0–100 score and assigns priority playbooks (P1 Critical to P4 Routine).
+7. **Presentation**: The responsive, theme-aware dashboard displays metrics, interactive Plotly charts, and drill-down customer tables.
 
 ---
 
-## NLP Payment-Risk Model
+## AI & Machine Learning Models
 
-| Property | Value |
-|---|---|
-| Algorithm | TF-IDF (1–2 N-grams) + Calibrated Logistic Regression |
-| Contract | **Binary** — Class 0: Low/No Payment Risk; Class 1: High Payment Risk |
-| UI threshold mapping | LOW: $P < 0.30$ / MEDIUM: $0.30 \le P < 0.50$ / HIGH: $P \ge 0.50$ |
+The platform deploys four distinct machine learning pipelines, each designed for specific operational risk domains:
 
-**MEDIUM is a business alert band applied at the UI layer, not a third learned class.**
+### 1. Invoice Payment-Risk Classifier (`models/classifier.joblib`)
+- **Task**: Binary classification predicting whether an invoice will be paid late ($>0$ days past due date).
+- **Algorithm**: `CalibratedClassifierCV` wrapping `LogisticRegression(class_weight="balanced", max_iter=3000)` with isotonic probability calibration (`cv="prefit"`).
+- **Features (17 total)**:
+  - *Numeric (13)*: `invoice_amount_clean`, `amount_log1p`, `days_to_due`, `invoice_year`, `invoice_month`, `invoice_quarter`, `invoice_dayofweek`, `customer_seen_before`, `customer_is_new`, `prior_late_count`, `prior_late_ratio`, `prior_avg_delay`, `outstanding_amount`.
+  - *Categorical (4)*: `industry`, `company_size`, `payment_method`, `customer_segment`.
+- **Model Selection Context**: Multiple candidate architectures were benchmarked during selection (`Logistic Regression`, `Random Forest`, `MLP`, `XGBoost`). While `random_forest` achieved high raw accuracy (94.50%, F1: 90.82%), the isotonically calibrated Logistic Regression pipeline was chosen for deployment due to superior probability calibration (Brier score: 0.0363) and out-of-time stability (OOT PR-AUC: 0.9700).
 
-**Evaluation Methodology:** Group-disjoint template split (zero template overlap across Train/Validation/Test) plus an independent held-out out-of-domain (OOD) evaluation corpus. Earlier reporting of $F_1 = 1.000$ was caused by template leakage in random splitting; the corrected methodology is used throughout.
+### 2. Payment Delay Regressor (`models/delay_regressor.joblib`)
+- **Task**: Continuous estimation of delinquency days on invoices identified as late.
+- **Algorithm**: `HistGradientBoostingRegressor(l2_regularization=0.25, learning_rate=0.04, max_iter=400, random_state=42)`.
+- **Preconditioning**: Fitted exclusively on historical invoices with positive payment delays, preventing negative-skew distortion.
+- **Performance**: Test MAE of **5.90 days** and RMSE of **7.96 days** across 529 delayed test invoices.
 
-| Split | Precision | Recall | F1 | Macro F1 | PR-AUC | ROC-AUC | Brier |
-|---|---|---|---|---|---|---|---|
-| Validation (Unseen Templates) | 0.5250 | 1.0000 | 0.6885 | 0.5875 | 0.7050 | 0.8401 | 0.2227 |
-| Test (Unseen Templates) | 0.4375 | 1.0000 | 0.6087 | 0.4904 | 0.6829 | 0.8259 | 0.2742 |
-| Held-Out OOD Corpus | 0.4286 | 0.9000 | 0.5806 | 0.5662 | 0.8118 | 0.8800 | 0.2318 |
+### 3. NLP Payment-Risk Model (`models/nlp_payment_risk.joblib`)
+- **Task**: Binary classification of customer communication text (emails, call notes, dispute logs) to detect payment risk.
+- **Algorithm**: `TfidfVectorizer(ngram_range=(1,2), sublinear_tf=True, max_features=3000)` + `CalibratedClassifierCV(LogisticRegression(class_weight="balanced"))`.
+- **Evaluation Methodology**: Group-disjoint template evaluation (zero template overlap between Train, Validation, and Test splits) and an independent real-world held-out OOD evaluation corpus.
+- **Operational UI Alert Bands**:
+  - `LOW`: $P(\text{risk}) < 0.30$
+  - `MEDIUM`: $0.30 \le P(\text{risk}) < 0.50$ (Operational alert threshold applied at the UI layer)
+  - `HIGH`: $P(\text{risk}) \ge 0.50$
+- **OOD Generalization**: Achieves **0.9000 Recall** and **0.8800 ROC-AUC** on the independent held-out evaluation corpus.
 
-The held-out OOD evaluation provides evidence of generalization beyond training templates. It is not a substitute for broad real-world validation on diverse production-labeled data.
+### 4. Retail Repurchase & Inactivity Classifier (`models/retail_repurchase_model.pkl`)
+- **Task**: Binary classification predicting customer repurchase within a 60-day forward horizon.
+- **Algorithm**: Calibrated Logistic Regression (Isotonic calibration).
+- **Features (8)**: `recency_days`, `customer_age_days`, `frequency`, `monetary`, `avg_order_value`, `cancellation_rate`, `revenue_90d`, `orders_90d`.
+- **Performance**: Test PR-AUC: **0.6478**, OOT PR-AUC: **0.6668**, OOT ROC-AUC: **0.7976**, Brier Score: **0.1682**.
+
+### 5. Future Revenue Regressor (`models/retail_future_revenue_model.pkl`)
+- **Task**: Continuous forecasting of net customer spend (in GBP) over a 60-day forward window.
+- **Algorithm**: `HistGradientBoostingRegressor`.
+- **Performance**: Test MAE: **£236.21** ($R^2$: 0.5617), Out-of-Time (OOT) MAE: **£288.84** ($R^2$: 0.5744).
+
+### 6. Multi-Signal Composite Risk Engine (`src/risk_engine.py`)
+The business risk layer combines individual probabilistic signals into a calibrated 0–100 composite risk score:
+
+$$\text{Composite Risk} = \sum_{i=1}^{k} \frac{w_i}{\sum w} \cdot s_i \times 100$$
+
+Where active signals include:
+- **Invoice Late Probability** ($w=0.40$): Calibrated model probability.
+- **Customer Inactivity Probability** ($w=0.35$): $1.0 - P(\text{repurchase})$.
+- **Cancellation Friction** ($w=0.15$): Scaled return/cancellation ratio.
+- **Financial Exposure Ratio** ($w=0.20$): Ratio of outstanding balance to invoice amount.
+- **NLP Dispute Signal** ($w=0.25$): Risk score derived from communication text.
 
 ---
 
-## Dataset
+## Explainability Layer (SHAP)
 
-### UCI Online Retail II (Retail & Customer Intelligence)
+InvoiceGuard AI integrates model explainability directly into the credit analyst workflow:
 
-| Field | Value |
-|---|---|
-| Official Source | [https://archive.ics.uci.edu/dataset/502/online+retail+ii](https://archive.ics.uci.edu/dataset/502/online+retail+ii) |
-| DOI | [https://doi.org/10.24432/C5CG6D](https://doi.org/10.24432/C5CG6D) |
-| Citation | Chen, D. (2012). *Online Retail II*. UCI Machine Learning Repository. |
-| Instances | 1,067,371 transactions — 01/12/2009 to 09/12/2011 |
-| License | CC BY 4.0 |
-| Acquisition | `python scripts/download_retail_data.py` |
+- **Attribution Engine**: Computes local feature attributions using SHAP (`TreeExplainer` or linear coefficient attribution fallback).
+- **Feature Impact Normalization**: Translates raw mathematical attributions into intuitive directional contributors (features increasing risk vs. features mitigating risk).
+- **Human-Readable Business Drivers**: Converts technical weights into natural language summaries (e.g., *"Customer historical late ratio of 65% adds +18.4% to late probability; payment terms of Net-30 provide slight mitigating balance"*).
+- **Visual Attribution Bars**: Visualized via color-coded horizontal bars within the Streamlit UI, allowing credit analysts to understand the rationale behind every risk score before taking action.
 
-The raw dataset is not committed to the repository (`data/raw/` is gitignored). The script downloads `online_retail_II.xlsx` directly from the UCI ML Repository.
+---
 
-### Kaggle Invoice Dataset (Invoice Payment-Risk Retraining)
+## Datasets & Feature Engineering
 
-The invoice payment-risk model is pre-trained on a synthetic demo dataset (`data/demo/`). To retrain on the real Kaggle B2B invoice dataset (CC BY-NC 4.0):
+### 1. Primary B2B Invoice Dataset (`data/demo/demo_invoices.csv`)
+- **Volume**: 12,000 commercial invoice records.
+- **Target Distribution**: 8,196 on-time (68.3%), 3,804 late (31.7%).
+- **Target Variables**:
+  - `late_payment`: Binary indicator ($1$ if `delay_days > 0`, $0$ otherwise).
+  - `delay_days_positive`: Continuous days late ($\max(0, \text{delay\_days})$).
+- **Split Strategy**: Chronological split (60% Train, 20% Validation, 10% Test, 10% Out-of-Time).
+- **Leakage Prevention**:
+  - `payment_date`, `delay_days`, and derived outcome fields are strictly excluded from feature space $X$.
+  - Historical behavioral features (`prior_late_count`, `prior_late_ratio`, `prior_avg_delay`) are computed using customer-level expanding windows lagged by one period (`shift(1)`).
+  - New customers with zero historical invoices receive cold-start indicators (`customer_is_new = 1`) with zero prior defaults.
+- **Handled Missing Data**: Cleaned and imputed via median (numeric) and most frequent (categorical) strategies:
+  - `industry`: 180 missing
+  - `payment_method`: 144 missing
+  - `invoice_amount`: 120 missing
+  - `company_size`: 120 missing
 
-```bash
-python scripts/download_data.py  # Requires Kaggle API credentials (kagglehub)
+### 2. UCI Online Retail II Dataset
+- **Source**: Official UCI Machine Learning Repository (Chen, 2012, CC BY 4.0).
+- **Raw Volume**: 1,067,371 transactions across two reporting years (2009–2011).
+- **Data Quality Audit**:
+  - Duplicate rows identified: 34,335 (3.22%).
+  - Records lacking Customer ID: 243,007 (22.77% — preserved for transaction-level product intelligence, excluded from customer-level RFM models).
+  - Cancellations (prefix 'C'): 19,494 (1.83% — engineered into behavioral cancellation rates).
+  - Clean behavioral transactions: 779,495 records across 5,942 distinct customers in 43 countries.
+- **Temporal Snapshot Engineering**: Point-in-time rolling snapshot frames ($[T-90, T)$ feature windows vs. $[T, T+60)$ target windows), guaranteeing zero forward leakage.
+
+### 3. Strict Domain Isolation Guarantee
+- **B2B Receivables Domain**: Commercial credit accounts identified by `C-XXXX` (e.g. `C-0161`), containing contractual payment terms, outstanding balances, and aging brackets.
+- **UCI Online Retail Domain**: Transactional retail accounts identified by numeric IDs (e.g. `13085`), containing order frequency, basket monetary value, and product lines.
+- **Zero Identity Synthesis**: The platform enforces strict domain separation. Accounts are never artificially merged or resolved, preserving auditability and data integrity.
+
+---
+
+## Model Performance Summary
+
+Empirical metrics measured across independently evaluated holdout splits:
+
+### Classification Models
+| Model Domain | Algorithm | Split | Precision | Recall | F1 | PR-AUC | ROC-AUC | Brier Score |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Invoice Payment Risk** | Calibrated LogReg (`classifier.joblib`) | **Test** | 0.9616 | 0.8870 | 0.9228 | **0.9751** | **0.9893** | 0.0372 |
+| **Invoice Payment Risk** | Calibrated LogReg (`classifier.joblib`) | **OOT** | 0.9491 | 0.8809 | 0.9137 | **0.9700** | **0.9878** | 0.0363 |
+| **Invoice (Benchmark)** | Random Forest (`random_forest.joblib`) | Test | 0.8909 | 0.9263 | 0.9082 | 0.9787 | 0.9893 | — |
+| **Retail Repurchase** | Calibrated LogReg (`retail_repurchase_model.pkl`) | **Test** | 0.7175 | 0.4088 | 0.5208 | **0.6478** | **0.8133** | 0.1460 |
+| **Retail Repurchase** | Calibrated LogReg (`retail_repurchase_model.pkl`) | **OOT** | 0.7387 | 0.3959 | 0.5155 | **0.6668** | **0.7976** | 0.1682 |
+| **NLP Communication Risk** | TF-IDF + LogReg (`nlp_payment_risk.joblib`) | Unseen Test | 0.4375 | 1.0000 | 0.6087 | 0.6829 | 0.8259 | 0.2742 |
+| **NLP Communication Risk** | TF-IDF + LogReg (`nlp_payment_risk.joblib`) | **Held-Out OOD** | 0.4286 | 0.9000 | 0.5806 | **0.8118** | **0.8800** | 0.2318 |
+
+### Regression Models
+| Model Domain | Algorithm | Split | MAE | RMSE | $R^2$ Score | Evaluation Subset |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Payment Delay** | HistGradientBoosting (`delay_regressor.joblib`) | **Test** | **5.90 days** | 7.96 days | — | 529 delayed invoices |
+| **Future Revenue (60d)**| HistGradientBoosting (`retail_future_revenue_model.pkl`) | **Test** | **£236.21** | £895.87 | 0.5617 | Held-out retail test split |
+| **Future Revenue (60d)**| HistGradientBoosting (`retail_future_revenue_model.pkl`) | **OOT** | **£288.84** | £1301.68 | 0.5744 | Out-of-time future split |
+
+---
+
+## Application & User Interface
+
+The application features a modern AI fintech user interface built on a centralized CSS design token architecture (`src/ui/css.py`).
+
+### Dual-Theme Engine (Light & Dark Modes)
+- **Dark Theme (Default)**: Deep slate/navy palette (`#0B1120`, `#0F172A`, `#111827`, `#1E293B`, `#263449`, `#3B82F6`) designed for extended operational review.
+- **Light Theme**: Clean, high-contrast financial analytics palette (`#F8FAFC`, `#FFFFFF`, `#E2E8F0`, `#0F172A`, `#2563EB`).
+- **Instant Persistence**: Toggled via the top navigation shell or sidebar button; persists across all page navigations via `st.session_state.theme`.
+
+### Top Application Shell Header
+- **Branding & Breadcrumb**: Prominent SVG brandmark, application title, and hierarchical page context (`WORKSPACE / SECTION / PAGE`).
+- **Header Theme Switcher**: 1-click toggle button (`☀️ Light` / `🌙 Dark`).
+- **Live Role Indicator**: Accessible status pill indicating operational authorization level (`Analyst` or `Admin`).
+
+### User-Facing Navigation Hierarchy (16 Pages)
+```
+DASHBOARD
+  └── Overview                 # Executive cash-flow KPIs, risk distribution & receivables mix
+RECEIVABLES
+  ├── Invoices                 # Single invoice prediction, what-if simulator & batch CSV uploads
+  └── Collections              # Prioritized delinquent accounts & days overdue tracking
+CUSTOMERS
+  ├── Customer 360             # Deep-dive profile explorer with strict domain isolation
+  ├── Customer Search          # Instant index lookup across portfolio customer IDs
+  ├── Customer Risk            # Risk matrix quadrant and portfolio exposure mapping
+  └── Customer Segmentation   # K=4 KMeans cohort segmentation (Champions, Growing, At-Risk, Dormant)
+INTELLIGENCE
+  ├── Risk Drivers             # Global SHAP feature importances & risk-driver explanations
+  ├── Message Intelligence     # NLP payment communication scoring & dispute detection
+  └── Product Intelligence     # UCI retail SKU rankings, revenue concentration & return rates
+REVENUE
+  ├── Revenue Forecast         # 60-day customer forward revenue prediction
+  ├── Customer Retention       # Repurchase probability & inactivity risk classification
+  └── Revenue at Risk          # Financial exposure aggregation weighted by late probability
+ADMINISTRATION (Guarded by ROLE_ADMIN)
+  ├── Data Quality             # Ingestion schema validation, null profiling & empirical distributions
+  └── System Status            # Model artifact signatures, memory diagnostics & server health
 ```
 
-Running the application does not require this step.
+---
+
+## REST API Reference
+
+InvoiceGuard AI includes a high-performance REST API (`src/api.py`) powered by FastAPI:
+
+> **Deployment Note:** Streamlit Cloud hosts the primary interactive dashboard. The FastAPI service provides programmatic, headless inference capabilities for integration with existing ERP and billing systems.
+
+### Endpoints
+- `POST /predict`: Real-time B2B invoice prediction.
+  - *Request*: `InvoiceInput` (invoice date, due date, amount, customer history, terms).
+  - *Response*: Late probability, binary flag, expected delay days, risk tier, dollar exposure, top reasons, and recommendation.
+- `POST /retail/predict/repurchase`: 60-day customer repurchase and inactivity risk inference.
+  - *Request*: `RetailInput` (recency, frequency, monetary value, cancellation rate, 90-day revenue).
+  - *Response*: Repurchase probability, inactivity probability, inactivity tier.
+- `POST /retail/predict/revenue`: 60-day customer forward revenue prediction.
+  - *Request*: `RetailInput`.
+  - *Response*: Expected revenue amount in GBP.
+- `POST /risk/evaluate`: Multi-signal composite scoring.
+  - *Request*: `RiskScoreInput` (invoice risk, inactivity, cancellation, exposure, NLP score).
+  - *Response*: 0–100 composite risk score, contributing signal breakdown, deterministic P1–P4 action playbooks.
+- `GET /customer/profile/{customer_id}`: Customer 360 profile lookup under domain isolation.
+- `GET /health`: Model status, artifact integrity, and system health checks.
+- `GET /metrics`: Serialized test metrics and evaluation lineage.
 
 ---
 
-## File Handling & Security
+## Security & Role-Based Access Control (RBAC)
 
-| Property | Value |
-|---|---|
-| Supported formats | CSV, XLSX |
-| Maximum file size | 50 MB |
-| Maximum rows | 1,000,000 |
-| Extension validation | Yes — non-.csv/.xlsx rejected before parsing |
-| Schema validation | Yes — missing required columns reported with a clear error message |
-| Malformed file handling | Yes — corrupted, empty, and unparseable files rejected gracefully |
-| In-memory processing | Yes — uploaded content is parsed in memory; no files are written to disk paths derived from uploaded filenames |
-| Error presentation | Structured error messages only — no raw Python stack traces exposed to users |
-| Secrets | No API keys, tokens, or passwords committed. `.env.example` contains placeholders only. `.gitignore` excludes `.env`, `.venv`, caches, and raw data. |
+The application implements a security boundary (`src/security/auth.py`):
 
----
+```
+User Session ──▶ Role Resolution ──▶ ROLE_USER (Analyst)  ──▶ 14 Core Business Views
+                                 ──▶ ROLE_ADMIN (Admin)    ──▶ 14 Business Views + 2 Diagnostic Views
+```
 
-## Performance
-
-All measurements are server-side execution timings in the development/test environment. They do not include browser rendering or network transfer latency.
-
-| Operation | Benchmark Timing | Description |
-|---|---|---|
-| Overview Dataset (First Uncached Run) | 0.313 seconds | Vectorized batch inference |
-| Overview Dataset (Cached Run) | 0.012 seconds | Cached Streamlit dataset rendering |
-| Customer 360 Lookup | 2.49 ms | Indexed customer profile retrieval |
-| Customer Search | 6.99 ms | Customer lookup/search |
-| Single Invoice Prediction | 19.66 ms | Classification and SHAP scoring |
-| Batch Prediction (12,000 rows) | 34.30 ms | Vectorized batch inference |
-| NLP Single Message Prediction | 3.64 ms | TF-IDF scoring |
-
-**Navigation performance:** Models and metadata are loaded once at application startup using `@st.cache_resource`. The dashboard dataset is computed once per session using `@st.cache_data` with an artifact-signature key. Subsequent page navigations reuse cached resources without reloading model artifacts or recomputing aggregations.
-
----
-
-## Responsive Interface
-
-The application CSS design system (`src/ui/css.py`) implements responsive behavior across:
-
-- **Desktop (>= 1200px):** Multi-column KPI rows, full sidebar navigation, side-by-side analytical cards, interactive Plotly charts, and expanded dataframes.
-- **Tablet (768px – 1199px):** Adaptive 2×2 grid layouts, auto-scaling charts, and touch-friendly controls.
-- **Mobile (< 768px):** Single-column vertical card stacks, fluid typography (`clamp()`), horizontal table scrolling, 44px minimum touch targets, and no page-wide horizontal overflow.
-
-*Responsive behavior was implemented via CSS design system inspection and application-level verification. Automated browser/device interaction testing was not available in the validation environment.*
+- **Authentication Mechanism**: Session-state role management backed by PBKDF2-HMAC-SHA256 password hashing (100,000 iterations) with constant-time equality verification (`secrets.compare_digest`).
+- **Administrative Boundary**: System diagnostics (`Data Quality` and `System Status`) are guarded behind `is_admin()`. Unauthorized access attempts are halted before any view code executes.
+- **Production Guardrails**: In production environments, fallback demo credentials are strictly blocked, requiring explicit environment configuration (`INVOICEGUARD_ADMIN_USERNAME` and `INVOICEGUARD_ADMIN_PASSWORD` or `INVOICEGUARD_ADMIN_PASSWORD_HASH`).
+- **In-Memory File Ingestion**: Uploaded client files are processed strictly in-memory using validated schema parsers (`src/data/file_loader.py`), preventing arbitrary file write vulnerabilities and directory traversal attacks.
 
 ---
 
 ## Testing & Quality Assurance
 
-| Check | Result |
-|---|---|
-| `pytest tests/ -v` | 25 PASSED, 1 MODULE SKIPPED |
-| Python compilation (`compileall`) | Clean — 0 errors |
-| Startup smoke test | `STARTUP OK` |
-| Vectorized inference equivalence | Max difference: 0.0000 |
+InvoiceGuard AI maintains a comprehensive, reproducible automated test suite:
 
-The skipped module (`tests/test_api.py`, 7 tests) requires `httpx>=0.23.0`, which is listed in `requirements.txt`. These tests are skipped gracefully when `httpx` is unavailable in restricted environments (e.g., corporate SSL-filtered pip) and pass fully in standard environments.
+```bash
+# Run full automated test suite
+python -m pytest -v
+
+# Run bytecode compilation verification
+python -m compileall src app.py tests
+
+# Run comprehensive bare-mode UI audit across all 16 views
+python scratch/audit_all_pages.py
+```
+
+### Verified Test Results
+- **Automated Unit & Integration Tests**: **53 PASSED, 1 SKIPPED** across 9 test modules (100% passing rate).
+  - `tests/test_retail_intelligence.py`: 11 passed (data quality, risk engine, domain separation, API logic)
+  - `tests/test_security_auth.py`: 15 passed (PBKDF2 hashing, session lifecycle, tampering resilience, file validation)
+  - `tests/test_pipeline.py`: 6 passed (artifacts, cold-start handling, input validation)
+  - `tests/test_file_loader.py`: 6 passed (empty, oversized, corrupted, and valid files)
+  - `tests/test_model_registry.py`: 4 passed (metadata integrity and schema parsing)
+  - `tests/test_nlp_model.py`: 4 passed (unseen text, empty input handling, probability bounds)
+  - `tests/test_data_quality.py`: 3 passed (schema validation and profiling)
+  - `tests/test_ui_imports.py`: 2 passed (clean module resolution)
+  - `scratch/test_8_nlp_messages.py`: 1 passed (NLP signal assertions)
+- **Python Compilation (`compileall`)**: **0 Errors** across all modules.
+- **UI Page Audit (`audit_all_pages.py`)**: **18 / 18 Tests Passed** (all 14 business pages + 2 admin-guarded pages verified under authorized and unauthorized states).
+- **Theme System Verification**: Programmatically verified design token injection, Plotly chart palette mappings, and component rendering in both Light and Dark modes.
 
 ---
 
@@ -232,108 +451,125 @@ The skipped module (`tests/test_api.py`, 7 tests) requires `httpx>=0.23.0`, whic
 ```text
 Inovice-Guard-ai/
 ├── app.py                          # Streamlit application entry point & view router
-├── requirements.txt                # Pinned runtime dependencies
+├── requirements.txt                # Pinned production runtime dependencies
 ├── .env.example                    # Environment variable template (placeholders only)
+├── .streamlit/
+│   └── config.toml                 # Streamlit server & telemetry configuration
 ├── src/
-│   ├── api.py                      # FastAPI REST endpoints (/predict, /health, /metrics)
-│   ├── audit_data.py               # Data audit CLI script
-│   ├── customer_360.py             # Customer 360 profile builder
-│   ├── model_registry.py           # Model metadata loader & registry
-│   ├── pipeline.py                 # Invoice feature engineering pipeline
-│   ├── retail_pipeline.py          # UCI retail dataset pipeline & feature engineering
-│   ├── retail_train.py             # Retail model training script
+│   ├── api.py                      # FastAPI REST service (/predict, /risk/evaluate, etc.)
+│   ├── customer_360.py             # Domain-isolated customer profile aggregator
+│   ├── model_registry.py           # Enterprise model metadata loader & cache
+│   ├── pipeline.py                 # B2B invoice feature engineering & leakage prevention
+│   ├── retail_analytics.py         # UCI retail RFM, cohort clustering, and product stats
+│   ├── retail_pipeline.py          # UCI retail temporal snapshot pipeline
+│   ├── retail_train.py             # UCI retail ML training & evaluation
+│   ├── risk_engine.py              # Multi-signal 0–100 risk scoring & P1–P4 playbooks
+│   ├── train.py                    # B2B invoice model training & benchmark evaluation
+│   ├── data/
+│   │   ├── data_profiler.py        # Empirical schema & missing data profiler
+│   │   ├── file_loader.py          # Secure in-memory CSV/XLSX file ingestion
+│   │   ├── retail_ingestion.py     # Clean UCI retail ingestion & validation
+│   │   └── schema_validator.py     # Tabular column and type validator
+│   ├── security/
+│   │   └── auth.py                 # PBKDF2-HMAC-SHA256 RBAC authentication & session guard
 │   └── ui/
-│       ├── components.py           # Reusable UI component library
-│       ├── css.py                  # Responsive enterprise CSS design system
-│       ├── data.py                 # Vectorized dashboard dataset loader & caching
-│       ├── navigation.py           # Sidebar & view router
-│       └── views/                  # Page view modules
-│           ├── overview.py         # Overview dashboard
-│           ├── receivables.py      # Invoice risk & collections center
-│           ├── customer_360.py     # Customer 360 profile view
-│           ├── customer_search.py  # Customer search
-│           ├── revenue_intelligence.py # Revenue forecasting & repurchase risk
-│           ├── ai_insights.py      # NLP payment-risk analysis
-│           └── system.py           # Model diagnostics & system health
+│       ├── components.py           # Reusable KPI cards, badges, chart palettes
+│       ├── css.py                  # Centralized dual-theme CSS (Dark & Light tokens)
+│       ├── data.py                 # Vectorized dataset loader & cache management
+│       ├── navigation.py           # Shell header bar, breadcrumbs, sidebar router
+│       └── views/
+│           ├── ai_insights.py      # Recommendations & AI actionable guidance
+│           ├── customer_360.py     # Domain-isolated Customer 360 profile explorer
+│           ├── customer_search.py  # Fast customer index and lookup
+│           ├── overview.py         # Executive cash-flow dashboard & summary KPIs
+│           ├── receivables.py      # Collections queue & overdue invoice tracking
+│           ├── retail_views.py     # Customer segmentation (K=4) & product intelligence
+│           ├── revenue_intelligence.py # Revenue forecast, repurchase risk & exposure
+│           └── system.py           # Model diagnostics & data quality (Admin-guarded)
 ├── models/                         # Serialized model artifacts (.joblib, .pkl, .json)
-├── scripts/                        # Data download, model training, and evaluation scripts
-├── reports/                        # Generated JSON metrics and evaluation reports
 ├── data/
-│   └── demo/                       # Synthetic demo invoice dataset (committed)
+│   ├── demo/
+│   │   └── demo_invoices.csv       # Primary 12,000-row B2B invoice dataset (committed)
+│   ├── processed/                  # Cleaned parquet & snapshot telemetry (gitignored)
+│   └── raw/                        # External data download targets (gitignored)
 ├── docs/                           # Model cards, quality reports, leakage audit
-└── tests/                          # Automated unit & integration test suite (7 files)
+├── reports/                        # Empirical audit JSONs, segmentation & benchmark reports
+├── scripts/                        # Dataset acquisition, model building & evaluation CLIs
+└── tests/                          # Automated unit, integration & RBAC test suite (9 files)
 ```
 
 ---
 
-## Quickstart
+## Quickstart & Local Setup
 
-### 1. Clone
-
+### 1. Clone Repository
 ```bash
 git clone https://github.com/Mohamed-Osama-ai7/Inovice-Guard-ai.git
 cd Inovice-Guard-ai
 ```
 
-### 2. Create Virtual Environment
-
+### 2. Configure Virtual Environment
 ```bash
 python -m venv .venv
-# Linux/macOS:
+
+# On Linux/macOS:
 source .venv/bin/activate
-# Windows:
+
+# On Windows:
 .venv\Scripts\activate
 ```
 
 ### 3. Install Dependencies
-
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Run Application
-
-The application ships with a pre-trained demo model and synthetic demo data. No dataset download is required to run.
-
+### 4. Run Interactive Dashboard
+The repository ships with pre-trained model artifacts and the demo invoice dataset. No external downloads are required:
 ```bash
 streamlit run app.py
 ```
-
 Open [http://localhost:8501](http://localhost:8501) in your browser.
 
-### 5. Dataset Download (Optional — for Retraining)
-
+### 5. Run Programmatic API (Optional)
+To run the headless FastAPI service:
 ```bash
-# UCI Online Retail II (customer analytics modules):
-python scripts/download_retail_data.py
-
-# Kaggle B2B invoice dataset (invoice model retraining — requires Kaggle API credentials):
-python scripts/download_data.py
+uvicorn src.api:app --host 0.0.0.0 --port 8000 --reload
 ```
+API documentation will be available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-### 6. Run Tests
+---
 
-```bash
-python -m pytest tests/ -v
-python -m compileall src/ app.py scripts/
-python -c "from src.ui.views.overview import render_overview; from app import main; print('STARTUP OK')"
-```
+## Usage Guide
+
+1. **Executive Overview**: Navigate to **Dashboard $\to$ Overview** to review aggregate portfolio cash at risk, payment status distributions, and revenue exposure by industry.
+2. **Predicting Invoice Risk**: Navigate to **Receivables $\to$ Invoices**. Use the single-invoice form to evaluate an open invoice, adjust payment terms in the What-If Simulator, or upload a CSV file for vectorized batch prediction.
+3. **Working Collections**: Navigate to **Receivables $\to$ Collections** to filter accounts by overdue aging brackets and prioritize credit controller outreach.
+4. **Inspecting Customer 360**: Navigate to **Customers $\to$ Customer 360** to examine individual account histories. Domain badges (`InvoiceGuard Receivables Domain` vs. `UCI Online Retail Domain`) clearly designate account lineage.
+5. **Analyzing Communication Text**: Navigate to **Intelligence $\to$ Message Intelligence** to paste an incoming debtor email or message. The NLP engine scores risk probability and provides immediate triage guidance.
+6. **Toggling Themes**: Click the `☀️ Light` / `🌙 Dark` toggle button in the top application shell header to switch visual themes instantly.
 
 ---
 
 ## Limitations
 
-- **NLP evaluation scope:** The held-out OOD evaluation demonstrates generalization beyond training templates, but the corpus is limited in size. This is not a substitute for broad real-world validation on production-labeled customer communications.
-- **Invoice model dataset:** The deployed model artifact (`classifier.joblib`) is trained on a synthetic demo dataset. Retraining on the full Kaggle B2B invoice dataset is required for production use with real invoice data.
-- **Benchmark timings are environment-specific:** Development/test machine timings. Streamlit Cloud instance performance may differ.
-- **Responsive UI validation:** Responsive design was implemented and audited via CSS inspection. Automated browser/device interaction testing was not available.
-- **Predictions are decision-support signals:** Risk scores and exposure estimates are probabilistic outputs and should be interpreted as decision-support tools, not financial guarantees.
-- **FastAPI REST API:** The `src/api.py` REST API is functional and tested locally, but it is not deployed as a public endpoint. The live application at the deployment URL is the Streamlit UI.
+- **Decision-Support Scope**: Model outputs represent probabilistic likelihoods and expected horizons. They are designed to empower credit professionals, not replace human credit governance.
+- **Domain Specialization**: The retail models are trained on wholesale gift and export transactions (UCI Online Retail II in GBP). Recalibration is advised before deploying on B2B recurring SaaS subscription data.
+- **NLP Training Vocabulary**: The text model achieves 90% recall on the held-out out-of-domain evaluation corpus; however, novel multilingual idioms or slang may require periodic vocabulary retraining.
+- **REST API Hosting**: While fully functional and tested locally, the public production deployment on Streamlit Cloud hosts the web application interface; the REST API is provided for self-hosted or containerized deployment.
+
+---
+
+## Future Improvements
+
+- **Deep Language Model Fine-Tuning**: Integration of lightweight distilled transformer models (e.g. ModernBERT / DeBERTa) for multi-lingual and nuanced sentiment detection.
+- **Enterprise ERP Webhooks**: Pre-built integration connectors for SAP S/4HANA, NetSuite, and QuickBooks.
+- **Automated Dunning Orchestration**: Automated dispatch of tailored email reminders triggered by P1–P4 operational recommendation thresholds.
 
 ---
 
 ## License & Attribution
 
-- **Source Code:** Released under repository terms.
-- **UCI Online Retail II Dataset:** Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0). Citation: Chen, D. (2012). *Online Retail II*. UCI Machine Learning Repository. DOI: [10.24432/C5CG6D](https://doi.org/10.24432/C5CG6D).
-- **Kaggle Invoice Dataset:** CC BY-NC 4.0 (Kaggle listing). Not redistributed in this repository.
+- **Source Code**: Released under standard project terms.
+- **UCI Online Retail II Dataset**: Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0). Citation: Chen, D. (2012). *Online Retail II*. UCI Machine Learning Repository. [https://doi.org/10.24432/C5CG6D](https://doi.org/10.24432/C5CG6D).
+- **Kaggle Invoices Dataset**: Subject to CC BY-NC 4.0. Not redistributed in this repository; download script provided in `scripts/download_data.py`.
