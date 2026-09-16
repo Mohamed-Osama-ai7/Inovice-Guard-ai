@@ -69,103 +69,91 @@ $$\text{Invoice + Customer + Payment Data} \longrightarrow \text{Validation} \lo
 
 ```mermaid
 flowchart TD
-    %% Subgraph 1: User & Presentation Layer
+
     subgraph Presentation["1. Presentation & Application Layer"]
         User["User / Credit Analyst"]
-        Shell["Application Shell<br/>(Top Navigation Bar · Theme Toggle · Live Auth Indicator)"]
+        Shell["Application Shell<br/>(Top Navigation · Theme Toggle · Live Auth)"]
         Nav["Navigation & RBAC Router<br/>(14 Business Views · 2 Guarded Admin Views)"]
         Views["Domain Analytical Views<br/>(Overview · Invoices · Collections · Customer 360 · Revenue)"]
     end
 
-    %% Subgraph 2: Intelligence & Orchestration Layer
     subgraph Intelligence["2. Intelligence & Orchestration Layer"]
-        B2BIntel["Receivables Intelligence<br/>(Payment Probability · Delay Days · Exposure Ratio)"]
-        RetailIntel["Retail & Customer Intelligence<br/>(RFM Analytics · Repurchase Risk · Cohort Clustering)"]
-        NLPIntel["Communication Intelligence<br/>(Message Sentiment · Dispute Risk · Alert Bands)"]
-        RiskEngine["Multi-Signal Risk Engine<br/>(0–100 Composite Score · Signal Weighting)"]
-        ActionEngine["Recommendation Engine<br/>(Deterministic P1–P4 Operational Playbooks)"]
+        B2BIntel["Receivables Intelligence<br/>(Payment Probability · Delay Days · Exposure)"]
+        RetailIntel["Retail & Customer Intelligence<br/>(RFM · Repurchase · Cohorts)"]
+        NLPIntel["Communication Intelligence<br/>(Dispute & Payment-Risk Signals)"]
+        RiskEngine["Multi-Signal Risk Engine<br/>(Composite Score)"]
+        ActionEngine["Recommendation Engine<br/>(P1–P4 Playbooks)"]
     end
 
-    %% Subgraph 3: Machine Learning & Predictive Models
     subgraph Models["3. Machine Learning & Predictive Models"]
-        ClsModel["Invoice Risk Classifier<br/>(Calibrated Logistic Regression · models/classifier.joblib)"]
-        RegModel["Payment Delay Regressor<br/>(HistGradientBoosting · models/delay_regressor.joblib)"]
-        NLPModel["NLP Payment Risk Model<br/>(TF-IDF + Calibrated LogReg · models/nlp_payment_risk.joblib)"]
-        RepModel["Retail Repurchase Classifier<br/>(Calibrated LogReg · models/retail_repurchase_model.pkl)"]
-        RevModel["Future Revenue Regressor<br/>(HistGradientBoosting · models/retail_future_revenue_model.pkl)"]
+        ClsModel["Invoice Risk Classifier<br/>(Calibrated Logistic Regression)"]
+        RegModel["Payment Delay Regressor<br/>(HistGradientBoosting)"]
+        NLPModel["NLP Payment Risk Model<br/>(TF-IDF + Logistic Regression)"]
+        RepModel["Retail Repurchase Model<br/>(Calibrated Logistic Regression)"]
+        RevModel["Future Revenue Model<br/>(HistGradientBoosting)"]
     end
 
-    %% Subgraph 4: Explainability & Decision Insights Layer
-    subgraph Explainability["4. Explainability & Decision Insights Layer"]
-        SHAP["SHAP Attribution Engine<br/>(Tree & Linear Explainers · Feature Contributions)"]
-        Drivers["Risk Driver Generator<br/>(Top Positive & Negative Risk Attribution)"]
-        C360Profile["Customer 360 Engine<br/>(Domain-Isolated Accounts · Financial Profile)"]
+    subgraph Explainability["4. Explainability & Decision Insights"]
+        SHAP["SHAP Attribution Engine<br/>(Feature Contributions)"]
+        Drivers["Risk Driver Generator<br/>(Positive & Negative Drivers)"]
+        C360Profile["Customer 360 Engine<br/>(Domain-Isolated Profiles)"]
     end
 
-    %% Subgraph 5: Data & Feature Engineering Layer
-    subgraph DataEngineering["5. Data & Feature Engineering Layer"]
-        Val["Input & Schema Validator<br/>(CSV / XLSX Loader · Column Mapping · Security Bounds)"]
-        InvoiceFeat["Invoice Feature Pipeline<br/>(Point-in-Time Lagging · shift(1) · 17 Features)"]
-        RetailFeat["Retail Feature Pipeline<br/>(Point-in-Time RFM Windows · 8 Features)"]
-        NLPFeat["NLP Text Vectorizer<br/>(Character & Word N-grams · TF-IDF Pipeline)"]
+    subgraph DataEngineering["5. Data & Feature Engineering"]
+        Val["Input & Schema Validator<br/>(CSV / XLSX · Column Mapping · File Bounds)"]
+        InvoiceFeat["Invoice Feature Pipeline<br/>(Point-in-Time Features · Historical Lags)"]
+        RetailFeat["Retail Feature Pipeline<br/>(RFM · Temporal Snapshots)"]
+        NLPFeat["NLP Text Pipeline<br/>(TF-IDF Vectorization)"]
     end
 
-    %% Subgraph 6: Data Sources
     subgraph Sources["6. Data Sources"]
-        InvData[("Invoice Dataset<br/>(12,000 Rows · B2B Invoices & Terms)")]
-        HistData[("Customer Payment History<br/>(Chronological Outcomes & Historical Delays)")]
-        RetailData[("Retail Transactions<br/>(UCI Online Retail II · 1.06M Rows)")]
-        TextData[("Customer Messages<br/>(Payment Communications & Dispute Texts)")]
+        InvData[("Invoice Dataset<br/>B2B Invoice Records")]
+        HistData[("Payment History<br/>Historical Customer Outcomes")]
+        RetailData[("Retail Transactions<br/>UCI Online Retail II")]
+        TextData[("Customer Messages<br/>Payment & Dispute Communications")]
     end
 
-    %% Flow Connections: User to Presentation
-    User -->|Interacts With| Shell
-    Shell -->|Dispatches Selection| Nav
-    Nav -->|Authorizes & Renders| Views
+    User -->|"Interact"| Shell
+    Shell -->|"Navigate"| Nav
+    Nav -->|"Render"| Views
 
-    %% Presentation to Validation
-    Views -->|Submit Invoice / Upload File| Val
-    Val -->|Validated Invoices| InvoiceFeat
-    Val -->|Validated Customer Records| RetailFeat
-    Val -->|Validated Communications| NLPFeat
+    Views -->|"Submit / Upload"| Val
 
-    %% Data Sources to Engineering
-    InvData -->|Ingest Raw Records| Val
-    HistData -->|Construct Historical Shifts| InvoiceFeat
-    RetailData -->|Extract Behavioral Snapshots| RetailFeat
-    TextData -->|Extract Communication Logs| NLPFeat
+    InvData -->|"Ingest"| Val
+    HistData -->|"Historical Data"| InvoiceFeat
+    RetailData -->|"Transactions"| RetailFeat
+    TextData -->|"Text"| NLPFeat
 
-    %% Data Engineering to Models
-    InvoiceFeat -->|17 Engineered Features| ClsModel
-    InvoiceFeat -->|17 Engineered Features| RegModel
-    NLPFeat -->|TF-IDF Feature Vectors| NLPModel
-    RetailFeat -->|8 Behavioral Features| RepModel
-    RetailFeat -->|8 Behavioral Features| RevModel
+    Val -->|"Validated Records"| InvoiceFeat
+    Val -->|"Validated Records"| RetailFeat
+    Val -->|"Validated Text"| NLPFeat
 
-    %% Models to Explainability
-    ClsModel -->|Model Weights & Predictions| SHAP
-    SHAP -->|Attribution Coefficients| Drivers
+    InvoiceFeat -->|"Features"| ClsModel
+    InvoiceFeat -->|"Features"| RegModel
+    RetailFeat -->|"Behavioral Features"| RepModel
+    RetailFeat -->|"Behavioral Features"| RevModel
+    NLPFeat -->|"TF-IDF Vectors"| NLPModel
 
-    %% Models to Intelligence
-    ClsModel -->|Late Probability P(risk)| B2BIntel
-    RegModel -->|Anticipated Delay Days| B2BIntel
-    NLPModel -->|Communication Risk Score| NLPIntel
-    RepModel -->|Repurchase & Inactivity Prob| RetailIntel
-    RevModel -->|60-Day Forward Revenue| RetailIntel
+    ClsModel -->|"Late Probability"| B2BIntel
+    RegModel -->|"Delay Estimate"| B2BIntel
+    NLPModel -->|"Risk Signal"| NLPIntel
+    RepModel -->|"Repurchase Probability"| RetailIntel
+    RevModel -->|"Revenue Forecast"| RetailIntel
 
-    %% Intelligence to Composite Scoring
-    B2BIntel -->|Late Risk Signal & Exposure| RiskEngine
-    NLPIntel -->|Dispute Signal| RiskEngine
-    RetailIntel -->|Inactivity & Cancellation Signals| RiskEngine
+    ClsModel -->|"Prediction"| SHAP
+    SHAP -->|"Feature Drivers"| Drivers
 
-    %% Risk Engine to Recommendations & Presentation
-    RiskEngine -->|Composite Score (0–100)| ActionEngine
-    Drivers -->|Key Explanations| ActionEngine
-    ActionEngine -->|Prioritized Actions & KPI Data| Views
-    C360Profile -->|Domain-Isolated Profile Data| Views
-    RetailIntel -->|Cohort & Product Metrics| Views
+    B2BIntel -->|"Risk & Exposure"| RiskEngine
+    RetailIntel -->|"Customer Signals"| RiskEngine
+    NLPIntel -->|"Communication Signal"| RiskEngine
 
-    %% Semantic Styling
+    RiskEngine -->|"Composite Risk"| ActionEngine
+    Drivers -->|"Explainability"| ActionEngine
+
+    ActionEngine -->|"Actions & KPIs"| Views
+    C360Profile -->|"Customer Profile"| Views
+    RetailIntel -->|"Customer Insights"| Views
+
     classDef appClass fill:#1E293B,stroke:#3B82F6,stroke-width:2px,color:#F8FAFC;
     classDef mlClass fill:#2E1065,stroke:#8B5CF6,stroke-width:2px,color:#F8FAFC;
     classDef dataClass fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#F8FAFC;
