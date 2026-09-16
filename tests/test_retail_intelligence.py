@@ -330,3 +330,93 @@ def test_api_functional_logic():
     assert "risk_evaluation" in eval_res
     assert "recommendations" in eval_res
     assert 0 <= eval_res["risk_evaluation"]["composite_score"] <= 100
+
+
+# =====================================================================
+# 7. Explicit Point-in-Time Temporal Leakage Prevention Audit Test
+# =====================================================================
+
+def test_explicit_point_in_time_leakage_prevention():
+    """
+    Empirically test that transactions occurring after snapshot cutoff T:
+    1. NEVER alter historical features (frequency, monetary, recency, etc.)
+    2. Correctly affect future target labels in [T, T+60d)
+    """
+    from src.retail_pipeline import generate_customer_snapshots, generate_targets
+
+    cutoff = pd.Timestamp("2011-01-01 00:00:00")
+    cust_id = "TEST_CUST_999"
+
+    # Base historical transactions (strictly before cutoff T)
+    base_tx = pd.DataFrame([
+        {
+            "customer_id": cust_id,
+            "invoice_no": "10001",
+            "invoice_date": pd.Timestamp("2010-10-15 10:00:00"),
+            "stock_code": "85123A",
+            "quantity": 10,
+            "price": 2.5,
+            "revenue": 25.0,
+            "is_cancellation": False,
+        },
+        {
+            "customer_id": cust_id,
+            "invoice_no": "10002",
+            "invoice_date": pd.Timestamp("2010-12-20 14:00:00"),
+            "stock_code": "22423",
+            "quantity": 4,
+            "price": 12.75,
+            "revenue": 51.0,
+            "is_cancellation": False,
+        },
+    ])
+
+    # Compute baseline snapshot at cutoff T
+    base_feat = generate_customer_snapshots(base_tx, cutoff)
+    assert not base_feat.empty
+    row_base = base_feat[base_feat["customer_id"] == cust_id].iloc[0]
+
+    expected_monetary = 76.0
+    expected_orders = 2
+    assert row_base["monetary"] == expected_monetary
+    assert row_base["total_orders"] == expected_orders
+    recency_base = row_base["recency_days"]
+
+    # Target before future transaction (no future orders yet)
+    base_target = generate_targets(base_tx, cutoff, forward_days=60)
+    target_cust_base = base_target[base_target["customer_id"] == cust_id]
+    assert target_cust_base.empty or target_cust_base.iloc[0]["future_orders_60d"] == 0
+
+    # Inject a large future transaction AFTER cutoff (T + 15 days)
+    future_tx = base_tx.copy()
+    future_record = {
+        "customer_id": cust_id,
+        "invoice_no": "10003",
+        "invoice_date": pd.Timestamp("2011-01-16 11:30:00"),
+        "stock_code": "POST",
+        "quantity": 100,
+        "price": 50.0,
+        "revenue": 5000.0,
+        "is_cancellation": False,
+    }
+    future_tx = pd.concat([future_tx, pd.DataFrame([future_record])], ignore_index=True)
+
+    # Re-compute snapshot at the exact same historical cutoff T
+    leakage_feat = generate_customer_snapshots(future_tx, cutoff)
+    assert not leakage_feat.empty
+    row_leakage = leakage_feat[leakage_feat["customer_id"] == cust_id].iloc[0]
+
+    # GUARANTEE 1: Historical features must remain 100% IDENTICAL
+    assert row_leakage["monetary"] == expected_monetary, "LEAKAGE: Future revenue leaked into historical monetary!"
+    assert row_leakage["total_orders"] == expected_orders, "LEAKAGE: Future order leaked into historical frequency!"
+    assert row_leakage["recency_days"] == recency_base, "LEAKAGE: Future date leaked into historical recency!"
+    assert row_leakage["revenue_90d"] == row_base["revenue_90d"]
+    assert row_leakage["orders_90d"] == row_base["orders_90d"]
+
+    # GUARANTEE 2: Future transaction MUST be captured in forward target [T, T+60d)
+    leakage_target = generate_targets(future_tx, cutoff, forward_days=60)
+    assert not leakage_target.empty
+    row_tgt = leakage_target[leakage_target["customer_id"] == cust_id].iloc[0]
+    assert row_tgt["future_revenue_60d"] == 5000.0
+    assert row_tgt["future_orders_60d"] == 1
+    assert row_tgt["repurchase_60d"] == 1

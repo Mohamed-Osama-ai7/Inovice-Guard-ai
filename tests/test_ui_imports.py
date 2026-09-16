@@ -18,6 +18,8 @@ class TestUIImports(unittest.TestCase):
         from src.ui.views.receivables import render_collections
         from src.ui.views.revenue_intelligence import render_revenue_forecast, render_repurchase_risk
         from src.ui.views.system import render_data_quality
+        from src.ui.views.customer_360 import render_customer_360
+        from src.ui.views.retail_views import render_customer_segmentation, render_product_intelligence
 
         self.assertTrue(callable(render_overview))
         self.assertTrue(callable(render_ai_recommendations))
@@ -26,6 +28,9 @@ class TestUIImports(unittest.TestCase):
         self.assertTrue(callable(render_revenue_forecast))
         self.assertTrue(callable(render_repurchase_risk))
         self.assertTrue(callable(render_data_quality))
+        self.assertTrue(callable(render_customer_360))
+        self.assertTrue(callable(render_customer_segmentation))
+        self.assertTrue(callable(render_product_intelligence))
 
         # Verify security module import
         from src.security import require_admin, is_admin, login_admin, logout

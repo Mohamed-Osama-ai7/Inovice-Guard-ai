@@ -65,11 +65,18 @@ def render_overview(artifacts: Dict[str, Any]) -> None:
         risk_counts = df["risk_level"].value_counts().reset_index()
         risk_counts.columns = ["Risk Level", "Invoices"]
         
-        import plotly.express as px
-        color_map = {"LOW": "#10b981", "MEDIUM": "#f59e0b", "HIGH": "#ef4444", "CRITICAL": "#b91c1c"}
-        fig = px.pie(risk_counts, values="Invoices", names="Risk Level", hole=0.68, color="Risk Level", color_discrete_map=color_map)
-        fig.update_layout(margin=dict(t=10, b=10, l=10, r=10), showlegend=True, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#f9fafb"))
-        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+        try:
+            import plotly.express as px
+        except Exception:
+            px = None
+
+        if px is not None:
+            color_map = {"LOW": "#10b981", "MEDIUM": "#f59e0b", "HIGH": "#ef4444", "CRITICAL": "#b91c1c"}
+            fig = px.pie(risk_counts, values="Invoices", names="Risk Level", hole=0.68, color="Risk Level", color_discrete_map=color_map)
+            fig.update_layout(margin=dict(t=10, b=10, l=10, r=10), showlegend=True, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#f9fafb"))
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+        else:
+            st.bar_chart(risk_counts.set_index("Risk Level")["Invoices"])
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col2:
@@ -78,17 +85,20 @@ def render_overview(artifacts: Dict[str, Any]) -> None:
         top_risk = df[df["predicted_late"] == 1].groupby("customer")["outstanding_amount"].sum().sort_values(ascending=False).head(5).reset_index()
         
         if not top_risk.empty:
-            fig2 = px.bar(top_risk, y="customer", x="outstanding_amount", orientation='h', color_discrete_sequence=["#ef4444"])
-            fig2.update_layout(
-                margin=dict(t=10, b=10, l=10, r=10), 
-                paper_bgcolor="rgba(0,0,0,0)", 
-                plot_bgcolor="rgba(0,0,0,0)", 
-                font=dict(color="#f9fafb"),
-                xaxis_title="Revenue at Risk ($)",
-                yaxis_title="",
-                yaxis={'categoryorder':'total ascending'}
-            )
-            st.plotly_chart(fig2, use_container_width=True, config={'displayModeBar': False})
+            if px is not None:
+                fig2 = px.bar(top_risk, y="customer", x="outstanding_amount", orientation='h', color_discrete_sequence=["#ef4444"])
+                fig2.update_layout(
+                    margin=dict(t=10, b=10, l=10, r=10), 
+                    paper_bgcolor="rgba(0,0,0,0)", 
+                    plot_bgcolor="rgba(0,0,0,0)", 
+                    font=dict(color="#f9fafb"),
+                    xaxis_title="Revenue at Risk ($)",
+                    yaxis_title="",
+                    yaxis={'categoryorder':'total ascending'}
+                )
+                st.plotly_chart(fig2, use_container_width=True, config={'displayModeBar': False})
+            else:
+                st.bar_chart(top_risk.set_index("customer")["outstanding_amount"])
         else:
             st.info("No at-risk revenue detected.")
         st.markdown('</div>', unsafe_allow_html=True)

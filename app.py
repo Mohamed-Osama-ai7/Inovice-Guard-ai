@@ -1880,6 +1880,7 @@ def main() -> None:
     from src.ui.views.revenue_intelligence import render_revenue_forecast, render_repurchase_risk, render_revenue_at_risk
     from src.ui.views.ai_insights import render_ai_recommendations
     from src.ui.views.system import render_data_quality
+    from src.ui.views.customer_360 import render_customer_360
     from src.ui.views.retail_views import render_customer_segmentation, render_product_intelligence
 
     

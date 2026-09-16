@@ -6,6 +6,21 @@ from src.ui.components import page_header, empty_state, kpi_row
 def _load_retail_data() -> pd.DataFrame:
     try:
         df = pd.read_csv("data/processed/retail_customer_snapshots.csv")
+        if df.empty:
+            return pd.DataFrame()
+        # Standardize column naming
+        if "customer_id" in df.columns and "Customer ID" not in df.columns:
+            df["Customer ID"] = df["customer_id"].astype(str)
+        if "future_revenue_60d" in df.columns and "target_future_revenue_60d" not in df.columns:
+            df["target_future_revenue_60d"] = df["future_revenue_60d"]
+        if "repurchase_60d" in df.columns and "target_repurchase_60d" not in df.columns:
+            df["target_repurchase_60d"] = df["repurchase_60d"]
+            
+        # Deduplicate to latest snapshot per customer for accurate cross-sectional pipeline views
+        if "snapshot_date" in df.columns:
+            df["snapshot_date"] = pd.to_datetime(df["snapshot_date"])
+            df = df.sort_values("snapshot_date").groupby("Customer ID").tail(1).copy()
+            
         return df
     except Exception:
         return pd.DataFrame()
@@ -17,7 +32,6 @@ def render_revenue_forecast(artifacts: Dict[str, Any]) -> None:
         empty_state("📈", "No Revenue Data", "Retail data pipeline has not generated forecast data.")
         return
     
-
     total_forecast = df["target_future_revenue_60d"].sum()
     avg_forecast = df["target_future_revenue_60d"].mean()
     
@@ -88,12 +102,19 @@ def render_revenue_at_risk(artifacts: Dict[str, Any]) -> None:
         {"icon": "📊", "label": "Avg Risk Exposure per Account", "value": f"${at_risk_df['monetary'].mean() if len(at_risk_df)>0 else 0:,.0f}"}
     ])
     
-    import plotly.express as px
-    fig = px.scatter(
-        at_risk_df, x="recency_days", y="monetary", color="frequency",
-        title="Revenue at Risk: Recency vs Monetary Value",
-        labels={"recency_days": "Days Since Last Purchase", "monetary": "Historical Value ($)", "frequency": "Purchase Frequency"},
-        color_continuous_scale="Reds"
-    )
-    fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#f9fafb"))
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    try:
+        import plotly.express as px
+    except Exception:
+        px = None
+
+    if px is not None and not at_risk_df.empty:
+        fig = px.scatter(
+            at_risk_df, x="recency_days", y="monetary", color="frequency",
+            title="Revenue at Risk: Recency vs Monetary Value",
+            labels={"recency_days": "Days Since Last Purchase", "monetary": "Historical Value ($)", "frequency": "Purchase Frequency"},
+            color_continuous_scale="Reds"
+        )
+        fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#f9fafb"))
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    elif not at_risk_df.empty:
+        st.scatter_chart(at_risk_df, x="recency_days", y="monetary", color="frequency")

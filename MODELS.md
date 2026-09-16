@@ -22,7 +22,8 @@
 
 ## Important Notes
 
-- All serialized artifacts in `models/` are trained on the included synthetic demo dataset (`data/demo/`).
+- Tabular invoice artifacts (`classifier.joblib`, `delay_regressor.joblib`) are trained on the included synthetic demo dataset (`data/demo/`).
+- Retail intelligence models (`retail_repurchase_model.pkl`, `retail_future_revenue_model.pkl`) are trained on the official UCI Online Retail II dataset (`data/raw/online_retail_II.xlsx` / `data/processed/retail_customer_snapshots.csv`).
 - To retrain on the official Kaggle invoice dataset, run `python scripts/download_data.py` then `python -m src.train`.
 - To retrain retail models on UCI Online Retail II, run `python scripts/download_retail_data.py` then `PYTHONPATH=. python scripts/build_retail_models.py`.
 - Never use post-payment fields such as `payment_date` or `delay_days` as predictors; these are strictly excluded from feature space during training.
