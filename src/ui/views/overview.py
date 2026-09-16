@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from typing import Dict, Any
-from src.ui.components import page_header, kpi_row, section_label, divider
+from src.ui.components import page_header, kpi_row, section_label, divider, get_chart_theme
 from src.ui.data import get_dashboard_dataset
 
 
@@ -58,6 +58,7 @@ def render_overview(artifacts: Dict[str, Any]) -> None:
     divider()
     section_label("Receivables & Risk Analytics")
 
+    chart_theme = get_chart_theme()
     col1, col2 = st.columns(2)
     with col1:
         st.markdown('<div class="ig-card">', unsafe_allow_html=True)
@@ -71,9 +72,15 @@ def render_overview(artifacts: Dict[str, Any]) -> None:
             px = None
 
         if px is not None:
-            color_map = {"LOW": "#10b981", "MEDIUM": "#f59e0b", "HIGH": "#ef4444", "CRITICAL": "#b91c1c"}
+            color_map = chart_theme["color_map"]
             fig = px.pie(risk_counts, values="Invoices", names="Risk Level", hole=0.68, color="Risk Level", color_discrete_map=color_map)
-            fig.update_layout(margin=dict(t=10, b=10, l=10, r=10), showlegend=True, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#f9fafb"))
+            fig.update_layout(
+                margin=dict(t=10, b=10, l=10, r=10), 
+                showlegend=True, 
+                paper_bgcolor=chart_theme["paper_bg"], 
+                plot_bgcolor=chart_theme["plot_bg"], 
+                font=dict(color=chart_theme["font_color"])
+            )
             st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
         else:
             st.bar_chart(risk_counts.set_index("Risk Level")["Invoices"])
@@ -86,12 +93,12 @@ def render_overview(artifacts: Dict[str, Any]) -> None:
         
         if not top_risk.empty:
             if px is not None:
-                fig2 = px.bar(top_risk, y="customer", x="outstanding_amount", orientation='h', color_discrete_sequence=["#ef4444"])
+                fig2 = px.bar(top_risk, y="customer", x="outstanding_amount", orientation='h', color_discrete_sequence=[chart_theme["danger_color"]])
                 fig2.update_layout(
                     margin=dict(t=10, b=10, l=10, r=10), 
-                    paper_bgcolor="rgba(0,0,0,0)", 
-                    plot_bgcolor="rgba(0,0,0,0)", 
-                    font=dict(color="#f9fafb"),
+                    paper_bgcolor=chart_theme["paper_bg"], 
+                    plot_bgcolor=chart_theme["plot_bg"], 
+                    font=dict(color=chart_theme["font_color"]),
                     xaxis_title="Revenue at Risk ($)",
                     yaxis_title="",
                     yaxis={'categoryorder':'total ascending'}

@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from typing import Dict, Any
-from src.ui.components import page_header, empty_state, kpi_row
+from src.ui.components import page_header, empty_state, kpi_row, get_chart_theme
 
 def _load_retail_data() -> pd.DataFrame:
     try:
@@ -108,13 +108,18 @@ def render_revenue_at_risk(artifacts: Dict[str, Any]) -> None:
         px = None
 
     if px is not None and not at_risk_df.empty:
+        chart_theme = get_chart_theme()
         fig = px.scatter(
             at_risk_df, x="recency_days", y="monetary", color="frequency",
             title="Revenue at Risk: Recency vs Monetary Value",
             labels={"recency_days": "Days Since Last Purchase", "monetary": "Historical Value ($)", "frequency": "Purchase Frequency"},
             color_continuous_scale="Reds"
         )
-        fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#f9fafb"))
+        fig.update_layout(
+            paper_bgcolor=chart_theme["paper_bg"], 
+            plot_bgcolor=chart_theme["plot_bg"], 
+            font=dict(color=chart_theme["font_color"])
+        )
         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     elif not at_risk_df.empty:
         st.scatter_chart(at_risk_df, x="recency_days", y="monetary", color="frequency")

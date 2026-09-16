@@ -63,16 +63,15 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
     
     # Customer Header Panel
     risk_badge_html = badge(current_risk)
-    domain_badge_color = "var(--primary)" if "InvoiceGuard" in domain_tag else "var(--success)"
     
     st.markdown(
         f"""
-        <div class="ig-c360-header" style="margin-bottom:1.5rem; padding:1.25rem 1.5rem; background:var(--surface); border:1px solid var(--border); border-radius:8px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div class="ig-c360-header">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; width:100%;">
             <div>
               <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.35rem;">
-                <h2 class="ig-c360-name" style="margin:0; font-size:1.45rem; font-weight:700; color:var(--text-main);">{raw_cust_id}</h2>
-                <span style="font-size:0.72rem; font-weight:600; padding:0.2rem 0.55rem; border-radius:4px; background:rgba(37,99,235,0.12); color:{domain_badge_color}; border:1px solid rgba(37,99,235,0.25);">
+                <h2 class="ig-c360-name">{raw_cust_id}</h2>
+                <span class="ig-domain-badge">
                   {domain_tag}
                 </span>
               </div>
@@ -238,7 +237,7 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
                 for driver in retail_data["top_drivers"]:
                     st.markdown(
                         f"""
-                        <div style="padding:0.5rem 0.75rem; margin-bottom:0.4rem; background:rgba(255,255,255,0.03); border-left:3px solid var(--primary); border-radius:0 4px 4px 0; font-size:0.85rem; color:var(--text-main);">
+                        <div style="padding:0.5rem 0.75rem; margin-bottom:0.4rem; background:var(--surface-hover); border-left:3px solid var(--primary); border-radius:0 4px 4px 0; font-size:0.85rem; color:var(--text-main);">
                           {driver}
                         </div>
                         """,
@@ -270,7 +269,7 @@ def render_customer_360(artifacts: Dict[str, Any]) -> None:
                     <div class="ig-card" style="border-left: 4px solid {p_color}; margin-bottom:0.75rem; padding:1rem 1.25rem;">
                       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
                         <span style="font-weight:700; color:var(--text-main); font-size:0.95rem;">{rec.get('action')}</span>
-                        <span style="font-size:0.72rem; font-weight:600; color:{p_color}; background:rgba(255,255,255,0.05); padding:0.15rem 0.5rem; border-radius:3px;">
+                        <span style="font-size:0.72rem; font-weight:600; color:{p_color}; background:var(--surface-hover); border:1px solid var(--border); padding:0.15rem 0.5rem; border-radius:3px;">
                           {rec.get('priority')}
                         </span>
                       </div>

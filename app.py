@@ -1873,7 +1873,7 @@ def render_artifact_diagnostics(artifacts: Dict[str, Any]) -> None:
 
 def main() -> None:
     from src.ui.css import inject_css
-    from src.ui.navigation import render_sidebar
+    from src.ui.navigation import render_sidebar, render_top_header
     from src.ui.views.overview import render_overview
     from src.ui.views.receivables import render_collections
     from src.ui.views.customer_search import render_customer_search
@@ -1883,16 +1883,21 @@ def main() -> None:
     from src.ui.views.customer_360 import render_customer_360
     from src.ui.views.retail_views import render_customer_segmentation, render_product_intelligence
 
-    
-    # We use inject_css from src.ui.css to get the new enterprise styles, but keep old ones if needed
-    inject_css()
+    if "theme" not in st.session_state:
+        st.session_state.theme = "dark"
+
+    # Inject design system tokens matching selected theme
+    inject_css(st.session_state.theme)
 
     artifacts = load_project_artifacts(get_artifact_signature())
     models = artifacts.get("models", {})
     load_errors = artifacts.get("load_errors", {})
 
-    # Sidebar navigation using the new router
+    # Sidebar navigation using the router
     current_page = render_sidebar()
+
+    # Top application shell header with breadcrumb and theme toggle
+    render_top_header(current_page)
 
     # Startup guard
     required = ["classifier", "delay_regressor"]

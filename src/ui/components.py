@@ -1,24 +1,60 @@
 import streamlit as st
 from typing import List, Dict, Any
 
+def get_chart_theme(theme: str = None) -> Dict[str, Any]:
+    """Returns theme-aware palette for Plotly charts based on active UI theme."""
+    if theme is None:
+        theme = st.session_state.get("theme", "dark")
+    if theme == "light":
+        return {
+            "font_color": "#1e293b",
+            "grid_color": "#e2e8f0",
+            "paper_bg": "rgba(0,0,0,0)",
+            "plot_bg": "rgba(0,0,0,0)",
+            "bar_color": "#2563eb",
+            "danger_color": "#dc2626",
+            "color_map": {
+                "LOW": "#059669",
+                "MEDIUM": "#d97706",
+                "HIGH": "#dc2626",
+                "CRITICAL": "#991b1b",
+            },
+        }
+    return {
+        "font_color": "#f8fafc",
+        "grid_color": "#263449",
+        "paper_bg": "rgba(0,0,0,0)",
+        "plot_bg": "rgba(0,0,0,0)",
+        "bar_color": "#3b82f6",
+        "danger_color": "#ef4444",
+        "color_map": {
+            "LOW": "#10b981",
+            "MEDIUM": "#f59e0b",
+            "HIGH": "#ef4444",
+            "CRITICAL": "#dc2626",
+        },
+    }
+
+
 def badge(label: str) -> str:
-    """Return HTML for a semantic status badge."""
-    lbl = str(label).upper()
-    if lbl in ["LOW", "GOOD", "ACTIVE"]:
+    """Return HTML for a semantic status badge with strong contrast and readable text."""
+    lbl = str(label).upper().strip()
+    if lbl in ["LOW", "GOOD", "ACTIVE", "ON TIME", "OPERATIONAL"]:
         c = "status-good"
-    elif lbl in ["MEDIUM", "WARNING", "AT RISK"]:
+    elif lbl in ["MEDIUM", "WARNING", "AT RISK", "ATTENTION"]:
         c = "status-warning"
-    elif lbl in ["HIGH", "DANGER", "LATE"]:
+    elif lbl in ["HIGH", "DANGER", "LATE", "ELEVATED"]:
         c = "status-danger"
-    elif lbl in ["CRITICAL", "CHURNED"]:
+    elif lbl in ["CRITICAL", "CHURNED", "SEVERE"]:
         c = "status-critical"
     else:
         c = "status-info"
     return f'<span class="ig-badge {c}">{label}</span>'
 
+
 def page_header(title: str, subtitle: str = "", right_content: str = "") -> None:
     """Render a professional enterprise page header."""
-    html = f'''
+    html = f"""
     <div class="ig-page-header">
       <div class="ig-page-header-left">
         <h1 class="ig-page-header-title">{title}</h1>
@@ -28,23 +64,26 @@ def page_header(title: str, subtitle: str = "", right_content: str = "") -> None
         {right_content}
       </div>
     </div>
-    '''
+    """
     st.markdown(html, unsafe_allow_html=True)
+
 
 def section_label(text: str) -> None:
     st.markdown(f"### {text}", unsafe_allow_html=True)
 
+
 def divider() -> None:
-    st.markdown("<hr style='border:none;border-top:1px solid var(--border);margin:2rem 0;'/>", unsafe_allow_html=True)
+    st.markdown("<hr style='border:none;border-top:1px solid var(--border);margin:1.75rem 0;'/>", unsafe_allow_html=True)
+
 
 def kpi_row(items: List[Dict[str, Any]]) -> None:
     """
-    Renders a row of KPI cards. 
+    Renders a responsive row of enterprise KPI cards.
     items is a list of dicts: {"icon": str, "label": str, "value": str, "trend": str, "trend_dir": "up"|"down"|"neutral"}
     """
     if not items:
         return
-    
+
     cols = st.columns(len(items))
     for i, col in enumerate(cols):
         item = items[i]
@@ -53,15 +92,18 @@ def kpi_row(items: List[Dict[str, Any]]) -> None:
         value = item.get("value", "")
         trend = item.get("trend", "")
         trend_dir = item.get("trend_dir", "neutral")
-        
+
         trend_html = ""
         if trend:
             trend_html = f'<div class="ig-card-trend ig-trend-{trend_dir}">{trend}</div>'
-            
+
         html = f"""
-        <div class="ig-card">
-          <div class="ig-card-title">{icon} {label}</div>
-          <div class="ig-card-value">{value}</div>
+        <div class="ig-card ig-kpi-card">
+          <div class="ig-kpi-header">
+            <span class="ig-kpi-label">{label}</span>
+            <span class="ig-kpi-icon">{icon}</span>
+          </div>
+          <div class="ig-kpi-value">{value}</div>
           {trend_html}
         </div>
         """
